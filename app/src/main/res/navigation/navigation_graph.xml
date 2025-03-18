@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/enterFragment">
+
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.driveremote.SignInFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/mainMenuFragment"
+        android:name="com.example.driveremote.MainMenuFragment"
+        android:label="Main Menu"
+        tools:layout="@layout/fragment_main_menu">
+        <action
+            android:id="@+id/action_mainMenuFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.driveremote.SignUpFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/enterFragment"
+        android:name="com.example.driveremote.EnterFragment"
+        android:label="Enter"
+        tools:layout="@layout/fragment_enter">
+        <action
+            android:id="@+id/action_enterFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+        <action
+            android:id="@+id/action_enterFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+    </fragment>
+
+</navigation>

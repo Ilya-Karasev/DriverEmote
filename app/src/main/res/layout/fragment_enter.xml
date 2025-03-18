@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Текст "Добро пожаловать в DriverEmote!" -->
+    <TextView
+        android:id="@+id/textWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="24dp"
+        android:text="Добро пожаловать в DriverEmote!"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <!-- Кружок с иконкой входа -->
+    <FrameLayout
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:background="@drawable/circle_border"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imageEnterIcon"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:contentDescription="Иконка входа"
+            android:src="@drawable/enter_green" />
+    </FrameLayout>
+
+    <!-- Текст "Нажмите, чтобы войти" -->
+    <TextView
+        android:id="@+id/textClickToEnter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="24dp"
+        android:text="Нажмите, чтобы войти"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+</LinearLayout>
