@@ -36,6 +36,24 @@ class MainMenuFragment : Fragment() {
 
             findNavController().navigate(R.id.action_mainMenuFragment_to_signInFragment) // Переход на экран входа
         }
+
+        binding.buttonTest.setOnClickListener {
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.mainMenuFragment) {
+                navController.navigate(R.id.action_mainMenuFragment_to_testFragment)
+            }
+        }
+
+        // Загружаем дату и время последнего прохождения теста
+        val sharedPreferences = requireActivity().getSharedPreferences("TestResults", Context.MODE_PRIVATE)
+        val lastTestTime = sharedPreferences.getString("lastTestTime", null)
+
+        // Устанавливаем текст
+        binding.textTest.text = if (lastTestTime == null) {
+            "Вы ещё не проходили тестирование"
+        } else {
+            "Последний раз вы проходили тестирование $lastTestTime"
+        }
     }
 
     override fun onDestroyView() {

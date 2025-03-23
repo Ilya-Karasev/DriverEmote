@@ -176,4 +176,3 @@ class SignInFragment : Fragment() {
         _binding = null
     }
 }
-

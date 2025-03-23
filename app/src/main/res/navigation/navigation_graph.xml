@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_mainMenuFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
+        <action
+            android:id="@+id/action_mainMenuFragment_to_testFragment"
+            app:destination="@id/testFragment"/>
     </fragment>
 
     <fragment
@@ -51,4 +54,23 @@
             app:destination="@id/mainMenuFragment"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/testFragment"
+        android:name="com.example.driveremote.TestFragment"
+        android:label="Test"
+        tools:layout="@layout/fragment_test">
+        <action
+            android:id="@+id/action_testFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/resultsFragment"
+        android:name="com.example.driveremote.ResultsFragment"
+        android:label="Results"
+        tools:layout="@layout/fragment_results">
+        <action
+            android:id="@+id/action_resultsFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+    </fragment>
 </navigation>
