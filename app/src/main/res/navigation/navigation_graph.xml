@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_mainMenuFragment_to_testFragment"
             app:destination="@id/testFragment"/>
+        <action
+            android:id="@+id/action_mainMenuFragment_to_profileFragment"
+            app:destination="@id/profileFragment"/>
     </fragment>
 
     <fragment
@@ -72,5 +75,18 @@
         <action
             android:id="@+id/action_resultsFragment_to_mainMenuFragment"
             app:destination="@id/mainMenuFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.driveremote.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
     </fragment>
 </navigation>

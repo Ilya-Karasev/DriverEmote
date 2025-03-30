@@ -17,6 +17,9 @@ class TestFragment : Fragment() {
     private val scoreMap = mutableMapOf<Int, Int>()
 
     private var totalScore = 0
+    private var emotionalExhaustionScore = 0
+    private var depersonalizationScore = 0
+    private var personalAchievementScore = 0
     private var answeredQuestions = 0
     private val totalQuestions = 22
 
@@ -31,7 +34,6 @@ class TestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Инициализируем карту баллов для 22 вопросов
         for (i in 1..totalQuestions) {
             scoreMap[resources.getIdentifier("radio_never_q$i", "id", requireContext().packageName)] = 0
             scoreMap[resources.getIdentifier("radio_very_rarely_q$i", "id", requireContext().packageName)] = 1
@@ -41,7 +43,6 @@ class TestFragment : Fragment() {
             scoreMap[resources.getIdentifier("radio_every_day_q$i", "id", requireContext().packageName)] = 6
         }
 
-        // Инициализация списка RadioGroup для всех вопросов
         val radioGroups = listOf(
             binding.question1, binding.question2, binding.question3, binding.question4, binding.question5,
             binding.question6, binding.question7, binding.question8, binding.question9, binding.question10,
@@ -50,16 +51,19 @@ class TestFragment : Fragment() {
             binding.question21, binding.question22
         )
 
-        // Делаем кнопку "Получить результаты" неактивной
         setResultsButtonState(false)
-
-        // Добавляем обработчики на выбор вариантов
         radioGroups.forEach { setupRadioGroupListener(it) }
 
         binding.textExit.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putInt("totalScore", totalScore)
-            findNavController().navigate(R.id.action_testFragment_to_resultsFragment, bundle)
+            if (answeredQuestions == totalQuestions) {
+                val bundle = Bundle().apply {
+                    putInt("totalScore", totalScore)
+                    putInt("emotionalExhaustionScore", emotionalExhaustionScore)
+                    putInt("depersonalizationScore", depersonalizationScore)
+                    putInt("personalAchievementScore", personalAchievementScore)
+                }
+                findNavController().navigate(R.id.action_testFragment_to_resultsFragment, bundle)
+            }
         }
 
     }
@@ -72,7 +76,14 @@ class TestFragment : Fragment() {
 
     private fun updateScore() {
         totalScore = 0
+        emotionalExhaustionScore = 0
+        depersonalizationScore = 0
+        personalAchievementScore = 0
         answeredQuestions = 0
+
+        val emotionalExhaustionQuestions = setOf(1, 2, 3, 6, 8, 13, 14, 16, 20)
+        val depersonalizationQuestions = setOf(5, 10, 11, 15, 22)
+        val personalAchievementQuestions = setOf(4, 7, 9, 12, 17, 18, 19, 21)
 
         val radioGroups = listOf(
             binding.question1, binding.question2, binding.question3, binding.question4, binding.question5,
@@ -82,18 +93,24 @@ class TestFragment : Fragment() {
             binding.question21, binding.question22
         )
 
-        radioGroups.forEach { radioGroup ->
+        radioGroups.forEachIndexed { index, radioGroup ->
+            val questionNumber = index + 1
             val selectedId = radioGroup.checkedRadioButtonId
+            val score = scoreMap[selectedId] ?: 0
+
             if (selectedId != -1) {
-                totalScore += scoreMap[selectedId] ?: 0
+                totalScore += score
                 answeredQuestions++
+
+                when (questionNumber) {
+                    in emotionalExhaustionQuestions -> emotionalExhaustionScore += score
+                    in depersonalizationQuestions -> depersonalizationScore += score
+                    in personalAchievementQuestions -> personalAchievementScore += score
+                }
             }
         }
 
-        // Обновляем текст с количеством отвеченных вопросов
         binding.textAppName.text = "Отвечено вопросов: $answeredQuestions/$totalQuestions"
-
-        // Активация кнопки, если все вопросы отвечены
         setResultsButtonState(answeredQuestions == totalQuestions)
     }
 

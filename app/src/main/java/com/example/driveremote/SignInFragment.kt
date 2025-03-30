@@ -1,71 +1,23 @@
 package com.example.driveremote
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentSignInBinding
-import androidx.room.*
-import android.content.Context
-import android.graphics.Color
-import android.text.Editable
-import android.text.TextWatcher
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
+import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.TestUsers
+import com.example.driveremote.models.User
 import kotlinx.coroutines.launch
-
-@Entity
-data class User(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val surName: String,
-    val firstName: String,
-    val fatherName: String,
-    val age: Int,
-    val post: Post,
-    val email: String,
-    val password: String
-)
-
-enum class Post {
-    ВОДИТЕЛЬ, РУКОВОДИТЕЛЬ
-}
-
-@Dao
-interface UserDao {
-    @Insert
-    suspend fun insertUser(user: User)
-
-    @Query("SELECT * FROM User")
-    suspend fun getAllUsers(): List<User>  // Correct return type
-
-    @Query("SELECT * FROM User WHERE email = :email AND password = :password LIMIT 1")
-    suspend fun getUserByEmailAndPassword(email: String, password: String): User?  // Correct return type
-}
-
-@Database(entities = [User::class], version = 1, exportSchema = false)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun userDao(): UserDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "app_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
-}
 
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
@@ -89,14 +41,6 @@ class SignInFragment : Fragment() {
         if (isUserLoggedIn()) {
             findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
             return
-        }
-
-        lifecycleScope.launch {
-            val users = userDao.getAllUsers()
-            if (users.isEmpty()) {
-                userDao.insertUser(User(0, "Иванов", "Иван", "Иванович", 30, Post.ВОДИТЕЛЬ, "driver@example.com", "driver123"))
-                userDao.insertUser(User(0, "Петров", "Петр", "Петрович", 40, Post.РУКОВОДИТЕЛЬ, "manager@example.com", "manager123"))
-            }
         }
 
         binding.buttonSignIn.isEnabled = false
@@ -135,7 +79,7 @@ class SignInFragment : Fragment() {
                 val user = userDao.getUserByEmailAndPassword(email, password)
 
                 if (user != null) {
-                    saveUserSession(user)  // Сохраняем пользователя в SharedPreferences
+                    saveUserSession(user)
                     findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
                 } else {
                     Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()

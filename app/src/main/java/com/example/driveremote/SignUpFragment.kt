@@ -14,6 +14,9 @@ import com.example.driveremote.databinding.FragmentSignUpBinding
 import kotlinx.coroutines.launch
 import android.util.Patterns
 import android.widget.AdapterView
+import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Post
+import com.example.driveremote.models.User
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -33,7 +36,6 @@ class SignUpFragment : Fragment() {
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
 
-        // Адаптер для выпадающего списка должностей
         val postAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
@@ -41,7 +43,6 @@ class SignUpFragment : Fragment() {
         )
         binding.spinnerPost.adapter = postAdapter
 
-        // Обработчик изменений в текстовых полях
         val textFields = listOf(
             binding.editTextSurName,
             binding.editTextFirstName,
@@ -114,7 +115,7 @@ class SignUpFragment : Fragment() {
         val fatherName = binding.editTextFatherName.text?.isNotEmpty() == true
         val ageValid = binding.editTextAge.text?.toString()?.toIntOrNull() != null
         val emailValid = isValidEmail(binding.editTextEmail.text?.toString() ?: "")
-        val passwordValid = binding.editTextPassword.text?.length ?: 0 >= 6
+        val passwordValid = (binding.editTextPassword.text?.length ?: 0) >= 6
         val postSelected = binding.spinnerPost.selectedItem != null
 
         val allFieldsFilled = surName && firstName && fatherName && ageValid && emailValid && passwordValid && postSelected
