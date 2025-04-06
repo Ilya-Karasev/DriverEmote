@@ -3,6 +3,7 @@ package com.example.driveremote
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.databinding.FragmentMainMenuBinding
 import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Results
+import com.example.driveremote.utils.NotificationUtils
 import kotlinx.coroutines.launch
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -21,8 +24,13 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.work.*
+import com.example.driveremote.utils.TestReminderWorker
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MainMenuFragment : Fragment() {
     private var _binding: FragmentMainMenuBinding? = null
@@ -42,12 +50,33 @@ class MainMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Слушаем результат из ResultsFragment
+        parentFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) { _, bundle ->
+            val refresh = bundle.getBoolean("refresh", false)
+            if (refresh) {
+                val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                val userId = sharedPreferences.getInt("userId", -1)
+
+                if (userId != -1) {
+                    loadResults(userId)
+                    loadLastTestDate(userId)
+                    updateTestButtonState(userId)
+                    scheduleTestReminders(userId)
+                } else {
+                    binding.textTest.text = "Вы ещё не проходили тестирование"
+                }
+            }
+        }
+
+        // Инициализация остальной части экрана
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
 
         if (userId != -1) {
             loadResults(userId)
             loadLastTestDate(userId)
+            updateTestButtonState(userId)
+            scheduleTestReminders(userId)
         } else {
             binding.textTest.text = "Вы ещё не проходили тестирование"
         }
@@ -66,6 +95,10 @@ class MainMenuFragment : Fragment() {
             if (navController.currentDestination?.id == R.id.mainMenuFragment) {
                 navController.navigate(R.id.action_mainMenuFragment_to_testFragment)
             }
+        }
+
+        binding.view2.setOnClickListener {
+            findNavController().navigate(R.id.action_mainMenuFragment_to_searchFragment)
         }
 
         binding.view3.setOnClickListener {
@@ -163,6 +196,78 @@ class MainMenuFragment : Fragment() {
 
             // Отображаем график
             setupChart()
+        }
+    }
+
+    private fun updateTestButtonState(userId: Int) {
+        val db = AppDatabase.getDatabase(requireContext())
+        val driverDao = db.driverDao()
+
+        lifecycleScope.launch {
+            val driver = driverDao.getDriverById(userId)
+            if (driver != null) {
+                if (driver.isCompleted) {
+                    // Тест уже пройден — деактивируем кнопку
+                    binding.buttonTest.isEnabled = false
+                    binding.buttonTest.text = "Вы уже проходили тестирование"
+                    binding.buttonTest.setBackgroundColor(Color.GRAY)
+                } else {
+                    // Тест ещё не пройден — активируем кнопку
+                    binding.buttonTest.isEnabled = true
+                    binding.buttonTest.text = "Пройти тест"
+                    binding.buttonTest.setBackgroundColor(resources.getColor(R.color.green, null))
+                }
+            } else {
+                // Если водитель не найден, по умолчанию делаем кнопку активной
+                binding.buttonTest.isEnabled = true
+                binding.buttonTest.text = "Пройти тест"
+                binding.buttonTest.setBackgroundColor(resources.getColor(R.color.green, null))
+            }
+        }
+    }
+
+    private fun scheduleTestReminders(userId: Int) {
+        val db = AppDatabase.getDatabase(requireContext())
+        val driverDao = db.driverDao()
+
+        lifecycleScope.launch {
+            val driver = driverDao.getDriverById(userId)
+            val testingTimes = driver?.testingTime ?: return@launch
+
+            val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val now = Calendar.getInstance()
+
+            testingTimes.forEach { timeString ->
+                val calendar = Calendar.getInstance().apply {
+                    time = formatter.parse(timeString) ?: return@forEach
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                    set(Calendar.YEAR, now.get(Calendar.YEAR))
+                    set(Calendar.MONTH, now.get(Calendar.MONTH))
+                    set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
+
+                    if (before(now)) {
+                        add(Calendar.DAY_OF_MONTH, 1)
+                    }
+                }
+
+                val delay = calendar.timeInMillis - System.currentTimeMillis()
+
+                val inputData = Data.Builder()
+                    .putInt("userId", userId)
+                    .putString("time", timeString)
+                    .build()
+
+                val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
+                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                    .setInputData(inputData)
+                    .addTag("test_reminder_${userId}_$timeString")
+                    .build()
+
+                WorkManager.getInstance(requireContext()).enqueue(workRequest)
+
+                Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
+            }
         }
     }
 

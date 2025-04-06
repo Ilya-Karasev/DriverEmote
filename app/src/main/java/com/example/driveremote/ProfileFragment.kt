@@ -5,9 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Spinner
+import android.widget.TimePicker
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentProfileBinding
+import com.example.driveremote.models.AppDatabase
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -58,6 +67,75 @@ class ProfileFragment : Fragment() {
         binding.view1.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_mainMenuFragment)
         }
+
+        binding.buttonTime.setOnClickListener {
+            showTimeDialog()
+        }
+    }
+
+    private fun showTimeDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_driver_time, null)
+
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupQuantity)
+        val radioOne = dialogView.findViewById<RadioButton>(R.id.radioOne)
+        val radioTwo = dialogView.findViewById<RadioButton>(R.id.radioTwo)
+
+        val layoutTime2 = dialogView.findViewById<View>(R.id.timePicker2)
+        val labelTime2 = dialogView.findViewById<View>(R.id.textTime2Label)
+
+        val timePicker1 = dialogView.findViewById<TimePicker>(R.id.timePicker1)
+        val timePicker2 = dialogView.findViewById<TimePicker>(R.id.timePicker2)
+
+        timePicker1.setIs24HourView(true)
+        timePicker2.setIs24HourView(true)
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val isTwo = checkedId == R.id.radioTwo
+            timePicker2.visibility = if (isTwo) View.VISIBLE else View.GONE
+            labelTime2.visibility = if (isTwo) View.VISIBLE else View.GONE
+        }
+
+        val dialog = android.app.AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.buttonSave).setOnClickListener {
+            val quantity = if (radioOne.isChecked) 1 else 2
+
+            val hour1 = timePicker1.hour
+            val minute1 = timePicker1.minute
+            val time1 = String.format("%02d:%02d", hour1, minute1)
+
+            val times = if (quantity == 1) {
+                listOf(time1)
+            } else {
+                val hour2 = timePicker2.hour
+                val minute2 = timePicker2.minute
+                val time2 = String.format("%02d:%02d", hour2, minute2)
+                listOf(time1, time2)
+            }
+
+            val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+            val userId = sharedPreferences.getInt("userId", -1)
+
+            if (userId != -1) {
+                val db = AppDatabase.getDatabase(requireContext())
+                val driverDao = db.driverDao()
+                lifecycleScope.launch {
+                    val driver = driverDao.getDriverById(userId)
+                    if (driver != null) {
+                        driverDao.insertDriver(driver.copy(quantity = quantity, testingTime = times))
+                    }
+                }
+            }
+
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     override fun onDestroyView() {

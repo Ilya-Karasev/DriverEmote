@@ -12,7 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentResultsBinding
@@ -68,8 +70,23 @@ class ResultsFragment : Fragment() {
 
         binding.buttonBackToMenu.setOnClickListener {
             if (userId != -1) {
-                saveTestResult(userId, currentTime, emotionalExhaustionScore, depersonalizationScore, personalAchievementScore, totalScore)
+                // Получаем объект Driver для текущего пользователя
+                val db = AppDatabase.getDatabase(requireContext())
+                val driverDao = db.driverDao()
+
+                lifecycleScope.launch {
+                    val driver = driverDao.getDriverById(userId)
+                    if (driver != null) {
+                        // Обновляем значение isCompleted на true
+                        driverDao.updateCompletionStatus(driver.id, true)
+
+                        // Сохраняем результат теста
+                        saveTestResult(userId, currentTime, emotionalExhaustionScore, depersonalizationScore, personalAchievementScore, totalScore)
+                    }
+                }
             }
+            // Отправляем результат обратно в MainMenuFragment
+            setFragmentResult("requestKey", bundleOf("refresh" to true))
             findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
         }
     }
@@ -119,9 +136,7 @@ class ResultsFragment : Fragment() {
 
         tooltipText.text = spannableMessage
 
-        // Закрытие диалога при нажатии за его пределами
         dialog.setCanceledOnTouchOutside(true)
-
         dialog.show()
     }
 

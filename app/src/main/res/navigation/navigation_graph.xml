@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_mainMenuFragment_to_profileFragment"
             app:destination="@id/profileFragment"/>
+        <action
+            android:id="@+id/action_mainMenuFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
     </fragment>
 
     <fragment
@@ -88,5 +91,25 @@
         <action
             android:id="@+id/action_profileFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.driveremote.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+        <action
+            android:id="@+id/action_searchFragment_to_profileFragment"
+            app:destination="@id/profileFragment"/>
+        <action
+            android:id="@+id/action_searchFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+    </fragment>
+
 </navigation>

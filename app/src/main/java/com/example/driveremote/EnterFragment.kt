@@ -48,9 +48,8 @@ class EnterFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            TestUsers.insertTestUsers(requireContext(), userDao)
-
-            // Получаем первого пользователя (например, для создания теста)
+            val driverDao = db.driverDao() // Получаем driverDao
+            TestUsers.insertTestUsers(requireContext(), userDao, driverDao)
             val user = userDao.getAllUsers().firstOrNull()
         }
     }

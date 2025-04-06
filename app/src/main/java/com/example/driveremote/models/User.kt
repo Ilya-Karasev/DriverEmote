@@ -39,9 +39,23 @@ object TestUsers {
         User(2, "Петров", "Петр", "Петрович", 40, Post.РУКОВОДИТЕЛЬ, "manager@example.com", "manager123")
     )
 
-    suspend fun insertTestUsers(context: Context, userDao: UserDao) {
+    suspend fun insertTestUsers(context: Context, userDao: UserDao, driverDao: DriverDao) {
         if (userDao.getAllUsers().isEmpty()) {
             users.forEach { userDao.insertUser(it) }
+        }
+
+        // Добавляем только пользователей с ролью ВОДИТЕЛЬ в таблицу Driver
+        users.filter { it.post == Post.ВОДИТЕЛЬ }.forEach { user ->
+            val existingDriver = driverDao.getDriverById(user.id)
+            if (existingDriver == null) {
+                val testDriver = Driver(
+                    id = user.id,
+                    isCompleted = false,
+                    testingTime = listOf("08:00"), // Пример расписания тестирования
+                    quantity = 1
+                )
+                driverDao.insertDriver(testDriver)
+            }
         }
 
         val resultsDao = AppDatabase.getDatabase(context).resultsDao()

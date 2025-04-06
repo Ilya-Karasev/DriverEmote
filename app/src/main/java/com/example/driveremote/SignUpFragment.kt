@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import android.util.Patterns
 import android.widget.AdapterView
 import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Post
 import com.example.driveremote.models.User
 
@@ -35,6 +36,7 @@ class SignUpFragment : Fragment() {
 
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
+        val driverDao = db.driverDao()
 
         val postAdapter = ArrayAdapter(
             requireContext(),
@@ -99,9 +101,24 @@ class SignUpFragment : Fragment() {
 
             lifecycleScope.launch {
                 userDao.insertUser(user)
+                // Получаем созданного пользователя с помощью email и пароля
+                val createdUser = userDao.getUserByEmailAndPassword(email, password)
+
+                // Если пользователь — водитель, создаем соответствующую запись в Driver
+                if (createdUser != null && createdUser.post == Post.ВОДИТЕЛЬ) {
+                    val driver = Driver(
+                        id = createdUser.id,
+                        isCompleted = false,
+                        testingTime = null,
+                        quantity = 1
+                    )
+                    driverDao.insertDriver(driver)
+                }
+
                 Toast.makeText(requireContext(), "Пользователь зарегистрирован", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
             }
+
         }
 
         binding.viewBack.setOnClickListener {
