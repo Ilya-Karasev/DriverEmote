@@ -23,22 +23,33 @@ class TestReminderWorker(
         val timeString = inputData.getString("time") ?: return Result.failure()
 
         if (userId != -1) {
+            val prefs = context.getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+            val lastNotificationTime = prefs.getLong("lastNotificationTime_${userId}_$timeString", 0L)
+            val now = System.currentTimeMillis()
+
+            // Проверка — если меньше 1 часа с последнего уведомления, не показываем снова
+            if (now - lastNotificationTime < 60 * 60 * 1000) {
+                Log.d("TestReminderWorker", "Notification suppressed (already sent recently)")
+                return Result.success()
+            }
+
             val db = AppDatabase.getDatabase(context)
             val driverDao = db.driverDao()
             val driver = driverDao.getDriverById(userId)
 
             driver?.let {
-                // Сбрасываем isCompleted
                 driverDao.updateCompletionStatus(userId, false)
 
-                // Отправляем уведомление
                 NotificationUtils.sendNotification(
                     context,
                     "Пришло время тестирования!",
                     "Пожалуйста, пройдите тестирование, чтобы отследить ваше эмоциональное состояние!"
                 )
 
-                // Переустанавливаем задачу на следующий день
+                // Сохраняем метку времени отправки уведомления
+                prefs.edit().putLong("lastNotificationTime_${userId}_$timeString", now).apply()
+
+                // Устанавливаем следующее напоминание
                 scheduleNextReminder(context, userId, timeString)
             }
 
@@ -70,6 +81,10 @@ class TestReminderWorker(
             .addTag("test_reminder_${userId}_$timeString")
             .build()
 
+        // Отменяем все работы с этим тегом перед постановкой новой задачи
+        WorkManager.getInstance(context).cancelAllWorkByTag("test_reminder_${userId}_$timeString")
+
+        // Планируем задачу
         WorkManager.getInstance(context).enqueue(workRequest)
 
         Log.d("TestReminderWorker", "Next reminder scheduled for $timeString")

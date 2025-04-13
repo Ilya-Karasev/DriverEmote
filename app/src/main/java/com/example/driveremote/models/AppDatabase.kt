@@ -2,14 +2,16 @@ package com.example.driveremote.models
 
 import android.content.Context
 import androidx.room.*
-import com.example.driveremote.adapters.TimeConverters
+import com.example.driveremote.adapters.Converters
 
-@Database(entities = [User::class, Results::class, Driver::class], version = 3, exportSchema = false)
-@TypeConverters(TimeConverters::class)
+@Database(entities = [User::class, Results::class, Driver::class, Manager::class, Request::class], version = 5, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun resultsDao(): ResultsDao
     abstract fun driverDao(): DriverDao
+    abstract fun managerDao(): ManagerDao
+    abstract fun requestDao(): RequestDao
 
     companion object {
         @Volatile

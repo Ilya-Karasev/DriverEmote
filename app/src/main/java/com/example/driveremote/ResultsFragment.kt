@@ -10,7 +10,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -70,24 +69,23 @@ class ResultsFragment : Fragment() {
 
         binding.buttonBackToMenu.setOnClickListener {
             if (userId != -1) {
-                // Получаем объект Driver для текущего пользователя
                 val db = AppDatabase.getDatabase(requireContext())
                 val driverDao = db.driverDao()
 
                 lifecycleScope.launch {
                     val driver = driverDao.getDriverById(userId)
                     if (driver != null) {
-                        // Обновляем значение isCompleted на true
                         driverDao.updateCompletionStatus(driver.id, true)
 
-                        // Сохраняем результат теста
                         saveTestResult(userId, currentTime, emotionalExhaustionScore, depersonalizationScore, personalAchievementScore, totalScore)
+
+                        setFragmentResult("requestKey", bundleOf("refresh" to true))
+                        findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
                     }
                 }
+            } else {
+                findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
             }
-            // Отправляем результат обратно в MainMenuFragment
-            setFragmentResult("requestKey", bundleOf("refresh" to true))
-            findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
         }
     }
 

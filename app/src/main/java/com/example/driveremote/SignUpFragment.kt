@@ -16,6 +16,7 @@ import android.util.Patterns
 import android.widget.AdapterView
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Driver
+import com.example.driveremote.models.Manager
 import com.example.driveremote.models.Post
 import com.example.driveremote.models.User
 
@@ -37,6 +38,7 @@ class SignUpFragment : Fragment() {
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
         val driverDao = db.driverDao()
+        val managerDao = db.managerDao() // Получаем доступ к DAO для менеджеров
 
         val postAdapter = ArrayAdapter(
             requireContext(),
@@ -109,16 +111,24 @@ class SignUpFragment : Fragment() {
                     val driver = Driver(
                         id = createdUser.id,
                         isCompleted = false,
-                        testingTime = null,
+                        testingTime = listOf("08:00"),
                         quantity = 1
                     )
                     driverDao.insertDriver(driver)
                 }
 
+                // Если пользователь — руководитель, создаем соответствующую запись в Manager
+                if (createdUser != null && createdUser.post == Post.РУКОВОДИТЕЛЬ) {
+                    val manager = Manager(
+                        user = createdUser,
+                        employeesList = emptyList() // Пустой список сотрудников
+                    )
+                    managerDao.insertManager(manager)
+                }
+
                 Toast.makeText(requireContext(), "Пользователь зарегистрирован", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
             }
-
         }
 
         binding.viewBack.setOnClickListener {

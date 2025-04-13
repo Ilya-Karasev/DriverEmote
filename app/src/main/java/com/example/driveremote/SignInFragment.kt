@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentSignInBinding
 import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Post
 import com.example.driveremote.models.TestUsers
 import com.example.driveremote.models.User
 import kotlinx.coroutines.launch
@@ -80,7 +81,11 @@ class SignInFragment : Fragment() {
 
                 if (user != null) {
                     saveUserSession(user)
-                    findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
+
+                    when (user.post) {
+                        Post.ВОДИТЕЛЬ -> findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
+                        Post.РУКОВОДИТЕЛЬ -> findNavController().navigate(R.id.action_signInFragment_to_managerMenuFragment)
+                    }
                 } else {
                     Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
                 }

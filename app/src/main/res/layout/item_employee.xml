@@ -30,22 +30,7 @@
         android:orientation="vertical">
 
         <TextView android:id="@+id/textName" android:text="ФИО"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="@color/black"/>
+        <TextView android:id="@+id/textAge" android:text="Возраст"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="@color/black"/>
+        <TextView android:id="@+id/textEmail" android:text="Почта" android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="@color/black"/>
     </LinearLayout>
-
-    <!-- Разделитель -->
-    <View
-        android:id="@+id/borderline2"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="8dp"
-        android:background="#888888" />
-
-    <!-- Кнопка "+" -->
-    <ImageView
-        android:id="@+id/buttonAdd"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@android:drawable/ic_input_add"
-        android:background="@drawable/small_circle_border"
-        android:padding="4dp" />
 </LinearLayout>

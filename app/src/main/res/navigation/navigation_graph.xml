@@ -14,6 +14,9 @@
             android:id="@+id/action_signInFragment_to_mainMenuFragment"
             app:destination="@id/mainMenuFragment"/>
         <action
+            android:id="@+id/action_signInFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
+        <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"/>
     </fragment>
@@ -58,6 +61,9 @@
         <action
             android:id="@+id/action_enterFragment_to_mainMenuFragment"
             app:destination="@id/mainMenuFragment"/>
+        <action
+            android:id="@+id/action_enterFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
     </fragment>
 
     <fragment
@@ -89,11 +95,17 @@
             android:id="@+id/action_profileFragment_to_mainMenuFragment"
             app:destination="@id/mainMenuFragment"/>
         <action
+            android:id="@+id/action_profileFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
+        <action
             android:id="@+id/action_profileFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
         <action
             android:id="@+id/action_profileFragment_to_searchFragment"
             app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"/>
     </fragment>
 
     <fragment
@@ -105,6 +117,9 @@
             android:id="@+id/action_searchFragment_to_mainMenuFragment"
             app:destination="@id/mainMenuFragment"/>
         <action
+            android:id="@+id/action_searchFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
+        <action
             android:id="@+id/action_searchFragment_to_profileFragment"
             app:destination="@id/profileFragment"/>
         <action
@@ -112,4 +127,48 @@
             app:destination="@id/signInFragment"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/managerMenuFragment"
+        android:name="com.example.driveremote.ManagerMenuFragment"
+        android:label="Manager Main Menu"
+        tools:layout="@layout/fragment_manager_menu">
+        <action
+            android:id="@+id/action_managerMenuFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+        <action
+            android:id="@+id/action_managerMenuFragment_to_profileFragment"
+            app:destination="@id/profileFragment"/>
+        <action
+            android:id="@+id/action_managerMenuFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_managerMenuFragment_to_employeeFragment"
+            app:destination="@id/employeeFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/requestsFragment"
+        android:name="com.example.driveremote.RequestsFragment"
+        android:label="Requests"
+        tools:layout="@layout/fragment_requests">
+        <action
+            android:id="@+id/action_requestsFragment_to_profileFragment"
+            app:destination="@id/profileFragment"/>
+        <action
+            android:id="@+id/action_requestsFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/employeeFragment"
+        android:name="com.example.driveremote.EmployeeFragment"
+        android:label="Employee"
+        tools:layout="@layout/fragment_employee">
+        <action
+            android:id="@+id/action_employeeFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
+        <action
+            android:id="@+id/action_employeeFragment_to_signInFragment"
+            app:destination="@id/signInFragment"/>
+    </fragment>
 </navigation>

@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Spinner
 import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -42,18 +40,32 @@ class ProfileFragment : Fragment() {
         val email = sharedPreferences.getString("email", "Не указан") ?: "Не указан"
         val post = sharedPreferences.getString("post", "Неизвестно") ?: "Неизвестно"
 
-        // Установка ФИО над иконкой
+        // Подключение нужного layout в зависимости от роли
+        val inflater = layoutInflater
+        val view1Container = binding.view1
+        view1Container.removeAllViews()
+
+        if (post == "ВОДИТЕЛЬ") {
+            val driverView = inflater.inflate(R.layout.item_driver_view1, view1Container, false)
+            view1Container.addView(driverView)
+            binding.buttonTime.visibility = View.VISIBLE // Показываем кнопку для водителя
+        } else if (post == "РУКОВОДИТЕЛЬ") {
+            val managerView = inflater.inflate(R.layout.item_manager_view1, view1Container, false)
+            view1Container.addView(managerView)
+            binding.buttonTime.visibility = View.GONE // Скрываем кнопку для руководителя
+        } else {
+            binding.buttonTime.visibility = View.GONE // На всякий случай скрываем кнопку, если роль не определена
+        }
+
         binding.profileFullName.text = "$surname $firstName $fatherName"
 
-        // Установка иконки в зависимости от должности
         val iconResId = if (post == "РУКОВОДИТЕЛЬ") R.drawable.manager else R.drawable.driver
         binding.profileIcon.setImageResource(iconResId)
 
-        // Установка дополнительной информации
         binding.profileInfo.text = """
-            Возраст: $age год(а) / лет
-            Эл. почта: $email
-        """.trimIndent()
+        Возраст: $age год(а) / лет
+        Эл. почта: $email
+    """.trimIndent()
 
         binding.iconLeft.setOnClickListener {
             requireActivity().finish()
@@ -65,11 +77,23 @@ class ProfileFragment : Fragment() {
         }
 
         binding.view1.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_mainMenuFragment)
+            if (post == "ВОДИТЕЛЬ") {
+                findNavController().navigate(R.id.action_profileFragment_to_mainMenuFragment)
+            } else if (post == "РУКОВОДИТЕЛЬ") {
+                findNavController().navigate(R.id.action_profileFragment_to_managerMenuFragment)
+            }
+        }
+
+        binding.view2.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_searchFragment)
         }
 
         binding.buttonTime.setOnClickListener {
             showTimeDialog()
+        }
+
+        binding.buttonRequests.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_requestsFragment)
         }
     }
 
@@ -105,7 +129,6 @@ class ProfileFragment : Fragment() {
 
         dialogView.findViewById<Button>(R.id.buttonSave).setOnClickListener {
             val quantity = if (radioOne.isChecked) 1 else 2
-
             val hour1 = timePicker1.hour
             val minute1 = timePicker1.minute
             val time1 = String.format("%02d:%02d", hour1, minute1)

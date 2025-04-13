@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.databinding.ItemTestResultBinding
 import com.example.driveremote.models.Results
 
-class TestResultAdapter(private val results: List<Results>) : RecyclerView.Adapter<TestResultAdapter.ResultsViewHolder>() {
+class TestResultAdapter(val results: List<Results>) : RecyclerView.Adapter<TestResultAdapter.ResultsViewHolder>() {
 
     inner class ResultsViewHolder(private val binding: ItemTestResultBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(result: Results) {

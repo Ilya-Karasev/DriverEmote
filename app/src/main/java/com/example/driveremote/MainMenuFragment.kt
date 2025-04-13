@@ -29,6 +29,7 @@ import java.util.Date
 import java.util.Locale
 import androidx.work.*
 import com.example.driveremote.utils.TestReminderWorker
+import java.text.ParseException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -217,11 +218,6 @@ class MainMenuFragment : Fragment() {
                     binding.buttonTest.text = "Пройти тест"
                     binding.buttonTest.setBackgroundColor(resources.getColor(R.color.green, null))
                 }
-            } else {
-                // Если водитель не найден, по умолчанию делаем кнопку активной
-                binding.buttonTest.isEnabled = true
-                binding.buttonTest.text = "Пройти тест"
-                binding.buttonTest.setBackgroundColor(resources.getColor(R.color.green, null))
             }
         }
     }
@@ -234,39 +230,55 @@ class MainMenuFragment : Fragment() {
             val driver = driverDao.getDriverById(userId)
             val testingTimes = driver?.testingTime ?: return@launch
 
+            val workManager = WorkManager.getInstance(requireContext())
             val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
             val now = Calendar.getInstance()
 
             testingTimes.forEach { timeString ->
-                val calendar = Calendar.getInstance().apply {
-                    time = formatter.parse(timeString) ?: return@forEach
-                    set(Calendar.SECOND, 0)
-                    set(Calendar.MILLISECOND, 0)
-                    set(Calendar.YEAR, now.get(Calendar.YEAR))
-                    set(Calendar.MONTH, now.get(Calendar.MONTH))
-                    set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
-
-                    if (before(now)) {
-                        add(Calendar.DAY_OF_MONTH, 1)
-                    }
+                if (timeString.isEmpty()) {
+                    Log.e("TestReminderSetup", "Skipping empty testing time for userId: $userId")
+                    return@forEach // Пропускаем пустое время
                 }
 
-                val delay = calendar.timeInMillis - System.currentTimeMillis()
+                val tag = "test_reminder_${userId}_$timeString"
 
-                val inputData = Data.Builder()
-                    .putInt("userId", userId)
-                    .putString("time", timeString)
-                    .build()
+                // Отменяем предыдущие задачи с этим тегом
+                workManager.cancelAllWorkByTag(tag)
 
-                val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
-                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                    .setInputData(inputData)
-                    .addTag("test_reminder_${userId}_$timeString")
-                    .build()
+                try {
+                    // Планируем следующее уведомление только для тех случаев, когда оно действительно должно быть
+                    val calendar = Calendar.getInstance().apply {
+                        time = formatter.parse(timeString) ?: return@forEach
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                        set(Calendar.YEAR, now.get(Calendar.YEAR))
+                        set(Calendar.MONTH, now.get(Calendar.MONTH))
+                        set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
 
-                WorkManager.getInstance(requireContext()).enqueue(workRequest)
+                        if (before(now)) {
+                            add(Calendar.DAY_OF_MONTH, 1)
+                        }
+                    }
 
-                Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
+                    val delay = calendar.timeInMillis - System.currentTimeMillis()
+
+                    val inputData = Data.Builder()
+                        .putInt("userId", userId)
+                        .putString("time", timeString)
+                        .build()
+
+                    val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
+                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                        .setInputData(inputData)
+                        .addTag(tag) // теперь тег точно используется и управляется
+                        .build()
+
+                    workManager.enqueue(workRequest)
+
+                    Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
+                } catch (e: ParseException) {
+                    Log.e("TestReminderSetup", "Error parsing time: $timeString", e)
+                }
             }
         }
     }

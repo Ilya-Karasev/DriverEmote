@@ -10,12 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentEnterBinding
 import com.example.driveremote.models.AppDatabase
-import com.example.driveremote.models.Results
+import com.example.driveremote.models.Post
 import com.example.driveremote.models.TestUsers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class EnterFragment : Fragment() {
     private var _binding: FragmentEnterBinding? = null
@@ -34,23 +31,31 @@ class EnterFragment : Fragment() {
 
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
-        val resultsDao = db.resultsDao()
+        val managerDao = db.managerDao() // Получаем managerDao
+
+        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
         binding.imageEnterIcon.setOnClickListener {
-            val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-            val userEmail = sharedPreferences.getString("email", null)
+            val userId = sharedPreferences.getInt("userId", -1)
 
-            if (userEmail != null) {
-                findNavController().navigate(R.id.action_enterFragment_to_mainMenuFragment)
-            } else {
-                findNavController().navigate(R.id.action_enterFragment_to_signInFragment)
+            lifecycleScope.launch {
+                val user = userDao.getUserById(userId)
+                if (user != null) {
+                    if (user.post == Post.РУКОВОДИТЕЛЬ) {
+                        findNavController().navigate(R.id.action_enterFragment_to_managerMenuFragment)
+                    } else if (user.post == Post.ВОДИТЕЛЬ) {
+                        findNavController().navigate(R.id.action_enterFragment_to_mainMenuFragment)
+                    }
+                } else {
+                    sharedPreferences.edit().clear().apply()
+                    findNavController().navigate(R.id.action_enterFragment_to_signInFragment)
+                }
             }
         }
 
         lifecycleScope.launch {
             val driverDao = db.driverDao() // Получаем driverDao
-            TestUsers.insertTestUsers(requireContext(), userDao, driverDao)
-            val user = userDao.getAllUsers().firstOrNull()
+            TestUsers.insertTestUsers(requireContext(), userDao, driverDao, managerDao)
         }
     }
 

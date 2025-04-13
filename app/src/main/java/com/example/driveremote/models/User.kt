@@ -39,7 +39,7 @@ object TestUsers {
         User(2, "Петров", "Петр", "Петрович", 40, Post.РУКОВОДИТЕЛЬ, "manager@example.com", "manager123")
     )
 
-    suspend fun insertTestUsers(context: Context, userDao: UserDao, driverDao: DriverDao) {
+    suspend fun insertTestUsers(context: Context, userDao: UserDao, driverDao: DriverDao, managerDao: ManagerDao) {
         if (userDao.getAllUsers().isEmpty()) {
             users.forEach { userDao.insertUser(it) }
         }
@@ -55,6 +55,19 @@ object TestUsers {
                     quantity = 1
                 )
                 driverDao.insertDriver(testDriver)
+            }
+        }
+
+        // Добавляем менеджера с пустым списком сотрудников (employeesList)
+        val managerUser = users.find { it.post == Post.РУКОВОДИТЕЛЬ }
+        managerUser?.let {
+            val existingManager = managerDao.getManagerById(it.id)
+            if (existingManager == null) {
+                val manager = Manager(
+                    user = it,
+                    employeesList = emptyList() // Пустой список сотрудников
+                )
+                managerDao.insertManager(manager)
             }
         }
 
