@@ -19,7 +19,7 @@ interface ApiService {
     companion object {
         fun create(): ApiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/") // Укажи реальный IP-адрес сервера
+                .baseUrl("http://10.0.2.2:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(ApiService::class.java)

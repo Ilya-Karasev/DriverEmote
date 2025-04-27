@@ -63,9 +63,26 @@ class ProfileFragment : Fragment() {
         binding.profileIcon.setImageResource(iconResId)
 
         binding.profileInfo.text = """
-        Возраст: $age год(а) / лет
-        Эл. почта: $email
-    """.trimIndent()
+               Возраст: $age год(а) / лет
+                Эл. почта: $email
+            """.trimIndent()
+
+        // ДОБАВЛЯЕМ ЗАГРУЗКУ СТАТУСА
+        if (post == "ВОДИТЕЛЬ") {
+            val db = AppDatabase.getDatabase(requireContext())
+            val driverDao = db.driverDao()
+            val userId = sharedPreferences.getInt("userId", -1)
+
+            if (userId != -1) {
+                lifecycleScope.launch {
+                    val driver = driverDao.getDriverById(userId)
+                    val status = driver?.status ?: "Неизвестно"
+                    binding.profileStatus.text = "Статус: $status"
+                }
+            }
+        } else {
+            binding.profileStatus.visibility = View.GONE // Скрываем статус для руководителей
+        }
 
         binding.iconLeft.setOnClickListener {
             requireActivity().finish()

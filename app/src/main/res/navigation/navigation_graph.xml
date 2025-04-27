@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_mainMenuFragment_to_searchFragment"
             app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_mainMenuFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"/>
     </fragment>
 
     <fragment

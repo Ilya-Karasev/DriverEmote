@@ -1,5 +1,6 @@
 package com.example.driveremote
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.example.driveremote.databinding.FragmentSignUpBinding
 import kotlinx.coroutines.launch
 import android.util.Patterns
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Manager
@@ -23,6 +25,8 @@ import com.example.driveremote.models.User
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
+
+    private var selectedPost: Post? = null // Выбранная роль
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,14 +42,7 @@ class SignUpFragment : Fragment() {
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
         val driverDao = db.driverDao()
-        val managerDao = db.managerDao() // Получаем доступ к DAO для менеджеров
-
-        val postAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            Post.values().map { it.name }
-        )
-        binding.spinnerPost.adapter = postAdapter
+        val managerDao = db.managerDao()
 
         val textFields = listOf(
             binding.editTextSurName,
@@ -62,14 +59,12 @@ class SignUpFragment : Fragment() {
             }
         }
 
-        binding.spinnerPost.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                updateRegisterButtonState()
-            }
+        binding.buttonDriver.setOnClickListener {
+            selectPost(Post.ВОДИТЕЛЬ)
+        }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                updateRegisterButtonState()
-            }
+        binding.buttonManager.setOnClickListener {
+            selectPost(Post.РУКОВОДИТЕЛЬ)
         }
 
         binding.viewRegister.setOnClickListener {
@@ -77,9 +72,14 @@ class SignUpFragment : Fragment() {
             val firstName = binding.editTextFirstName.text.toString().trim()
             val fatherName = binding.editTextFatherName.text.toString().trim()
             val age = binding.editTextAge.text.toString().toIntOrNull() ?: 0
-            val post = Post.valueOf(binding.spinnerPost.selectedItem.toString())
+            val post = selectedPost
             val email = binding.editTextEmail.text.toString().trim()
             val password = binding.editTextPassword.text.toString().trim()
+
+            if (post == null) {
+                Toast.makeText(requireContext(), "Выберите роль", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             if (!isValidEmail(email)) {
                 Toast.makeText(requireContext(), "Некорректный email", Toast.LENGTH_SHORT).show()
@@ -103,10 +103,8 @@ class SignUpFragment : Fragment() {
 
             lifecycleScope.launch {
                 userDao.insertUser(user)
-                // Получаем созданного пользователя с помощью email и пароля
                 val createdUser = userDao.getUserByEmailAndPassword(email, password)
 
-                // Если пользователь — водитель, создаем соответствующую запись в Driver
                 if (createdUser != null && createdUser.post == Post.ВОДИТЕЛЬ) {
                     val driver = Driver(
                         id = createdUser.id,
@@ -117,11 +115,10 @@ class SignUpFragment : Fragment() {
                     driverDao.insertDriver(driver)
                 }
 
-                // Если пользователь — руководитель, создаем соответствующую запись в Manager
                 if (createdUser != null && createdUser.post == Post.РУКОВОДИТЕЛЬ) {
                     val manager = Manager(
                         user = createdUser,
-                        employeesList = emptyList() // Пустой список сотрудников
+                        employeesList = emptyList()
                     )
                     managerDao.insertManager(manager)
                 }
@@ -134,6 +131,43 @@ class SignUpFragment : Fragment() {
         binding.viewBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        updateRegisterButtonState()
+    }
+
+    private fun selectPost(post: Post) {
+        selectedPost = post
+        updatePostButtons()
+        updateRegisterButtonState()
+    }
+
+    private fun updatePostButtons() {
+        val green = ContextCompat.getColor(requireContext(), R.color.dark_green)
+        val white = ContextCompat.getColor(requireContext(), R.color.white)
+
+        if (selectedPost == Post.ВОДИТЕЛЬ) {
+            binding.buttonDriver.apply {
+                backgroundTintList = ColorStateList.valueOf(green)
+                setTextColor(white)
+                isEnabled = false
+            }
+            binding.buttonManager.apply {
+                backgroundTintList = ColorStateList.valueOf(white)
+                setTextColor(green)
+                isEnabled = true
+            }
+        } else if (selectedPost == Post.РУКОВОДИТЕЛЬ) {
+            binding.buttonManager.apply {
+                backgroundTintList = ColorStateList.valueOf(green)
+                setTextColor(white)
+                isEnabled = false
+            }
+            binding.buttonDriver.apply {
+                backgroundTintList = ColorStateList.valueOf(white)
+                setTextColor(green)
+                isEnabled = true
+            }
+        }
     }
 
     private fun updateRegisterButtonState() {
@@ -143,13 +177,16 @@ class SignUpFragment : Fragment() {
         val ageValid = binding.editTextAge.text?.toString()?.toIntOrNull() != null
         val emailValid = isValidEmail(binding.editTextEmail.text?.toString() ?: "")
         val passwordValid = (binding.editTextPassword.text?.length ?: 0) >= 6
-        val postSelected = binding.spinnerPost.selectedItem != null
+        val postSelected = selectedPost != null
 
         val allFieldsFilled = surName && firstName && fatherName && ageValid && emailValid && passwordValid && postSelected
 
         binding.viewRegister.isEnabled = allFieldsFilled
-        binding.viewRegister.setBackgroundResource(
-            if (allFieldsFilled) R.color.green else R.color.gray
+        binding.textRegisterButton.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                if (allFieldsFilled) R.color.dark_green else R.color.gray
+            )
         )
     }
 

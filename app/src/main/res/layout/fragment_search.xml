@@ -13,15 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/green"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="16dp"/>
+        app:layout_constraintHeight_percent="0.075"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Левая иконка -->
     <ImageView
         android:id="@+id/iconLeft"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:contentDescription="Левая иконка"
         android:src="@drawable/exit_white"
@@ -32,8 +31,8 @@
     <!-- Правая иконка -->
     <ImageView
         android:id="@+id/iconRight"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="Правая иконка"
         android:src="@drawable/logout_white"
@@ -41,57 +40,69 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/top_bar" />
 
-    <!-- Поисковая строка -->
     <LinearLayout
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/edit_text_border"
-        android:paddingHorizontal="12dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/top_bar"
-        android:textColor="@color/black"
-        android:layout_margin="8dp">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_search"
-            app:tint="@android:color/black" />
-
-        <EditText
-            android:id="@+id/editTextSearch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Поиск"
-            android:background="@android:color/transparent"
-            android:paddingStart="8dp"
-            android:inputType="text"
-            android:textColor="@color/black"/>
-    </LinearLayout>
-
-    <!-- Разделительная черта -->
-    <View
-        android:id="@+id/borderline"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/gray"
-        app:layout_constraintBottom_toTopOf="@id/recyclerViewUsers"
-        app:layout_constraintTop_toBottomOf="@id/search_bar" />
-
-    <!-- Список пользователей -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewUsers"
-        android:layout_width="match_parent"
+        android:id="@+id/contentContainer"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/borderline"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"
-        android:textColor="@color/black"
-        android:layout_margin="8dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Поисковая строка -->
+        <LinearLayout
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/edit_text_border"
+            android:paddingHorizontal="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/top_bar"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="@android:color/black" />
+
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Поиск"
+                android:background="@android:color/transparent"
+                android:paddingStart="8dp"
+                android:inputType="text"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <!-- Разделительная черта -->
+        <View
+            android:id="@+id/borderline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@id/recyclerViewUsers"
+            app:layout_constraintTop_toBottomOf="@id/search_bar" />
+
+        <!-- Список пользователей -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewUsers"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/borderline"
+            app:layout_constraintBottom_toTopOf="@id/bottom_bar"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
 
     <!-- Нижняя зелёная панель -->
     <LinearLayout
@@ -100,7 +111,8 @@
         android:layout_height="0dp"
         android:background="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.1">
+        app:layout_constraintHeight_percent="0.075"
+        android:elevation="8dp">
 
         <!-- Левая часть: Вернуться -->
         <!-- Для водителя -->
@@ -119,9 +131,9 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="2dp"
                     android:src="@drawable/tests_white" />
 
                 <TextView
@@ -130,7 +142,7 @@
                     android:gravity="center"
                     android:text="Тесты"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>
@@ -151,10 +163,10 @@
                 android:layout_gravity="center">
 
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/users_white"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="2dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -190,10 +202,10 @@
 
                 <ImageView
                     android:id="@+id/icon_search"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/search_green"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="2dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -201,7 +213,7 @@
                     android:gravity="center"
                     android:text="Поиск"
                     android:textColor="@color/green"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>
@@ -226,10 +238,10 @@
 
                 <ImageView
                     android:id="@+id/icon_profile"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/profile_white"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="2dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -237,7 +249,7 @@
                     android:gravity="center"
                     android:text="Профиль"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>

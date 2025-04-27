@@ -1,128 +1,198 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/light_gray">
 
     <!-- Верхняя зелёная панель -->
-    <View
+    <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/green"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Результаты теста"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/top_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/top_bar" />
-
-    <!-- Время завершения теста -->
-    <TextView
-        android:id="@+id/text_time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:gravity="center"
-        android:text="Время завершения: --:--:--"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_bar" />
+        android:paddingVertical="12dp"
+        tools:ignore="MissingConstraints">
 
-    <!-- Количество набранных баллов -->
-    <TextView
-        android:id="@+id/text_emotional_exhaustion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Эмоциональное истощение: 0 баллов"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/icon_emotional_exhaustion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_time" />
-
-    <!-- Иконка для Эмоционального истощения -->
-    <ImageView
-        android:id="@+id/icon_emotional_exhaustion"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="Hint icon for emotional exhaustion"
-        android:src="@drawable/hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_emotional_exhaustion" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DriverMonitor"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/text_depersonalization"
-        android:layout_width="wrap_content"
+        android:id="@+id/test_completed"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Деперсонализация: 0 баллов"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/icon_depersonalization"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_emotional_exhaustion" />
-
-    <!-- Иконка для Деперсонализации -->
-    <ImageView
-        android:id="@+id/icon_depersonalization"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="Hint icon for depersonalization"
-        android:src="@drawable/hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_depersonalization" />
-
-    <TextView
-        android:id="@+id/text_personal_achievement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Редукция личных достижений: 0 баллов"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/icon_personal_achievement"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_depersonalization" />
-
-    <!-- Иконка для Редукции личных достижений -->
-    <ImageView
-        android:id="@+id/icon_personal_achievement"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="Hint icon for personal achievement"
-        android:src="@drawable/hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_personal_achievement" />
-
-    <TextView
-        android:id="@+id/text_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Вы набрали 0 баллов"
-        android:textColor="@color/black"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Тестирование завершено!"
+        android:textColor="@color/dark_green"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_personal_achievement" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/test_completed">
+
+        <!-- Время завершения теста -->
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:text="Дата и время завершения:\n--.--.----, --:--"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/top_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Блок с результатами -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/results_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@id/text_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Эмоциональное истощение -->
+            <TextView
+                android:id="@+id/text_emotional_exhaustion_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Эмоциональное истощение"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_emotional_exhaustion_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="@id/text_emotional_exhaustion_label"
+                app:layout_constraintEnd_toStartOf="@id/icon_emotional_exhaustion"
+                app:layout_constraintBottom_toBottomOf="@id/text_emotional_exhaustion_label"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:id="@+id/icon_emotional_exhaustion"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hint"
+                android:contentDescription="Подсказка по эмоциональному истощению"
+                app:layout_constraintTop_toTopOf="@id/text_emotional_exhaustion_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/text_emotional_exhaustion_label"/>
+
+            <!-- Деперсонализация -->
+            <TextView
+                android:id="@+id/text_depersonalization_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Деперсонализация"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/text_emotional_exhaustion_label"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="24dp"/>
+
+            <TextView
+                android:id="@+id/text_depersonalization_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="@id/text_depersonalization_label"
+                app:layout_constraintEnd_toStartOf="@id/icon_depersonalization"
+                app:layout_constraintBottom_toBottomOf="@id/text_depersonalization_label"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:id="@+id/icon_depersonalization"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hint"
+                android:contentDescription="Подсказка по деперсонализации"
+                app:layout_constraintTop_toTopOf="@id/text_depersonalization_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/text_depersonalization_label"/>
+
+            <!-- Редукция личных достижений -->
+            <TextView
+                android:id="@+id/text_personal_achievement_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Редукция личных достижений"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/text_depersonalization_label"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="24dp"/>
+
+            <TextView
+                android:id="@+id/text_personal_achievement_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="@id/text_personal_achievement_label"
+                app:layout_constraintEnd_toStartOf="@id/icon_personal_achievement"
+                app:layout_constraintBottom_toBottomOf="@id/text_personal_achievement_label"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:id="@+id/icon_personal_achievement"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hint"
+                android:contentDescription="Подсказка по редукции личных достижений"
+                app:layout_constraintTop_toTopOf="@id/text_personal_achievement_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/text_personal_achievement_label"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Общее количество баллов -->
+        <TextView
+            android:id="@+id/text_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вы набрали 0 баллов"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@id/results_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </LinearLayout>
 
     <!-- Нижняя зелёная панель -->
     <View
@@ -131,21 +201,22 @@
         android:layout_height="0dp"
         android:background="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.1" />
+        app:layout_constraintHeight_percent="0.075"/>
 
-    <!-- Кнопка "Вернуться в меню" -->
+    <!-- Кнопка Вернуться в меню -->
     <TextView
         android:id="@+id/button_back_to_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
         android:text="Вернуться в меню"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="@id/bottom_bar"
         app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bottom_bar" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

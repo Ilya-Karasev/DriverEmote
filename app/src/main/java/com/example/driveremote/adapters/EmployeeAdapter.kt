@@ -3,6 +3,7 @@ package com.example.driveremote.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
@@ -37,11 +38,16 @@ class EmployeeAdapter(
         private val nameTextView = view.findViewById<TextView>(R.id.textName)
         private val ageTextView = view.findViewById<TextView>(R.id.textAge)
         private val emailTextView = view.findViewById<TextView>(R.id.textEmail)
+        private val iconView = view.findViewById<ImageView>(R.id.iconRole)
 
         fun bind(employee: User) {
             nameTextView.text = "${employee.surName} ${employee.firstName} ${employee.fatherName}"
-            ageTextView.text = "${employee.age} год(а) / лет"
+            ageTextView.text = "${employee.age} год(а)/лет"
             emailTextView.text = employee.email
+
+            iconView.setImageResource(
+                if (employee.post.name == "ВОДИТЕЛЬ") R.drawable.driver else R.drawable.manager
+            )
         }
     }
 }

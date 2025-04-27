@@ -6,32 +6,37 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <!-- Верхняя панель -->
+    <!-- Верхняя зелёная панель -->
     <View
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/green"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHeight_percent="0.075"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- Левая и правая иконки -->
-    <ImageView
+    <!-- Левая иконка -->
+    <TextView
         android:id="@+id/iconLeft"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:src="@drawable/exit_white"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="DriverMonitor"
         app:layout_constraintBottom_toBottomOf="@id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/top_bar" />
 
+    <!-- Правая иконка -->
     <ImageView
         android:id="@+id/iconRight"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/logout_white"
+        android:contentDescription="Правая иконка"
+        android:src="@drawable/settings"
         app:layout_constraintBottom_toBottomOf="@id/top_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/top_bar" />
@@ -81,7 +86,7 @@
         android:layout_height="0dp"
         android:background="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.1">
+        app:layout_constraintHeight_percent="0.075">
 
         <!-- Левая часть: Вернуться -->
         <FrameLayout
@@ -100,10 +105,10 @@
 
                 <ImageView
                     android:id="@+id/icon_test"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/users_green"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="2dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -138,10 +143,10 @@
 
                 <ImageView
                     android:id="@+id/icon_search"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/search_white"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="2dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -149,7 +154,7 @@
                     android:gravity="center"
                     android:text="Поиск"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>
@@ -174,10 +179,10 @@
 
                 <ImageView
                     android:id="@+id/icon_profile"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/profile_white"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="2dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -185,7 +190,7 @@
                     android:gravity="center"
                     android:text="Профиль"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>

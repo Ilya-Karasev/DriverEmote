@@ -31,8 +31,7 @@ class EnterFragment : Fragment() {
 
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
-        val managerDao = db.managerDao() // Получаем managerDao
-
+        val managerDao = db.managerDao()
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
         binding.imageEnterIcon.setOnClickListener {
@@ -41,10 +40,9 @@ class EnterFragment : Fragment() {
             lifecycleScope.launch {
                 val user = userDao.getUserById(userId)
                 if (user != null) {
-                    if (user.post == Post.РУКОВОДИТЕЛЬ) {
-                        findNavController().navigate(R.id.action_enterFragment_to_managerMenuFragment)
-                    } else if (user.post == Post.ВОДИТЕЛЬ) {
-                        findNavController().navigate(R.id.action_enterFragment_to_mainMenuFragment)
+                    when (user.post) {
+                        Post.РУКОВОДИТЕЛЬ -> findNavController().navigate(R.id.action_enterFragment_to_managerMenuFragment)
+                        Post.ВОДИТЕЛЬ -> findNavController().navigate(R.id.action_enterFragment_to_mainMenuFragment)
                     }
                 } else {
                     sharedPreferences.edit().clear().apply()
@@ -54,7 +52,7 @@ class EnterFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            val driverDao = db.driverDao() // Получаем driverDao
+            val driverDao = db.driverDao()
             TestUsers.insertTestUsers(requireContext(), userDao, driverDao, managerDao)
         }
     }

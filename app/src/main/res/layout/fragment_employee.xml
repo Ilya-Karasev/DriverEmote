@@ -12,14 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/green"
-        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHeight_percent="0.075"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Левая иконка -->
     <ImageView
         android:id="@+id/iconLeft"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:contentDescription="Левая иконка"
         android:src="@drawable/exit_white"
@@ -30,8 +30,8 @@
     <!-- Правая иконка -->
     <ImageView
         android:id="@+id/iconRight"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="Правая иконка"
         android:src="@drawable/logout_white"
@@ -64,7 +64,7 @@
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="24sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/profileIcon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -74,8 +74,11 @@
             <!-- Иконка профиля -->
             <ImageView
                 android:id="@+id/profileIcon"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:padding="8dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_background"
                 app:layout_constraintBottom_toTopOf="@id/profileInfo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -88,7 +91,7 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profileIcon" />
@@ -101,6 +104,17 @@
                 android:background="@color/gray"
                 android:layout_marginVertical="16dp"/>
 
+            <TextView
+                android:id="@+id/tapGrpah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="График результатов"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
+
             <!-- RecyclerView для отображения результатов тестирования -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -111,10 +125,22 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/lineChart"
                     android:layout_width="wrap_content"
-                    android:layout_height="300dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:minWidth="380dp" />
+                    android:minWidth="330dp"
+                    android:minHeight="300dp" />
             </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/GrpahHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Для удобства просмотра переверните телефон"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:textColor="@color/gray"
+                android:gravity="center"
+                android:layout_marginTop="8dp"/>
 
             <!-- Разделительная черта -->
             <View
@@ -123,6 +149,17 @@
                 android:layout_height="1dp"
                 android:background="@color/gray"
                 android:layout_marginVertical="16dp"/>
+
+            <TextView
+                android:id="@+id/ResultText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Результаты подчинённого"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewResults"
@@ -138,7 +175,7 @@
         android:layout_height="0dp"
         android:background="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.1" />
+        app:layout_constraintHeight_percent="0.075" />
 
     <TextView
         android:id="@+id/textExit"

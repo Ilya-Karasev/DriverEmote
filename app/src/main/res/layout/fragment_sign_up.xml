@@ -4,174 +4,193 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/light_gray">
 
-    <!-- Верхняя полоса -->
-    <View
-        android:id="@+id/top_bar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/green"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Регистрация"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/top_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/top_bar" />
+        <TextView
+            android:id="@+id/textRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Регистрация"
+            android:textColor="@color/dark_green"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:layout_constraintBottom_toTopOf="@id/bottom_bar">
+        <TextView
+            android:id="@+id/enter_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Введите данные для авторизации"
+            android:textColor="@color/dark_green"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/editTextSurName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:padding="8dp"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Фамилия" />
+
+                <EditText
+                    android:id="@+id/editTextFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:padding="8dp"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Имя" />
+
+                <EditText
+                    android:id="@+id/editTextFatherName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:padding="8dp"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Отчество" />
+
+                <EditText
+                    android:id="@+id/editTextAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/edit_text_border"
+                    android:padding="8dp"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/black"
+                    android:hint="Возраст"
+                    android:inputType="number" />
+
+                <LinearLayout
+                    android:id="@+id/layoutRoleSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:paddingHorizontal="4dp"
+                    android:background="@drawable/circle_green_background">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonDriver"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="ВОДИТЕЛЬ"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/dark_green" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonManager"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.25"
+                        android:layout_height="wrap_content"
+                        android:text="РУКОВОДИТЕЛЬ"
+                        android:textStyle="bold"
+                        android:textColor="@color/dark_green"
+                        app:backgroundTint="@color/white" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:padding="8dp"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+
+                <EditText
+                    android:id="@+id/editTextPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:padding="8dp"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/black"
+                    android:hint="Пароль"
+                    android:inputType="textPassword" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Нижняя панель с разделением -->
         <LinearLayout
+            android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginVertical="24dp">
 
-            <EditText
-                android:id="@+id/editTextSurName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp"
-                android:hint="Фамилия" />
+            <!-- Левая часть: Вернуться -->
+            <FrameLayout
+                android:id="@+id/viewBack"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1">
 
-            <EditText
-                android:id="@+id/editTextFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp"
-                android:hint="Имя" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Вернуться"
+                    android:textColor="@color/dark_green"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
-            <EditText
-                android:id="@+id/editTextFatherName"
-                android:layout_width="match_parent"
+            <!-- Правая часть: Зарегистрироваться (цвет меняется при активации) -->
+            <FrameLayout
+                android:id="@+id/viewRegister"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp"
-                android:hint="Отчество" />
+                android:layout_weight="2">
 
-            <EditText
-                android:id="@+id/editTextAge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:hint="Возраст"
-                android:inputType="number" />
-
-            <Spinner
-                android:id="@+id/spinnerPost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp" />
-
-            <EditText
-                android:id="@+id/editTextEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp"
-                android:hint="Email"
-                android:inputType="textEmailAddress" />
-
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:textColorHint="@color/green"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp"
-                android:hint="Пароль"
-                android:inputType="textPassword" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/textRegisterButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Зарегистрироваться"
+                    android:backgroundTint="@color/dark_green"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
         </LinearLayout>
-    </ScrollView>
-
-    <!-- Нижняя панель с разделением -->
-    <LinearLayout
-        android:id="@+id/bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.1">
-
-        <!-- Левая часть: Вернуться -->
-        <FrameLayout
-            android:id="@+id/viewBack"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/green">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Вернуться"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-
-        <!-- Разделительная белая линия -->
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/white" />
-
-        <!-- Правая часть: Зарегистрироваться (цвет меняется при активации) -->
-        <FrameLayout
-            android:id="@+id/viewRegister"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/gray">
-
-            <TextView
-                android:id="@+id/textRegisterButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Зарегистрироваться"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </FrameLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

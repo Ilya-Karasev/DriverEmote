@@ -32,10 +32,13 @@ import com.example.driveremote.utils.TestReminderWorker
 import java.text.ParseException
 import java.util.*
 import java.util.concurrent.TimeUnit
+import android.content.res.Configuration
+import androidx.core.content.ContextCompat
+import com.github.mikephil.charting.components.Legend
 
 class MainMenuFragment : Fragment() {
     private var _binding: FragmentMainMenuBinding? = null
-    private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
+    private val binding get() = _binding!!
 
     private lateinit var resultsAdapter: TestResultAdapter
     private var resultsList: List<Results> = emptyList()
@@ -51,153 +54,154 @@ class MainMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Слушаем результат из ResultsFragment
-        parentFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) { _, bundle ->
-            val refresh = bundle.getBoolean("refresh", false)
-            if (refresh) {
-                val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-                val userId = sharedPreferences.getInt("userId", -1)
-
-                if (userId != -1) {
-                    loadResults(userId)
-                    loadLastTestDate(userId)
-                    updateTestButtonState(userId)
-                    scheduleTestReminders(userId)
-                } else {
-                    binding.textTest.text = "Вы ещё не проходили тестирование"
-                }
-            }
-        }
-
-        // Инициализация остальной части экрана
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
 
         if (userId != -1) {
+            loadUserInfo(userId)
             loadResults(userId)
-            loadLastTestDate(userId)
             updateTestButtonState(userId)
             scheduleTestReminders(userId)
-        } else {
-            binding.textTest.text = "Вы ещё не проходили тестирование"
         }
 
-        binding.iconLeft.setOnClickListener {
-            requireActivity().finish()
+        binding.settingsIcon.setOnClickListener {
+//            findNavController().navigate(R.id.action_mainMenuFragment_to_settingsFragment)
         }
 
-        binding.iconRight.setOnClickListener {
+        binding.testButton.setOnClickListener {
+            if (binding.testButton.isEnabled) {
+                findNavController().navigate(R.id.action_mainMenuFragment_to_testFragment)
+            }
+        }
+
+        binding.logoutButton.setOnClickListener {
             sharedPreferences.edit().clear().apply()
             findNavController().navigate(R.id.action_mainMenuFragment_to_signInFragment)
         }
 
-        binding.buttonTest.setOnClickListener {
-            val navController = findNavController()
-            if (navController.currentDestination?.id == R.id.mainMenuFragment) {
-                navController.navigate(R.id.action_mainMenuFragment_to_testFragment)
-            }
-        }
-
-        binding.view2.setOnClickListener {
+        binding.viewSearch.setOnClickListener {
             findNavController().navigate(R.id.action_mainMenuFragment_to_searchFragment)
         }
 
-        binding.view3.setOnClickListener {
-            findNavController().navigate(R.id.action_mainMenuFragment_to_profileFragment)
+        binding.viewRequests.setOnClickListener {
+            findNavController().navigate(R.id.action_mainMenuFragment_to_requestsFragment)
         }
     }
 
-    private fun loadLastTestDate(userId: Int) {
+    private fun loadUserInfo(userId: Int) {
+        val db = AppDatabase.getDatabase(requireContext())
+        val userDao = db.userDao()
+        val driverDao = db.driverDao()
+
+        lifecycleScope.launch {
+            val user = userDao.getUserById(userId)
+            val driver = driverDao.getDriverById(userId)
+            user?.let {
+                binding.driverName.text = "${it.surName} ${it.firstName} ${it.fatherName}"
+                binding.driverAge.text = "${it.age} лет"
+                binding.driverEmail.text = it.email
+                if (driver != null) {
+                    binding.driverStatus.text = driver.status
+
+                    // Окрашивание статуса в зависимости от значения
+                    val statusColor = when (driver.status) {
+                        "Норма" -> "#00B147"
+                        "Внимание" -> "#FF7700"
+                        "Критическое" -> "#FF0000"
+                        else -> "#000000"
+                    }
+                    binding.driverStatus.setTextColor(Color.parseColor(statusColor))
+                }
+            }
+        }
+    }
+
+    private fun loadResults(userId: Int) {
         val db = AppDatabase.getDatabase(requireContext())
         val resultsDao = db.resultsDao()
 
         lifecycleScope.launch {
-            val lastResult = resultsDao.getResultsByUser(userId).firstOrNull()
-            binding.textTest.text = if (lastResult != null) {
-                "Последний раз вы проходили тестирование ${lastResult.testDate}"
-            } else {
-                "Вы ещё не проходили тестирование"
+            val allResults = resultsDao.getResultsByUser(userId)
+
+            // Фильтрация только последних 7 дней
+            val sevenDaysAgo = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, -7)
+            }.time
+
+            resultsList = allResults.filter { result ->
+                val datePart = result.testDate.split(" ")[0]
+                val resultDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(datePart)
+                resultDate != null && resultDate.after(sevenDaysAgo)
             }
+
+            setupChart()
         }
     }
 
     private fun setupChart() {
         val chart = binding.lineChart
 
-        // Настройки оси X (дата тестирования)
         val xAxis = chart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.granularity = 1f
         xAxis.setDrawGridLines(false)
 
-        // Настройки оси Y
         chart.axisRight.isEnabled = false
         chart.description.isEnabled = false
         chart.setPinchZoom(true)
 
-        // Проверка наличия данных
+        val legend = chart.legend
+        legend.isEnabled = true
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        legend.orientation = Legend.LegendOrientation.HORIZONTAL
+        legend.setDrawInside(false)
+        legend.setWordWrapEnabled(true)
+        legend.textSize = 16f
+
         if (resultsList.isEmpty()) {
             chart.clear()
             return
         }
 
-        val entriesBurnout = ArrayList<Entry>()
-        val entriesDepersonalization = ArrayList<Entry>()
-        val entriesReduction = ArrayList<Entry>()
-        val dateLabels = ArrayList<String>()
+        val entriesBurnout = mutableListOf<Entry>()
+        val entriesDepersonalization = mutableListOf<Entry>()
+        val entriesReduction = mutableListOf<Entry>()
+        val dateLabels = mutableListOf<String>()
 
-        // Сортировка результатов по дате тестирования
-        val sortedResultsList = resultsList.sortedBy { it.testDate }
+        val sortedResults = resultsList.sortedBy { it.testDate }
 
-        sortedResultsList.forEachIndexed { index, result ->
-            // Форматирование даты в формат "dd.MM"
-            val date = result.testDate.split(" ")[0] // Отделяем дату от времени
-            val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault()).format(SimpleDateFormat("yyyy-MM-dd").parse(date) ?: Date())
+        sortedResults.forEachIndexed { index, result ->
+            val date = result.testDate.split(" ")[0]
+            val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault())
+                .format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
             dateLabels.add(formattedDate)
 
-            // Добавляем данные для графика
             entriesBurnout.add(Entry(index.toFloat(), result.emotionalExhaustionScore.toFloat()))
             entriesDepersonalization.add(Entry(index.toFloat(), result.depersonalizationScore.toFloat()))
             entriesReduction.add(Entry(index.toFloat(), result.personalAchievementScore.toFloat()))
         }
 
-        // Настройка меток на оси X
         xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
 
-        val datasetBurnout = LineDataSet(entriesBurnout, "Эмоц-ое истощение").apply {
+        val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
             valueTextColor = Color.BLACK
+            setDrawValues(false)
         }
-
-        val datasetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсон-ция").apply {
+        val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
             valueTextColor = Color.BLACK
+            setDrawValues(false)
         }
-
-        val datasetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
+        val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
             valueTextColor = Color.BLACK
+            setDrawValues(false)
         }
 
-        chart.data = LineData(datasetBurnout, datasetDepersonalization, datasetReduction)
+        chart.data = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
         chart.invalidate()
-    }
-
-    // Вызов setupChart() после загрузки данных
-    private fun loadResults(userId: Int) {
-        val db = AppDatabase.getDatabase(requireContext())
-        val resultsDao = db.resultsDao()
-
-        lifecycleScope.launch {
-            resultsList = resultsDao.getResultsByUser(userId)
-            resultsAdapter = TestResultAdapter(resultsList)
-            binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerViewResults.adapter = resultsAdapter
-            resultsAdapter.notifyDataSetChanged() // Уведомляем адаптер об изменениях
-
-            // Отображаем график
-            setupChart()
-        }
     }
 
     private fun updateTestButtonState(userId: Int) {
@@ -208,15 +212,15 @@ class MainMenuFragment : Fragment() {
             val driver = driverDao.getDriverById(userId)
             if (driver != null) {
                 if (driver.isCompleted) {
-                    // Тест уже пройден — деактивируем кнопку
-                    binding.buttonTest.isEnabled = false
-                    binding.buttonTest.text = "Вы уже проходили тестирование"
-                    binding.buttonTest.setBackgroundColor(Color.GRAY)
+                    binding.testButton.isEnabled = false
+                    binding.testButton.text = "Следующее тестирование в ${driver.testingTime?.firstOrNull() ?: "неизвестно"}"
+                    binding.testButton.setBackgroundColor(Color.GRAY)
                 } else {
-                    // Тест ещё не пройден — активируем кнопку
-                    binding.buttonTest.isEnabled = true
-                    binding.buttonTest.text = "Пройти тест"
-                    binding.buttonTest.setBackgroundColor(resources.getColor(R.color.green, null))
+                    binding.testButton.isEnabled = true
+                    binding.testButton.text = "Пройти тестирование"
+                    binding.testButton.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.green)
+                    )
                 }
             }
         }

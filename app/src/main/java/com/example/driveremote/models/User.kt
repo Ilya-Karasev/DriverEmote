@@ -74,11 +74,11 @@ object TestUsers {
         val resultsDao = AppDatabase.getDatabase(context).resultsDao()
 
         if (resultsDao.getResultsByUser(1).isEmpty()) {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("dd.MM.yyyy — HH:mm", Locale.getDefault())
 
             val result1 = Results(
                 userId = 1,
-                testDate = dateFormat.format(Date()), // Текущая дата и время
+                testDate = dateFormat.format(Date()),
                 emotionalExhaustionScore = 30,
                 depersonalizationScore = 20,
                 personalAchievementScore = 15,
@@ -86,8 +86,7 @@ object TestUsers {
             )
             resultsDao.insertResult(result1)
 
-            // Добавляем ещё один тестовый результат с разницей в один день
-            val yesterday = Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000) // Вчерашняя дата
+            val yesterday = Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
             val result2 = Results(
                 userId = 1,
                 testDate = dateFormat.format(yesterday),
@@ -97,6 +96,16 @@ object TestUsers {
                 totalScore = 75
             )
             resultsDao.insertResult(result2)
+
+            // После добавления результатов обновляем статус водителя
+            val driverDao = AppDatabase.getDatabase(context).driverDao()
+            updateDriverStatus(context, driverDao, resultsDao, driverId = 1)
         }
+    }
+
+    suspend fun updateDriverStatus(context: Context, driverDao: DriverDao, resultsDao: ResultsDao, driverId: Int) {
+        val results = resultsDao.getResultsByUser(driverId)
+        val newStatus = Driver.calculateStatus(results)
+        driverDao.updateStatus(driverId, newStatus)
     }
 }

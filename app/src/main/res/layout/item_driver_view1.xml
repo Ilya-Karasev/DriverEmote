@@ -7,9 +7,9 @@
     android:gravity="center">
 
     <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="2dp"
         android:src="@drawable/tests_white" />
 
     <TextView

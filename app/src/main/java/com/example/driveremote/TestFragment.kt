@@ -54,7 +54,7 @@ class TestFragment : Fragment() {
         setResultsButtonState(false)
         radioGroups.forEach { setupRadioGroupListener(it) }
 
-        binding.textExit.setOnClickListener {
+        binding.buttonGetResults.setOnClickListener {
             if (answeredQuestions == totalQuestions) {
                 val bundle = Bundle().apply {
                     putInt("totalScore", totalScore)
@@ -65,7 +65,6 @@ class TestFragment : Fragment() {
                 findNavController().navigate(R.id.action_testFragment_to_resultsFragment, bundle)
             }
         }
-
     }
 
     private fun setupRadioGroupListener(radioGroup: RadioGroup) {
@@ -110,14 +109,21 @@ class TestFragment : Fragment() {
             }
         }
 
-        binding.textAppName.text = "Отвечено вопросов: $answeredQuestions/$totalQuestions"
         setResultsButtonState(answeredQuestions == totalQuestions)
     }
 
     private fun setResultsButtonState(isEnabled: Boolean) {
-        binding.bottomBar.isEnabled = isEnabled
-        binding.bottomBar.setBackgroundColor(if (isEnabled) Color.rgb(76, 175, 80) else Color.GRAY)
+        binding.buttonGetResults.isEnabled = isEnabled
+        binding.buttonGetResults.setBackgroundColor(
+            if (isEnabled) Color.rgb(0x00, 0xB1, 0x47) else Color.GRAY
+        )
+        binding.buttonGetResults.text = if (isEnabled) {
+            "Получить результаты"
+        } else {
+            "Отвечено вопросов: $answeredQuestions/$totalQuestions"
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

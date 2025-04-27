@@ -19,13 +19,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentResultsBinding
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Results
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ResultsFragment : Fragment() {
     private var _binding: FragmentResultsBinding? = null
-    private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,18 +44,19 @@ class ResultsFragment : Fragment() {
         val depersonalizationScore = arguments?.getInt("depersonalizationScore") ?: 0
         val personalAchievementScore = arguments?.getInt("personalAchievementScore") ?: 0
 
-        val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        val currentTime = SimpleDateFormat("dd.MM.yyyy — HH:mm", Locale.getDefault()).format(Date())
 
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
 
-        binding.textTime.text = "Дата и время завершения: $currentTime"
+        // Устанавливаем текстовые значения
+        binding.textTime.text = "Дата и время завершения:\n$currentTime"
         binding.textScore.text = "Вы набрали $totalScore баллов"
-        binding.textEmotionalExhaustion.text = "Эмоциональное истощение: $emotionalExhaustionScore"
-        binding.textDepersonalization.text = "Деперсонализация: $depersonalizationScore"
-        binding.textPersonalAchievement.text = "Редукция личных достижений: $personalAchievementScore"
+        binding.textEmotionalExhaustionScore.text = emotionalExhaustionScore.toString()
+        binding.textDepersonalizationScore.text = depersonalizationScore.toString()
+        binding.textPersonalAchievementScore.text = personalAchievementScore.toString()
 
-        // Добавление обработчика нажатий на иконки подсказки
+        // Подсказки
         binding.iconEmotionalExhaustion.setOnClickListener {
             showTooltip("Эмоциональное истощение проявляется в снижении эмоционального тонуса, повышенной психической истощаемости и аффективной лабильности, равнодушием, неспособностью испытывать сильные эмоции, как положительные, так и отрицательные, утраты интереса и позитивных чувств к окружающим, ощущении «пресыщенности» работой, неудовлетворенностью жизнью в целом.")
         }
@@ -67,18 +69,46 @@ class ResultsFragment : Fragment() {
             showTooltip("Редукция профессиональных достижений проявляется в негативном оценивании себя, результатов своего труда и возможностей для профессионального развития. Высокое значение этого показателя отражает тенденцию к негативной оценке своей компетентности и продуктивности и, как следствие, снижение профессиональной мотивации, нарастание негативизма в отношении служебных обязанностей, в лимитировании своей вовлеченности в профессию за счет перекладывания обязанностей и ответственности на других людей, к изоляции от окружающих, отстраненность и неучастие, избегание работы сначала психологически, а затем физически.")
         }
 
+        // Кнопка возврата в меню
         binding.buttonBackToMenu.setOnClickListener {
             if (userId != -1) {
                 val db = AppDatabase.getDatabase(requireContext())
                 val driverDao = db.driverDao()
+                val resultsDao = db.resultsDao()
 
                 lifecycleScope.launch {
                     val driver = driverDao.getDriverById(userId)
                     if (driver != null) {
                         driverDao.updateCompletionStatus(driver.id, true)
 
-                        saveTestResult(userId, currentTime, emotionalExhaustionScore, depersonalizationScore, personalAchievementScore, totalScore)
+                        // Сохраняем результат теста
+                        saveTestResult(
+                            userId,
+                            currentTime,
+                            emotionalExhaustionScore,
+                            depersonalizationScore,
+                            personalAchievementScore,
+                            totalScore
+                        )
 
+                        // Задержка для надёжности
+                        delay(100)
+
+                        // Пересчёт статуса водителя
+                        val results = resultsDao.getResultsByUser(userId)
+                        val maxScore = 132
+                        val averageScore = results.map { it.totalScore }.average()
+                        val testsCount = results.size
+
+                        val newStatus = when {
+                            testsCount >= 7 && averageScore > maxScore * 0.75 -> "Критическое"
+                            testsCount >= 1 && averageScore > maxScore * 0.5 -> "Внимание"
+                            else -> "Норма"
+                        }
+
+                        driverDao.updateStatus(driver.id, newStatus)
+
+                        // Переход в меню
                         setFragmentResult("requestKey", bundleOf("refresh" to true))
                         findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
                     }
@@ -95,63 +125,50 @@ class ResultsFragment : Fragment() {
 
         val tooltipText = dialog.findViewById<TextView>(R.id.tooltip_text)
 
-        // Создаем SpannableString для выделения текста
         val spannableMessage = SpannableString(message)
 
-        // Пример выделения слова "деперсонализация" жирным
-        val startIndex1 = message.indexOf("Деперсонализация")
-        val endIndex1 = startIndex1 + "Деперсонализация".length
-        if (startIndex1 != -1) {
-            spannableMessage.setSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex1,
-                endIndex1,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
+        val termsToHighlight = listOf(
+            "Эмоциональное истощение",
+            "Деперсонализация",
+            "Редукция профессиональных достижений"
+        )
 
-        val startIndex2 = message.indexOf("Эмоциональное истощение")
-        val endIndex2 = startIndex2 + "Эмоциональное истощение".length
-        if (startIndex2 != -1) {
-            spannableMessage.setSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex2,
-                endIndex2,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-
-        val startIndex3 = message.indexOf("Редукция профессиональных достижений")
-        val endIndex3 = startIndex3 + "Редукция профессиональных достижений".length
-        if (startIndex3 != -1) {
-            spannableMessage.setSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex3,
-                endIndex3,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        for (term in termsToHighlight) {
+            val startIndex = message.indexOf(term)
+            if (startIndex != -1) {
+                spannableMessage.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    startIndex + term.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
 
         tooltipText.text = spannableMessage
-
-        dialog.setCanceledOnTouchOutside(true)
         dialog.show()
     }
 
-    private fun saveTestResult(userId: Int, testDate: String, emotionalExhaustionScore: Int, depersonalizationScore: Int, personalAchievementScore: Int, totalScore: Int) {
+    private fun saveTestResult(
+        userId: Int,
+        dateTime: String,
+        emotionalExhaustionScore: Int,
+        depersonalizationScore: Int,
+        personalAchievementScore: Int,
+        totalScore: Int
+    ) {
         val db = AppDatabase.getDatabase(requireContext())
-        val resultsDao = db.resultsDao()
+        val result = Results(
+            userId = userId,
+            testDate = dateTime,
+            emotionalExhaustionScore = emotionalExhaustionScore,
+            depersonalizationScore = depersonalizationScore,
+            personalAchievementScore = personalAchievementScore,
+            totalScore = totalScore
+        )
 
         lifecycleScope.launch {
-            val result = Results(
-                userId = userId,
-                testDate = testDate,
-                emotionalExhaustionScore = emotionalExhaustionScore,
-                depersonalizationScore = depersonalizationScore,
-                personalAchievementScore = personalAchievementScore,
-                totalScore = totalScore
-            )
-            resultsDao.insertResult(result)
+            db.resultsDao().insertResult(result)
         }
     }
 

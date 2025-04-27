@@ -2,30 +2,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/light_gray">
 
-    <View
+    <!-- Верхняя зелёная панель -->
+    <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/green"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_app_name"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Отвечено вопросов: 0/22"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/top_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/top_bar" />
+        android:background="@color/green"
+        android:paddingVertical="12dp"
+        app:layout_constraintHeight_percent="0.075"
+        android:gravity="center"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DriverMonitor"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -34,13 +38,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:layout_constraintBottom_toTopOf="@id/bottom_bar">
+        app:layout_constraintBottom_toTopOf="@id/buttonGetResults">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
 
             <!-- Вопрос 1 -->
             <TextView
@@ -56,12 +61,12 @@
                 android:id="@+id/question1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <!-- Вопрос 2 -->
@@ -71,20 +76,18 @@
                 android:text="2. После работы я чувствую себя как «выжатый лимон»."
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
+                android:textColor="@color/black" />
 
             <RadioGroup
                 android:id="@+id/question2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <!-- Вопрос 3 -->
@@ -94,20 +97,18 @@
                 android:text="3. Утром я чувствую усталость и нежелание идти на работу."
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
                 android:textColor="@color/black"/>
 
             <RadioGroup
                 android:id="@+id/question3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -123,12 +124,12 @@
                 android:id="@+id/question4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -144,12 +145,12 @@
                 android:id="@+id/question5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -165,12 +166,12 @@
                 android:id="@+id/question6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -186,12 +187,12 @@
                 android:id="@+id/question7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -207,12 +208,12 @@
                 android:id="@+id/question8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -228,12 +229,12 @@
                 android:id="@+id/question9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -249,12 +250,12 @@
                 android:id="@+id/question10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -270,12 +271,12 @@
                 android:id="@+id/question11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -291,12 +292,12 @@
                 android:id="@+id/question12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -312,12 +313,12 @@
                 android:id="@+id/question13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q13" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -333,12 +334,12 @@
                 android:id="@+id/question14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q14" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -354,12 +355,12 @@
                 android:id="@+id/question15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q15" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -375,12 +376,12 @@
                 android:id="@+id/question16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q16" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -396,12 +397,12 @@
                 android:id="@+id/question17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -417,12 +418,12 @@
                 android:id="@+id/question18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q18" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -438,12 +439,12 @@
                 android:id="@+id/question19"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q19" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -459,12 +460,12 @@
                 android:id="@+id/question20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
@@ -480,18 +481,18 @@
                 android:id="@+id/question21"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q21" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="22. В последнее время мне кажется, что коллеги и подчиненные вс чаще перекладывают на меня груз своих проблем и обязанностей."
+                android:text="22. В последнее время мне кажется, что коллеги и подчиненные всё чаще перекладывают на меня груз своих проблем и обязанностей."
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -501,37 +502,31 @@
                 android:id="@+id/question22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_sometimes_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_often_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_very_often_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black"/>
-                <RadioButton android:id="@+id/radio_every_day_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black"/>
+                <RadioButton android:id="@+id/radio_never_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_sometimes_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_often_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_very_often_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="18sp"/>
+                <RadioButton android:id="@+id/radio_every_day_q22" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="18sp"/>
             </RadioGroup>
         </LinearLayout>
     </ScrollView>
 
-    <View
-        android:id="@+id/bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/green"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.1" />
-
-    <TextView
-        android:id="@+id/textExit"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonGetResults"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="Получить результаты"
+        android:backgroundTint="@color/gray"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:text="Отвечено вопросов: 0/22"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:cornerRadius="16dp"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bottom_bar" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.075" />
 </androidx.constraintlayout.widget.ConstraintLayout>
