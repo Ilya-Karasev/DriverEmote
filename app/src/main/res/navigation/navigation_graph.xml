@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_mainMenuFragment_to_requestsFragment"
             app:destination="@id/requestsFragment"/>
+        <action
+            android:id="@+id/action_mainMenuFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
     </fragment>
 
     <fragment
@@ -109,6 +112,9 @@
         <action
             android:id="@+id/action_profileFragment_to_requestsFragment"
             app:destination="@id/requestsFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
     </fragment>
 
     <fragment
@@ -126,8 +132,11 @@
             android:id="@+id/action_searchFragment_to_profileFragment"
             app:destination="@id/profileFragment"/>
         <action
-            android:id="@+id/action_searchFragment_to_signInFragment"
-            app:destination="@id/signInFragment"/>
+            android:id="@+id/action_searchFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"/>
+        <action
+            android:id="@+id/action_searchFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
     </fragment>
 
     <fragment
@@ -147,6 +156,9 @@
         <action
             android:id="@+id/action_managerMenuFragment_to_employeeFragment"
             app:destination="@id/employeeFragment"/>
+        <action
+            android:id="@+id/action_managerMenuFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
     </fragment>
 
     <fragment
@@ -160,6 +172,9 @@
         <action
             android:id="@+id/action_requestsFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
+        <action
+            android:id="@+id/action_requestsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
     </fragment>
 
     <fragment
@@ -173,5 +188,27 @@
         <action
             android:id="@+id/action_employeeFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
+        <action
+            android:id="@+id/action_employeeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.driveremote.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
+        <action
+            android:id="@+id/action_settingsFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+        <action
+            android:id="@+id/action_settingsFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_settingsFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"/>
     </fragment>
 </navigation>

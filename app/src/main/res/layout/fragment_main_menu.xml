@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/green"
         android:paddingVertical="12dp"
         app:layout_constraintHeight_percent="0.075"
@@ -178,8 +178,8 @@
                             android:id="@+id/lineChart"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minWidth="300dp"
-                            android:minHeight="300dp" />
+                            android:minWidth="295dp"
+                            android:minHeight="295dp" />
                     </HorizontalScrollView>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -199,7 +199,7 @@
     <View
         android:id="@+id/borderline"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="@color/border_gray"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
 

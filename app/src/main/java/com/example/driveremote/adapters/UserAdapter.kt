@@ -1,5 +1,10 @@
 package com.example.driveremote.adapters
 
+import android.graphics.Color
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +27,7 @@ class UserAdapter(
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val iconRole: ImageView = view.findViewById(R.id.iconRole)
+        val iconInitials: TextView = view.findViewById(R.id.iconRole)
         val textName: TextView = view.findViewById(R.id.textName)
         val buttonAdd: ImageView = view.findViewById(R.id.buttonAdd)
     }
@@ -40,10 +45,22 @@ class UserAdapter(
         val context = holder.itemView.context
         val isAlreadyEmployee = employeesList.contains(user.id)
 
-        holder.textName.text = "${user.surName}\n${user.firstName}\n${user.fatherName}"
-        holder.iconRole.setImageResource(
-            if (user.post == Post.ВОДИТЕЛЬ) R.drawable.driver else R.drawable.manager
-        )
+        // Формируем инициалы
+        val initials = "${user.surName.firstOrNull() ?: ""}${user.firstName.firstOrNull() ?: ""}".uppercase()
+
+        // Генерируем насыщенный цвет для текста
+        val textColor = generateRandomColor(saturation = 0.8f, brightness = 0.9f)
+        // Генерируем бледный цвет для фона
+        val backgroundColor = adjustAlpha(textColor, 0.15f)
+
+        holder.iconInitials.text = initials
+        holder.iconInitials.setBackgroundColor(backgroundColor)
+        holder.iconInitials.setTextColor(textColor)
+        holder.iconInitials.textAlignment = View.TEXT_ALIGNMENT_CENTER
+
+        val fullName = "${user.surName} ${user.firstName} ${user.fatherName}"
+
+        holder.textName.text = fullName
 
         val shouldShowAddButton =
             ((currentUserPost == Post.ВОДИТЕЛЬ && user.post == Post.РУКОВОДИТЕЛЬ) ||
@@ -69,8 +86,7 @@ class UserAdapter(
                     ).show()
                 }
             } else {
-                holder.buttonAdd.setImageResource(android.R.drawable.ic_input_add)
-                holder.buttonAdd.setBackgroundResource(R.drawable.small_circle_border)
+                holder.buttonAdd.setImageResource(R.drawable.add)
                 holder.buttonAdd.setOnClickListener {
                     onAddClicked(user)
                 }
@@ -78,6 +94,20 @@ class UserAdapter(
         } else {
             holder.buttonAdd.visibility = View.GONE
         }
+    }
+
+    private fun generateRandomColor(saturation: Float, brightness: Float): Int {
+        val hue = (0..360).random().toFloat()
+        val hsv = floatArrayOf(hue, saturation, brightness)
+        return Color.HSVToColor(hsv)
+    }
+
+    private fun adjustAlpha(color: Int, factor: Float): Int {
+        val alpha = (Color.alpha(color) * factor).toInt()
+        val red = Color.red(color)
+        val green = Color.green(color)
+        val blue = Color.blue(color)
+        return Color.argb(alpha, red, green, blue)
     }
 
     fun filterList(filteredUsers: List<User>) {

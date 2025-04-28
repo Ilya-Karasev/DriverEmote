@@ -27,6 +27,13 @@ class TestReminderWorker(
             val lastNotificationTime = prefs.getLong("lastNotificationTime_${userId}_$timeString", 0L)
             val now = System.currentTimeMillis()
 
+            // Проверяем, включены ли уведомления для пользователя
+            val notificationsEnabled = prefs.getBoolean("notificationsEnabled_$userId", true)
+            if (!notificationsEnabled) {
+                Log.d("TestReminderWorker", "Notifications are disabled for user $userId")
+                return Result.success()
+            }
+
             // Проверка — если меньше 1 часа с последнего уведомления, не показываем снова
             if (now - lastNotificationTime < 60 * 60 * 1000) {
                 Log.d("TestReminderWorker", "Notification suppressed (already sent recently)")
@@ -52,10 +59,8 @@ class TestReminderWorker(
                 // Устанавливаем следующее напоминание
                 scheduleNextReminder(context, userId, timeString)
             }
-
             return Result.success()
         }
-
         return Result.failure()
     }
 

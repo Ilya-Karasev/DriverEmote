@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeColor="@color/green"
+    app:strokeColor="@color/border_gray"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -18,37 +17,36 @@
         android:gravity="center_vertical">
 
         <!-- Иконка -->
-        <ImageView
+        <TextView
             android:id="@+id/iconRole"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="Role icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="AA"
             android:background="@drawable/circle_background"
-            android:padding="8dp"
-            android:src="@drawable/driver" />
+            android:clipToOutline="true"
+            android:layout_marginEnd="16dp" />
 
         <!-- Имя -->
         <TextView
             android:id="@+id/textName"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Иванов\nИван\nИванович"
+            android:gravity="center_vertical"
+            android:text="Иванов Иван Иванович"
             android:textColor="@color/black"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
 
         <!-- Кнопка "+" или ожидание -->
         <ImageView
             android:id="@+id/buttonAdd"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:src="@android:drawable/ic_input_add"
-            android:background="@drawable/small_circle_border"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/add"
             android:contentDescription="Добавить"
-            android:padding="6dp"
             android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

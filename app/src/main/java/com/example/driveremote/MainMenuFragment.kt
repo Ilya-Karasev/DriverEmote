@@ -86,6 +86,10 @@ class MainMenuFragment : Fragment() {
         binding.viewRequests.setOnClickListener {
             findNavController().navigate(R.id.action_mainMenuFragment_to_requestsFragment)
         }
+
+        binding.settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_mainMenuFragment_to_settingsFragment)
+        }
     }
 
     private fun loadUserInfo(userId: Int) {

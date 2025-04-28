@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/light_gray">
 
     <!-- Верхняя зелёная панель -->
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/green"
+        android:paddingVertical="12dp"
         app:layout_constraintHeight_percent="0.075"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:ignore="MissingConstraints">
 
-    <!-- Левая иконка -->
-    <ImageView
-        android:id="@+id/iconLeft"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="Левая иконка"
-        android:src="@drawable/exit_white"
-        app:layout_constraintBottom_toBottomOf="@id/top_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/top_bar" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DriverMonitor"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="16dp"/>
 
-    <!-- Правая иконка -->
-    <ImageView
-        android:id="@+id/iconRight"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="Правая иконка"
-        android:src="@drawable/logout_white"
-        app:layout_constraintBottom_toBottomOf="@id/top_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/top_bar" />
+        <ImageView
+            android:id="@+id/settings_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/settings"
+            android:contentDescription="Настройки"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="16dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/contentContainer"
@@ -67,7 +69,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_search"
+                android:src="@drawable/search_gray"
                 app:tint="@android:color/black" />
 
             <EditText
@@ -76,21 +78,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Поиск"
-                android:background="@android:color/transparent"
+                android:textColorHint="@color/gray"
+                android:background="@color/white"
                 android:paddingStart="8dp"
                 android:inputType="text"
                 android:textColor="@color/black"/>
         </LinearLayout>
-
-        <!-- Разделительная черта -->
-        <View
-            android:id="@+id/borderline"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/gray"
-            app:layout_constraintBottom_toTopOf="@id/recyclerViewUsers"
-            app:layout_constraintTop_toBottomOf="@id/search_bar" />
 
         <!-- Список пользователей -->
         <androidx.recyclerview.widget.RecyclerView
@@ -104,155 +97,87 @@
             android:layout_marginTop="8dp"/>
     </LinearLayout>
 
+    <View
+        android:id="@+id/borderline"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/border_gray"
+        app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
+
     <!-- Нижняя зелёная панель -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/green"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.075"
-        android:elevation="8dp">
+        app:layout_constraintHeight_percent="0.075">
 
-        <!-- Левая часть: Вернуться -->
-        <!-- Для водителя -->
-        <FrameLayout
-            android:id="@+id/view1_driver"
+        <LinearLayout
+            android:id="@+id/view_menu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:visibility="gone">
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/home_gray"/>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:text="Меню"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="2dp"
-                    android:src="@drawable/tests_white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Тесты"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </FrameLayout>
-
-        <!-- Для руководителя -->
-        <FrameLayout
-            android:id="@+id/view1_manager"
+        <LinearLayout
+            android:id="@+id/view_search"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:visibility="gone">
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/search_green"/>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_gravity="center">
+                android:text="Поиск"
+                android:textColor="@color/green"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/users_white"
-                    android:layout_marginBottom="2dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Подчинённые"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </FrameLayout>
-
-        <!-- Разделительная белая линия -->
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/white" />
-
-        <!-- Правая часть -->
-        <FrameLayout
-            android:id="@+id/view2"
+        <LinearLayout
+            android:id="@+id/view_requests"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/border_green">
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/tests_gray"/>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:id="@+id/icon_search"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/search_green"
-                    android:layout_marginBottom="2dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Поиск"
-                    android:textColor="@color/green"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </FrameLayout>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/white" />
-
-        <FrameLayout
-            android:id="@+id/view3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:id="@+id/icon_profile"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/profile_white"
-                    android:layout_marginBottom="2dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Профиль"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </FrameLayout>
+                android:text="Запросы"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -56,20 +56,6 @@ class SearchFragment : Fragment() {
                 // Получаем все Request из базы
                 allRequests = requestDao.getAllRequests()
                 setupAdapter()
-
-                if (currentUserPost == Post.ВОДИТЕЛЬ) {
-                    binding.view1Driver.visibility = View.VISIBLE
-                    binding.view1Manager.visibility = View.GONE
-                    binding.view1Driver.setOnClickListener {
-                        findNavController().navigate(R.id.action_searchFragment_to_mainMenuFragment)
-                    }
-                } else if (currentUserPost == Post.РУКОВОДИТЕЛЬ) {
-                    binding.view1Manager.visibility = View.VISIBLE
-                    binding.view1Driver.visibility = View.GONE
-                    binding.view1Manager.setOnClickListener {
-                        findNavController().navigate(R.id.action_searchFragment_to_managerMenuFragment)
-                    }
-                }
             }
         }
 
@@ -82,17 +68,20 @@ class SearchFragment : Fragment() {
             adapter.filterList(filtered)
         }
 
-        binding.iconLeft.setOnClickListener {
-            requireActivity().finish()
+        binding.viewMenu.setOnClickListener {
+            if (currentUserPost == Post.ВОДИТЕЛЬ) {
+                findNavController().navigate(R.id.action_searchFragment_to_mainMenuFragment)
+            } else if (currentUserPost == Post.РУКОВОДИТЕЛЬ) {
+                findNavController().navigate(R.id.action_searchFragment_to_managerMenuFragment)
+            }
         }
 
-        binding.iconRight.setOnClickListener {
-            sharedPreferences.edit().clear().apply()
-            findNavController().navigate(R.id.action_searchFragment_to_signInFragment)
+        binding.viewRequests.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_requestsFragment)
         }
 
-        binding.view3.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_profileFragment)
+        binding.settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_settingsFragment)
         }
     }
 
@@ -115,7 +104,6 @@ class SearchFragment : Fragment() {
                     Toast.makeText(requireContext(), "Запрос отправлен", Toast.LENGTH_SHORT).show()
                 }
             }
-
             binding.recyclerViewUsers.adapter = adapter
         }
     }
