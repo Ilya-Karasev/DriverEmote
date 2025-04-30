@@ -20,7 +20,14 @@ data class Results(
     val depersonalizationScore: Int,
     val personalAchievementScore: Int,
     val totalScore: Int
-)
+) {
+    val status: String
+        get() = when {
+            totalScore >= 106 -> "Критическое" // 80% от 132
+            totalScore >= 66 -> "Внимание"     // 50% от 132
+            else -> "Норма"
+        }
+}
 
 @Dao
 interface ResultsDao {

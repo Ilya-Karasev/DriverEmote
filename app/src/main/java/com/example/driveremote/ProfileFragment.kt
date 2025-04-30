@@ -1,24 +1,36 @@
 package com.example.driveremote
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.databinding.FragmentProfileBinding
 import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Results
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
+
+    private lateinit var resultsAdapter: TestResultAdapter
+    private var resultsList: List<Results> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,150 +44,108 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", -1)
 
-        val surname = sharedPreferences.getString("surName", "Неизвестно") ?: "Неизвестно"
-        val firstName = sharedPreferences.getString("firstName", "Неизвестно") ?: "Неизвестно"
-        val fatherName = sharedPreferences.getString("fatherName", "Неизвестно") ?: "Неизвестно"
-        val age = sharedPreferences.getInt("age", 0)
-        val email = sharedPreferences.getString("email", "Не указан") ?: "Не указан"
-        val post = sharedPreferences.getString("post", "Неизвестно") ?: "Неизвестно"
-
-        // Подключение нужного layout в зависимости от роли
-        val inflater = layoutInflater
-        val view1Container = binding.view1
-        view1Container.removeAllViews()
-
-        if (post == "ВОДИТЕЛЬ") {
-            val driverView = inflater.inflate(R.layout.item_driver_view1, view1Container, false)
-            view1Container.addView(driverView)
-            binding.buttonTime.visibility = View.VISIBLE // Показываем кнопку для водителя
-        } else if (post == "РУКОВОДИТЕЛЬ") {
-            val managerView = inflater.inflate(R.layout.item_manager_view1, view1Container, false)
-            view1Container.addView(managerView)
-            binding.buttonTime.visibility = View.GONE // Скрываем кнопку для руководителя
-        } else {
-            binding.buttonTime.visibility = View.GONE // На всякий случай скрываем кнопку, если роль не определена
+        if (userId != -1) {
+            loadResults(userId)
         }
 
-        binding.profileFullName.text = "$surname $firstName $fatherName"
-
-        val iconResId = if (post == "РУКОВОДИТЕЛЬ") R.drawable.manager else R.drawable.driver
-        binding.profileIcon.setImageResource(iconResId)
-
-        binding.profileInfo.text = """
-               Возраст: $age год(а) / лет
-                Эл. почта: $email
-            """.trimIndent()
-
-        // ДОБАВЛЯЕМ ЗАГРУЗКУ СТАТУСА
-        if (post == "ВОДИТЕЛЬ") {
-            val db = AppDatabase.getDatabase(requireContext())
-            val driverDao = db.driverDao()
-            val userId = sharedPreferences.getInt("userId", -1)
-
-            if (userId != -1) {
-                lifecycleScope.launch {
-                    val driver = driverDao.getDriverById(userId)
-                    val status = driver?.status ?: "Неизвестно"
-                    binding.profileStatus.text = "Статус: $status"
-                }
-            }
-        } else {
-            binding.profileStatus.visibility = View.GONE // Скрываем статус для руководителей
+        binding.viewMenu.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_mainMenuFragment)
         }
 
-        binding.iconLeft.setOnClickListener {
-            requireActivity().finish()
-        }
-
-        binding.iconRight.setOnClickListener {
-            sharedPreferences.edit().clear().apply()
-            findNavController().navigate(R.id.action_profileFragment_to_signInFragment)
-        }
-
-        binding.view1.setOnClickListener {
-            if (post == "ВОДИТЕЛЬ") {
-                findNavController().navigate(R.id.action_profileFragment_to_mainMenuFragment)
-            } else if (post == "РУКОВОДИТЕЛЬ") {
-                findNavController().navigate(R.id.action_profileFragment_to_managerMenuFragment)
-            }
-        }
-
-        binding.view2.setOnClickListener {
+        binding.viewSearch.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_searchFragment)
         }
 
-        binding.buttonTime.setOnClickListener {
-            showTimeDialog()
-        }
-
-        binding.buttonRequests.setOnClickListener {
+        binding.viewRequests.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_requestsFragment)
         }
     }
 
-    private fun showTimeDialog() {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_driver_time, null)
+    // Вызов setupChart() после загрузки данных
+    private fun loadResults(userId: Int) {
+        val db = AppDatabase.getDatabase(requireContext())
+        val resultsDao = db.resultsDao()
 
-        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupQuantity)
-        val radioOne = dialogView.findViewById<RadioButton>(R.id.radioOne)
-        val radioTwo = dialogView.findViewById<RadioButton>(R.id.radioTwo)
+        lifecycleScope.launch {
+            resultsList = resultsDao.getResultsByUser(userId)
+            resultsAdapter = TestResultAdapter(resultsList)
+            binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewResults.adapter = resultsAdapter
+            resultsAdapter.notifyDataSetChanged() // Уведомляем адаптер об изменениях
 
-        val layoutTime2 = dialogView.findViewById<View>(R.id.timePicker2)
-        val labelTime2 = dialogView.findViewById<View>(R.id.textTime2Label)
+            // Отображаем график
+            setupChart()
+        }
+    }
 
-        val timePicker1 = dialogView.findViewById<TimePicker>(R.id.timePicker1)
-        val timePicker2 = dialogView.findViewById<TimePicker>(R.id.timePicker2)
+    private fun setupChart() {
+        val chart = binding.lineChart
 
-        timePicker1.setIs24HourView(true)
-        timePicker2.setIs24HourView(true)
+        val xAxis = chart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.setDrawGridLines(false)
 
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val isTwo = checkedId == R.id.radioTwo
-            timePicker2.visibility = if (isTwo) View.VISIBLE else View.GONE
-            labelTime2.visibility = if (isTwo) View.VISIBLE else View.GONE
+        chart.axisRight.isEnabled = false
+        chart.description.isEnabled = false
+        chart.setPinchZoom(true)
+
+        val legend = chart.legend
+        legend.isEnabled = true
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        legend.orientation = Legend.LegendOrientation.HORIZONTAL
+        legend.setDrawInside(false)
+        legend.setWordWrapEnabled(true)
+        legend.textSize = 16f
+
+        if (resultsList.isEmpty()) {
+            chart.clear()
+            return
         }
 
-        val dialog = android.app.AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
+        val entriesBurnout = ArrayList<Entry>()
+        val entriesDepersonalization = ArrayList<Entry>()
+        val entriesReduction = ArrayList<Entry>()
+        val dateLabels = ArrayList<String>()
 
-        dialogView.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
-            dialog.dismiss()
+        // Сортировка результатов по дате тестирования
+        val sortedResultsList = resultsList.sortedBy { it.testDate }
+
+        sortedResultsList.forEachIndexed { index, result ->
+            // Форматирование даты в формат "dd.MM"
+            val date = result.testDate.split(" ")[0] // Отделяем дату от времени
+            val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault()).format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
+            dateLabels.add(formattedDate)
+
+            // Добавляем данные для графика
+            entriesBurnout.add(Entry(index.toFloat(), result.emotionalExhaustionScore.toFloat()))
+            entriesDepersonalization.add(Entry(index.toFloat(), result.depersonalizationScore.toFloat()))
+            entriesReduction.add(Entry(index.toFloat(), result.personalAchievementScore.toFloat()))
         }
 
-        dialogView.findViewById<Button>(R.id.buttonSave).setOnClickListener {
-            val quantity = if (radioOne.isChecked) 1 else 2
-            val hour1 = timePicker1.hour
-            val minute1 = timePicker1.minute
-            val time1 = String.format("%02d:%02d", hour1, minute1)
+        // Настройка меток на оси X
+        xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
 
-            val times = if (quantity == 1) {
-                listOf(time1)
-            } else {
-                val hour2 = timePicker2.hour
-                val minute2 = timePicker2.minute
-                val time2 = String.format("%02d:%02d", hour2, minute2)
-                listOf(time1, time2)
-            }
-
-            val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-            val userId = sharedPreferences.getInt("userId", -1)
-
-            if (userId != -1) {
-                val db = AppDatabase.getDatabase(requireContext())
-                val driverDao = db.driverDao()
-                lifecycleScope.launch {
-                    val driver = driverDao.getDriverById(userId)
-                    if (driver != null) {
-                        driverDao.insertDriver(driver.copy(quantity = quantity, testingTime = times))
-                    }
-                }
-            }
-
-            dialog.dismiss()
+        val datasetBurnout = LineDataSet(entriesBurnout, "Эмоц-ое истощение").apply {
+            color = Color.RED
+            valueTextColor = Color.BLACK
         }
-        dialog.show()
+
+        val datasetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсон-ция").apply {
+            color = Color.BLUE
+            valueTextColor = Color.BLACK
+        }
+
+        val datasetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
+            color = Color.GREEN
+            valueTextColor = Color.BLACK
+        }
+
+        chart.data = LineData(datasetBurnout, datasetDepersonalization, datasetReduction)
+        chart.invalidate()
     }
 
     override fun onDestroyView() {

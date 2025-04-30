@@ -31,6 +31,8 @@ class ManagerMenuFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
         val managerDao = db.managerDao()
@@ -69,21 +71,17 @@ class ManagerMenuFragment : Fragment() {
             }
         }
 
-        binding.iconLeft.setOnClickListener {
-            requireActivity().finish()
-        }
-
-        binding.iconRight.setOnClickListener {
-            sharedPrefs.edit().clear().apply()
-            findNavController().navigate(R.id.action_managerMenuFragment_to_signInFragment)
-        }
-
-        binding.view2.setOnClickListener {
+        binding.viewSearch.setOnClickListener {
             findNavController().navigate(R.id.action_managerMenuFragment_to_searchFragment)
         }
 
-        binding.view3.setOnClickListener {
-            findNavController().navigate(R.id.action_managerMenuFragment_to_profileFragment)
+        binding.viewRequests.setOnClickListener {
+            findNavController().navigate(R.id.action_managerMenuFragment_to_requestsFragment)
+        }
+
+        binding.logoutButton.setOnClickListener {
+            sharedPreferences.edit().clear().apply()
+            findNavController().navigate(R.id.action_managerMenuFragment_to_signInFragment)
         }
     }
 

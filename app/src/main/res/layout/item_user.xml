@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
     app:strokeColor="@color/border_gray"
     app:strokeWidth="1dp">
 
@@ -26,6 +27,7 @@
             android:textColor="@color/black"
             android:text="AA"
             android:background="@drawable/circle_background"
+            android:foreground="@drawable/icon_corners"
             android:clipToOutline="true"
             android:layout_marginEnd="16dp" />
 
@@ -33,12 +35,13 @@
         <TextView
             android:id="@+id/textName"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="Иванов Иван Иванович"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_marginEnd="16dp" />
 
         <!-- Кнопка "+" или ожидание -->
         <ImageView

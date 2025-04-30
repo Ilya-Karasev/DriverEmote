@@ -1,6 +1,7 @@
 package com.example.driveremote.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +11,17 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
 import com.example.driveremote.models.*
+import com.example.driveremote.models.TestUsers.users
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RequestAdapter(
     private var requestList: List<Pair<User, Request>>,
     private val context: Context,
-    private val onDataChanged: () -> Unit // Колбэк для обновления фрагмента
+    private val onDataChanged: () -> Unit,
+    private val currentUserId: Int // передаём ID текущего пользователя
 ) : RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
 
     private val db = AppDatabase.getDatabase(context)
@@ -26,7 +30,7 @@ class RequestAdapter(
     private val managerDao = db.managerDao()
 
     inner class RequestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val icon: ImageView = view.findViewById(R.id.iconRole)
+        val iconInitials: TextView = view.findViewById(R.id.iconRole)
         val name: TextView = view.findViewById(R.id.textName)
         val yesButton: ImageView = view.findViewById(R.id.buttonYes)
         val noButton: ImageView = view.findViewById(R.id.buttonNo)
@@ -38,26 +42,37 @@ class RequestAdapter(
     }
 
     override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
-        val (senderUser, request) = requestList[position]
+        val (user, request) = requestList[position]
+        val context = holder.itemView.context
 
-        holder.name.text = "${senderUser.surName}\n${senderUser.firstName}\n${senderUser.fatherName}"
+        val initials = "${user.surName.firstOrNull() ?: ""}${user.firstName.firstOrNull() ?: ""}".uppercase()
+        val textColor = generateRandomColor(0.8f, 0.9f)
+        val backgroundColor = adjustAlpha(textColor, 0.15f)
 
-        holder.icon.setImageResource(
-            if (senderUser.post.name == "ВОДИТЕЛЬ") R.drawable.driver else R.drawable.manager
-        )
+        holder.iconInitials.text = initials
+        holder.iconInitials.setBackgroundColor(backgroundColor)
+        holder.iconInitials.setTextColor(textColor)
+        holder.iconInitials.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
-        // ❌ Отклонение запроса
+        holder.name.text = "${user.surName} ${user.firstName} ${user.fatherName}"
+
+        // Скрываем кнопки, если пользователь — отправитель запроса
+        if (request.senderId == currentUserId) {
+            holder.yesButton.visibility = View.GONE
+        } else {
+            holder.yesButton.visibility = View.VISIBLE
+        }
+
         holder.noButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 requestDao.deleteRequest(request)
-                CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(context, "Вы отклонили запрос", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Вы удалили / отклонили запрос", Toast.LENGTH_SHORT).show()
                     reloadRequests()
                 }
             }
         }
 
-        // ✅ Принятие запроса
         holder.yesButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val sender = userDao.getUserById(request.senderId)
@@ -77,12 +92,10 @@ class RequestAdapter(
                             updatedList.add(subordinateId)
                         }
 
-                        managerDao.insertManager(
-                            Manager(manager.id, updatedList)
-                        )
+                        managerDao.insertManager(Manager(manager.id, updatedList))
                         requestDao.deleteRequest(request)
 
-                        CoroutineScope(Dispatchers.Main).launch {
+                        withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Вы приняли запрос", Toast.LENGTH_SHORT).show()
                             reloadRequests()
                         }
@@ -103,5 +116,19 @@ class RequestAdapter(
         CoroutineScope(Dispatchers.Main).launch {
             onDataChanged()
         }
+    }
+
+    private fun generateRandomColor(saturation: Float, brightness: Float): Int {
+        val hue = (0..360).random().toFloat()
+        val hsv = floatArrayOf(hue, saturation, brightness)
+        return Color.HSVToColor(hsv)
+    }
+
+    private fun adjustAlpha(color: Int, factor: Float): Int {
+        val alpha = (Color.alpha(color) * factor).toInt()
+        val red = Color.red(color)
+        val green = Color.green(color)
+        val blue = Color.blue(color)
+        return Color.argb(alpha, red, green, blue)
     }
 }

@@ -42,12 +42,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/test_completed">
+        app:layout_constraintTop_toBottomOf="@id/test_completed"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <!-- Время завершения теста -->
         <TextView
@@ -182,10 +182,11 @@
         <!-- Общее количество баллов -->
         <TextView
             android:id="@+id/text_score"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Вы набрали 0 баллов"
             android:textColor="@color/black"
+            android:gravity="center"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
@@ -195,28 +196,16 @@
     </LinearLayout>
 
     <!-- Нижняя зелёная панель -->
-    <View
-        android:id="@+id/bottom_bar"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonBackToMenu"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/green"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.075"/>
-
-    <!-- Кнопка Вернуться в меню -->
-    <TextView
-        android:id="@+id/button_back_to_menu"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
+        android:layout_margin="16dp"
         android:text="Вернуться в меню"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textColor="@color/white"
         android:textStyle="bold"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="@id/bottom_bar"
-        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+        android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.9"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

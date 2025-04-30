@@ -1,73 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
-    card_view:cardCornerRadius="16dp"
-    card_view:cardElevation="6dp"
-    card_view:strokeColor="@color/green"
-    android:background="@android:color/white">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/border_gray"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@android:color/white"
         android:padding="16dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <!-- Аватар / иконка -->
-        <ImageView
+        <!-- Иконка -->
+        <TextView
             android:id="@+id/iconRole"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/driver"
-            android:padding="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="AA"
             android:background="@drawable/circle_background"
-            android:contentDescription="Role icon" />
+            android:foreground="@drawable/icon_corners"
+            android:clipToOutline="true"
+            android:layout_marginEnd="16dp" />
 
-        <!-- Текст -->
-        <LinearLayout
+        <!-- Имя -->
+        <TextView
+            android:id="@+id/textName"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="16dp">
-
-            <TextView
-                android:id="@+id/textName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ФИО"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
-        </LinearLayout>
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Иванов Иван Иванович"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginEnd="16dp" />
 
         <!-- Кнопки -->
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center">
 
             <ImageView
                 android:id="@+id/buttonYes"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/yes_green"
-                android:contentDescription="Принять" />
-
-            <Space
-                android:layout_width="8dp"
-                android:layout_height="match_parent" />
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/yes"
+                android:contentDescription="Принять"
+                android:layout_marginEnd="24dp"/>
 
             <ImageView
                 android:id="@+id/buttonNo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/no_red"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/no"
                 android:contentDescription="Отклонить" />
         </LinearLayout>
     </LinearLayout>

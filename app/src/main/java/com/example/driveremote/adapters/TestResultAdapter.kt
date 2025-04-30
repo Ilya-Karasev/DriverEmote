@@ -1,5 +1,6 @@
 package com.example.driveremote
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +17,19 @@ class TestResultAdapter(val results: List<Results>) : RecyclerView.Adapter<TestR
         fun bind(result: Results) {
             val formattedDate = formatDate(result.testDate)
             binding.textTestDate.text = formattedDate
-            binding.textEmotionalExhaustionScore.text = "Эмоциональное выгорание: ${result.emotionalExhaustionScore}"
-            binding.textDepersonalizationScore.text = "Деперсонализация: ${result.depersonalizationScore}"
-            binding.textPersonalAchievementScore.text = "Редукция личных достижений: ${result.personalAchievementScore}"
-            binding.textTotalScore.text = "Общий балл: ${result.totalScore}"
+            binding.EmotionalExhaustionScore.text = "${result.emotionalExhaustionScore}"
+            binding.DepersonalizationScore.text = "${result.depersonalizationScore}"
+            binding.PersonalAchievementScore.text = "${result.personalAchievementScore}"
+            binding.TotalScore.text = "${result.totalScore}"
+            binding.textStatusTest.text = result.status
+
+            val statusColor = when (result.status) {
+                "Норма" -> Color.parseColor("#00B147")
+                "Внимание" -> Color.parseColor("#FF7700")
+                "Критическое" -> Color.parseColor("#FF0000")
+                else -> Color.BLACK
+            }
+            binding.textStatusTest.setTextColor(statusColor)
         }
 
         private fun formatDate(original: String): String {
@@ -29,7 +39,7 @@ class TestResultAdapter(val results: List<Results>) : RecyclerView.Adapter<TestR
                 val date = parser.parse(original)
                 date?.let { formatter.format(it) } ?: original
             } catch (e: Exception) {
-                original // если формат неожиданен, выводим как есть
+                original
             }
         }
     }

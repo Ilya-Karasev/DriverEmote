@@ -1,7 +1,5 @@
 package com.example.driveremote
 
-import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -43,39 +41,6 @@ class EmployeeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-        if (isLandscape) {
-            // Только график — скрываем остальное
-            binding.topBar.visibility = View.GONE
-            binding.bottomBar.visibility = View.GONE
-            binding.borderline2.visibility = View.GONE
-            binding.GrpahHint.visibility = View.GONE
-            binding.ResultText.visibility = View.GONE
-            binding.tapGrpah.visibility = View.GONE
-            binding.profileIcon.visibility = View.GONE
-            binding.profileFullName.visibility = View.GONE
-            binding.profileInfo.visibility = View.GONE
-            binding.recyclerViewResults.visibility = View.GONE
-            binding.iconLeft.visibility = View.GONE
-            binding.iconRight.visibility = View.GONE
-            binding.textExit.visibility = View.GONE
-        } else {
-            binding.topBar.visibility = View.VISIBLE
-            binding.bottomBar.visibility = View.VISIBLE
-            binding.borderline2.visibility = View.VISIBLE
-            binding.GrpahHint.visibility = View.VISIBLE
-            binding.ResultText.visibility = View.VISIBLE
-            binding.tapGrpah.visibility = View.VISIBLE
-            binding.profileIcon.visibility = View.VISIBLE
-            binding.profileFullName.visibility = View.VISIBLE
-            binding.profileInfo.visibility = View.VISIBLE
-            binding.recyclerViewResults.visibility = View.VISIBLE
-            binding.iconLeft.visibility = View.VISIBLE
-            binding.iconRight.visibility = View.VISIBLE
-            binding.textExit.visibility = View.VISIBLE
-        }
-
         val args = arguments
         val fullName = args?.getString("fullName") ?: "Имя не указано"
         val age = args?.getInt("age") ?: 0
@@ -83,28 +48,17 @@ class EmployeeFragment : Fragment() {
         val post = args?.getString("post") ?: "ДОЛЖНОСТЬ"
         val userId = args?.getInt("userId") ?: -1
 
-        binding.profileFullName.text = fullName
-        binding.profileInfo.text = "Возраст: $age год(а) / лет\nПочта: $email"
-        binding.profileIcon.setImageResource(
-            if (post == "ВОДИТЕЛЬ") R.drawable.driver else R.drawable.manager
-        )
-
         if (userId != -1) {
+            loadUserInfo(userId)
             loadResults(userId)
         }
 
-        binding.iconLeft.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+        binding.viewSearch.setOnClickListener {
+            findNavController().navigate(R.id.action_employeeFragment_to_searchFragment)
         }
 
-        binding.iconRight.setOnClickListener {
-            val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-            sharedPreferences.edit().clear().apply()
-            findNavController().navigate(R.id.action_employeeFragment_to_signInFragment)
-        }
-
-        binding.textExit.setOnClickListener {
-            findNavController().navigate(R.id.action_employeeFragment_to_managerMenuFragment)
+        binding.viewRequests.setOnClickListener {
+            findNavController().navigate(R.id.action_employeeFragment_to_requestsFragment)
         }
     }
 
@@ -189,6 +143,22 @@ class EmployeeFragment : Fragment() {
 
         chart.data = LineData(datasetBurnout, datasetDepersonalization, datasetReduction)
         chart.invalidate()
+    }
+
+    private fun loadUserInfo(userId: Int) {
+        val db = AppDatabase.getDatabase(requireContext())
+        val userDao = db.userDao()
+        val driverDao = db.driverDao()
+
+        lifecycleScope.launch {
+            val user = userDao.getUserById(userId)
+            val driver = driverDao.getDriverById(userId)
+            user?.let {
+                binding.driverName.text = "${it.surName} ${it.firstName} ${it.fatherName}"
+                binding.driverAge.text = "${it.age} лет"
+                binding.driverEmail.text = it.email
+            }
+        }
     }
 
     override fun onDestroyView() {

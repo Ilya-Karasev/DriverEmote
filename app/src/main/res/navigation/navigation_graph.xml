@@ -148,8 +148,8 @@
             android:id="@+id/action_managerMenuFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
         <action
-            android:id="@+id/action_managerMenuFragment_to_profileFragment"
-            app:destination="@id/profileFragment"/>
+            android:id="@+id/action_managerMenuFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"/>
         <action
             android:id="@+id/action_managerMenuFragment_to_searchFragment"
             app:destination="@id/searchFragment"/>
@@ -167,8 +167,14 @@
         android:label="Requests"
         tools:layout="@layout/fragment_requests">
         <action
-            android:id="@+id/action_requestsFragment_to_profileFragment"
-            app:destination="@id/profileFragment"/>
+            android:id="@+id/action_requestsFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+        <action
+            android:id="@+id/action_requestsFragment_to_managerMenuFragment"
+            app:destination="@id/managerMenuFragment"/>
+        <action
+            android:id="@+id/action_requestsFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
         <action
             android:id="@+id/action_requestsFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>
@@ -185,6 +191,12 @@
         <action
             android:id="@+id/action_employeeFragment_to_managerMenuFragment"
             app:destination="@id/managerMenuFragment"/>
+        <action
+            android:id="@+id/action_employeeFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
+        <action
+            android:id="@+id/action_employeeFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"/>
         <action
             android:id="@+id/action_employeeFragment_to_signInFragment"
             app:destination="@id/signInFragment"/>

@@ -10,14 +10,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.databinding.FragmentMainMenuBinding
 import com.example.driveremote.models.AppDatabase
-import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Results
-import com.example.driveremote.utils.NotificationUtils
 import kotlinx.coroutines.launch
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -30,17 +26,13 @@ import java.util.Locale
 import androidx.work.*
 import com.example.driveremote.utils.TestReminderWorker
 import java.text.ParseException
-import java.util.*
 import java.util.concurrent.TimeUnit
-import android.content.res.Configuration
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.components.Legend
 
 class MainMenuFragment : Fragment() {
     private var _binding: FragmentMainMenuBinding? = null
-    private val binding get() = _binding!!
-
-    private lateinit var resultsAdapter: TestResultAdapter
+    private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
     private var resultsList: List<Results> = emptyList()
 
     override fun onCreateView(
@@ -64,8 +56,12 @@ class MainMenuFragment : Fragment() {
             scheduleTestReminders(userId)
         }
 
+        binding.detailsLink.setOnClickListener {
+            findNavController().navigate(R.id.action_mainMenuFragment_to_profileFragment)
+        }
+
         binding.settingsIcon.setOnClickListener {
-//            findNavController().navigate(R.id.action_mainMenuFragment_to_settingsFragment)
+            findNavController().navigate(R.id.action_mainMenuFragment_to_settingsFragment)
         }
 
         binding.testButton.setOnClickListener {

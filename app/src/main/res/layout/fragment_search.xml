@@ -85,16 +85,22 @@
                 android:textColor="@color/black"/>
         </LinearLayout>
 
-        <!-- Список пользователей -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewUsers"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:layout_constraintTop_toBottomOf="@id/borderline"
-            app:layout_constraintBottom_toTopOf="@id/bottom_bar"
-            android:textColor="@color/black"
-            android:layout_marginTop="8dp"/>
+            android:fillViewport="true"
+            android:textColor="@color/black">
+
+            <!-- Список пользователей -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewUsers"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/black"/>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
     <View
