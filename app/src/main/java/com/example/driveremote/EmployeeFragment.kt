@@ -42,10 +42,6 @@ class EmployeeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val args = arguments
-        val fullName = args?.getString("fullName") ?: "Имя не указано"
-        val age = args?.getInt("age") ?: 0
-        val email = args?.getString("email") ?: "email не указан"
-        val post = args?.getString("post") ?: "ДОЛЖНОСТЬ"
         val userId = args?.getInt("userId") ?: -1
 
         if (userId != -1) {
@@ -67,8 +63,13 @@ class EmployeeFragment : Fragment() {
         val resultsDao = db.resultsDao()
 
         lifecycleScope.launch {
-            resultsList = resultsDao.getResultsByUser(userId)
+            val rawResults = resultsDao.getResultsByUser(userId)
+            resultsList = rawResults.sortedByDescending {
+                SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                    .parse(it.testDate.split(" ")[0])
+            }
             resultsAdapter = TestResultAdapter(resultsList)
+
             binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerViewResults.adapter = resultsAdapter
             resultsAdapter.notifyDataSetChanged()
@@ -85,24 +86,23 @@ class EmployeeFragment : Fragment() {
             return
         }
 
-        // Настройка легенды
         val legend = chart.legend
         legend.isEnabled = true
         legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
         legend.orientation = Legend.LegendOrientation.HORIZONTAL
         legend.setDrawInside(false)
-        legend.setWordWrapEnabled(true) // Позволяет переносить строки, если не хватает места
-        legend.textSize = 14f
+        legend.setWordWrapEnabled(true)
+        legend.textSize = 16f
 
         val entriesBurnout = ArrayList<Entry>()
         val entriesDepersonalization = ArrayList<Entry>()
         val entriesReduction = ArrayList<Entry>()
         val dateLabels = ArrayList<String>()
 
-        val sortedResultsList = adapterResults.sortedBy { it.testDate }
+        val reversedResults = adapterResults.reversed()
 
-        sortedResultsList.forEachIndexed { index, result ->
+        reversedResults.forEachIndexed { index, result ->
             val date = result.testDate.split(" ")[0]
             val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault())
                 .format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
@@ -123,36 +123,43 @@ class EmployeeFragment : Fragment() {
         chart.description.isEnabled = false
         chart.setPinchZoom(true)
 
-        val datasetBurnout = LineDataSet(entriesBurnout, "Эмоц-ое истощение").apply {
+        val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.RED)  // Цвет точек
             valueTextColor = Color.BLACK
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
-        val datasetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсон-ция").apply {
+        val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.BLUE)
             valueTextColor = Color.BLACK
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
-        val datasetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
+        val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.GREEN)
             valueTextColor = Color.BLACK
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
-        chart.data = LineData(datasetBurnout, datasetDepersonalization, datasetReduction)
+        chart.data = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
         chart.invalidate()
     }
 
     private fun loadUserInfo(userId: Int) {
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
-        val driverDao = db.driverDao()
 
         lifecycleScope.launch {
             val user = userDao.getUserById(userId)
-            val driver = driverDao.getDriverById(userId)
             user?.let {
                 binding.driverName.text = "${it.surName} ${it.firstName} ${it.fatherName}"
                 binding.driverAge.text = "${it.age} лет"

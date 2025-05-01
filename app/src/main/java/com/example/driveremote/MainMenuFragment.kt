@@ -71,8 +71,30 @@ class MainMenuFragment : Fragment() {
         }
 
         binding.logoutButton.setOnClickListener {
-            sharedPreferences.edit().clear().apply()
-            findNavController().navigate(R.id.action_mainMenuFragment_to_signInFragment)
+            val workManager = WorkManager.getInstance(requireContext())
+            val db = AppDatabase.getDatabase(requireContext())
+            val driverDao = db.driverDao()
+
+            lifecycleScope.launch {
+                val driver = driverDao.getDriverById(userId)
+                val testingTimes = driver?.testingTime ?: emptyList()
+
+                // Отменяем все WorkManager задачи по тегам уведомлений
+                testingTimes.forEach { time ->
+                    val tag = "test_reminder_${userId}_$time"
+                    workManager.cancelAllWorkByTag(tag)
+                }
+
+                // Отключаем флаг уведомлений
+                val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+                reminderPrefs.edit().putBoolean("notificationsEnabled_$userId", false).apply()
+
+                // Очищаем сессию пользователя
+                sharedPreferences.edit().clear().apply()
+
+                // Переход на экран входа
+                findNavController().navigate(R.id.action_mainMenuFragment_to_signInFragment)
+            }
         }
 
         binding.viewSearch.setOnClickListener {
@@ -132,6 +154,9 @@ class MainMenuFragment : Fragment() {
                 val datePart = result.testDate.split(" ")[0]
                 val resultDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(datePart)
                 resultDate != null && resultDate.after(sevenDaysAgo)
+            }.sortedByDescending {
+                SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                    .parse(it.testDate.split(" ")[0])
             }
 
             setupChart()
@@ -169,9 +194,14 @@ class MainMenuFragment : Fragment() {
         val entriesReduction = mutableListOf<Entry>()
         val dateLabels = mutableListOf<String>()
 
-        val sortedResults = resultsList.sortedBy { it.testDate }
+        val sortedResults = resultsList.sortedByDescending {
+            SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                .parse(it.testDate.split(" ")[0])
+        }
 
-        sortedResults.forEachIndexed { index, result ->
+        val reversedResults = sortedResults.reversed()
+
+        reversedResults.forEachIndexed { index, result ->
             val date = result.testDate.split(" ")[0]
             val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault())
                 .format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
@@ -186,16 +216,27 @@ class MainMenuFragment : Fragment() {
 
         val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.RED)  // Цвет точек
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
+
         val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.BLUE)
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
+
         val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.GREEN)
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
@@ -233,6 +274,10 @@ class MainMenuFragment : Fragment() {
         lifecycleScope.launch {
             val driver = driverDao.getDriverById(userId)
             val testingTimes = driver?.testingTime ?: return@launch
+
+            val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+            val notificationsEnabled = reminderPrefs.getBoolean("notificationsEnabled_$userId", true)
+            if (!notificationsEnabled) return@launch
 
             val workManager = WorkManager.getInstance(requireContext())
             val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())

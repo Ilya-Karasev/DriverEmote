@@ -114,7 +114,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4. Я хорошо понимаю, что чувствуют мои подчиненные и коллеги, и стараюсь учитывать это в интересах дела."
+                android:text="4. Я обращаю внимание на эмоции и настроение пассажиров и коллег во время работы."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -135,7 +135,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5. Я чувствую, что общаюсь с некоторыми подчиненными и коллегами как с предметами (без теплоты и расположения к ним)."
+                android:text="5. Порой я ловлю себя на том, что отношусь к пассажирам и коллегам безэмоционально, как к объектам."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -187,12 +187,12 @@
                 android:id="@+id/question7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_every_day_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_every_day_q7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="полностью согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
@@ -229,18 +229,18 @@
                 android:id="@+id/question9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_every_day_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_every_day_q9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="полностью согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10. В последнее время я стал более «черствым» по отношению к тем, с кем работаю."
+                android:text="10. В последнее время я стал более «чёрствым» по отношению к тем, с кем работаю."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -250,18 +250,18 @@
                 android:id="@+id/question10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
                 <RadioButton android:id="@+id/radio_every_day_q10" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11. Я замечаю, что моя работа ожесточает меня."
+                android:text="11. Мне кажется, что работа за рулём делает меня более «чёрствым»."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -271,18 +271,18 @@
                 android:id="@+id/question11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_every_day_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_every_day_q11" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="полностью согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12. У меня много планов на будущее, и я верю в их осуществление."
+                android:text="12. У меня есть планы на будущее, и я верю, что смогу их реализовать."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -292,12 +292,12 @@
                 android:id="@+id/question12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_every_day_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_every_day_q12" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="полностью согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
@@ -345,7 +345,7 @@
             <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="15. Бывает, что мне действительно безразлично то, что происходит c некоторыми моими подчиненными и коллегами."
+            android:text="15. Я чувствую безразличие к проблемам пассажиров или коллег."
             android:textSize="16sp" app:buttonTint="@color/radio_button_color"
             android:textStyle="bold"
             android:paddingBottom="8dp"
@@ -366,7 +366,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="16. Мне хочется уединиться и отдохнуть от всего и всех."
+                android:text="16. Мне нужно время в одиночестве, чтобы восстановиться от работы."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -387,7 +387,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="17. Я легко могу создать атмосферу доброжелательности и сотрудничества в коллективе."
+                android:text="17. Я могу создать атмосферу уважения и взаимопомощи среди коллег."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -397,18 +397,18 @@
                 android:id="@+id/question17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_every_day_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_every_day_q17" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="полностью согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="18. Во время работы я чувствую приятное оживление."
+                android:text="18. Во время смены я иногда чувствую внутренний подъём и бодрость."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -429,7 +429,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="19. Благодаря своей работе я уже сделал в жизни много действительно ценного."
+                android:text="19. Благодаря работе я ощущаю, что сделал что-то действительно значимое."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -450,7 +450,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20. Я чувствую равнодушие и потерю интереса ко многому, что радовало меня в моей работе."
+                android:text="20. Я теряю интерес к тому, что раньше радовало в работе."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -460,18 +460,18 @@
                 android:id="@+id/question20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <RadioButton android:id="@+id/radio_never_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="никогда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_rarely_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень редко" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_sometimes_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="иногда" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_very_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="очень часто" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
-                <RadioButton android:id="@+id/radio_every_day_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_never_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="абсолютно не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_rarely_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее не согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_sometimes_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="затрудняюсь ответить" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="скорее согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_very_often_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
+                <RadioButton android:id="@+id/radio_every_day_q20" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="полностью согласен" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="21. На работе я спокойно справляюсь с эмоциональными проблемами."
+                android:text="21. Я спокойно справляюсь с эмоциональными трудностями во время работы."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -492,7 +492,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="22. В последнее время мне кажется, что коллеги и подчиненные всё чаще перекладывают на меня груз своих проблем и обязанностей."
+                android:text="22. Мне кажется, что на меня перекладывают чужие проблемы или обязанности."
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"

@@ -1,6 +1,7 @@
 package com.example.driveremote
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -39,6 +40,9 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // Зафиксировать ориентацию экрана
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         val db = AppDatabase.getDatabase(requireContext())
         val userDao = db.userDao()
         val requestDao = db.requestDao()
@@ -51,9 +55,7 @@ class SearchFragment : Fragment() {
             val currentUser = userDao.getUserById(currentUserId)
             if (currentUser != null) {
                 currentUserPost = currentUser.post
-                // Получаем список всех пользователей, кроме текущего
                 allUsers = userDao.getAllUsers().filter { it.id != currentUserId }
-                // Получаем все Request из базы
                 allRequests = requestDao.getAllRequests()
                 setupAdapter()
             }
@@ -119,6 +121,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         super.onDestroyView()
         _binding = null
     }

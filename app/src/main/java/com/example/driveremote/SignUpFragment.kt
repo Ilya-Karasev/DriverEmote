@@ -67,7 +67,7 @@ class SignUpFragment : Fragment() {
             selectPost(Post.РУКОВОДИТЕЛЬ)
         }
 
-        binding.viewRegister.setOnClickListener {
+        binding.textRegisterButton.setOnClickListener {
             val surName = binding.editTextSurName.text.toString().trim()
             val firstName = binding.editTextFirstName.text.toString().trim()
             val fatherName = binding.editTextFatherName.text.toString().trim()

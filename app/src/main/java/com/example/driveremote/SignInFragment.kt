@@ -82,9 +82,14 @@ class SignInFragment : Fragment() {
                 if (user != null) {
                     saveUserSession(user)
 
-                    when (user.post) {
-                        Post.ВОДИТЕЛЬ -> findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
-                        Post.РУКОВОДИТЕЛЬ -> findNavController().navigate(R.id.action_signInFragment_to_managerMenuFragment)
+                    if (user.post == Post.ВОДИТЕЛЬ) {
+                        // Включаем уведомления
+                        val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+                        reminderPrefs.edit().putBoolean("notificationsEnabled_${user.id}", true).apply()
+
+                        findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
+                    } else if (user.post == Post.РУКОВОДИТЕЛЬ) {
+                        findNavController().navigate(R.id.action_signInFragment_to_managerMenuFragment)
                     }
                 } else {
                     Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()

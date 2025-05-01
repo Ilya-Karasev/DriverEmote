@@ -38,7 +38,7 @@ class ManagerMenuFragment : Fragment() {
         val managerDao = db.managerDao()
 
         // Initializing the adapter with an empty list
-        employeeAdapter = EmployeeAdapter(emptyList()) { employee ->
+        employeeAdapter = EmployeeAdapter(emptyList(), requireContext()) { employee ->
             val bundle = Bundle().apply {
                 putString("fullName", "${employee.surName} ${employee.firstName} ${employee.fatherName}")
                 putInt("age", employee.age)
@@ -47,7 +47,6 @@ class ManagerMenuFragment : Fragment() {
                 putInt("userId", employee.id)
             }
             findNavController().navigate(R.id.action_managerMenuFragment_to_employeeFragment, bundle)
-
         }
 
         binding.recyclerViewSubordinates.adapter = employeeAdapter
@@ -61,6 +60,12 @@ class ManagerMenuFragment : Fragment() {
             lifecycleScope.launch {
                 val currentUser = userDao.getUserById(userId)
                 val currentManager = managerDao.getManagerById(userId)
+
+                if (currentUser != null) {
+                    binding.driverName.text = "${currentUser.surName} ${currentUser.firstName} ${currentUser.fatherName}"
+                    binding.driverAge.text = "${currentUser.age} год(а)/лет"
+                    binding.driverEmail.text = currentUser.email
+                }
 
                 if (currentUser?.post == Post.РУКОВОДИТЕЛЬ) {
                     val subordinates = currentManager?.let { managerDao.getUsersByIds(it.employeesList) }

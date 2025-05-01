@@ -1,5 +1,6 @@
 package com.example.driveremote.adapters
 
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -8,24 +9,59 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
+import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Driver
 import com.example.driveremote.models.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EmployeeAdapter(
     private var employees: List<User>,
+    private val context: Context,
     private val onEmployeeClick: (User) -> Unit
 ) : RecyclerView.Adapter<EmployeeAdapter.EmployeeViewHolder>() {
+
+    private val driverDao = AppDatabase.getDatabase(context).driverDao()
 
     inner class EmployeeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTextView = view.findViewById<TextView>(R.id.textName)
         val ageTextView = view.findViewById<TextView>(R.id.textAge)
         val emailTextView = view.findViewById<TextView>(R.id.textEmail)
         val iconInitials: TextView = view.findViewById(R.id.iconRole)
+        val employeeStatus: TextView = view.findViewById(R.id.driver_status)
 
         fun bind(employee: User) {
             nameTextView.text = "${employee.surName} ${employee.firstName} ${employee.fatherName}"
             ageTextView.text = "${employee.age} год(а)/лет"
             emailTextView.text = employee.email
+
+            // Инициалы
+            val initials = "${employee.surName.firstOrNull() ?: ""}${employee.firstName.firstOrNull() ?: ""}".uppercase()
+            val textColor = generateRandomColor(saturation = 0.8f, brightness = 0.9f)
+            val backgroundColor = adjustAlpha(textColor, 0.15f)
+            iconInitials.text = initials
+            iconInitials.setBackgroundColor(backgroundColor)
+            iconInitials.setTextColor(textColor)
+            iconInitials.textAlignment = View.TEXT_ALIGNMENT_CENTER
+
+            // Статус водителя
+            CoroutineScope(Dispatchers.Main).launch {
+                val driver = withContext(Dispatchers.IO) { driverDao.getDriverById(employee.id) }
+                if (driver != null) {
+                    employeeStatus.text = driver.status
+                    when (driver.status) {
+                        "Норма" -> employeeStatus.setTextColor(Color.parseColor("#388E3C")) // Зелёный
+                        "Внимание" -> employeeStatus.setTextColor(Color.parseColor("#FFA000")) // Оранжевый
+                        "Критическое" -> employeeStatus.setTextColor(Color.parseColor("#D32F2F")) // Красный
+                        else -> employeeStatus.setTextColor(Color.DKGRAY)
+                    }
+                } else {
+                    employeeStatus.text = "—"
+                    employeeStatus.setTextColor(Color.GRAY)
+                }
+            }
         }
     }
 
@@ -40,19 +76,6 @@ class EmployeeAdapter(
         holder.itemView.setOnClickListener {
             onEmployeeClick(employee)
         }
-
-        // Формируем инициалы
-        val initials = "${employee.surName.firstOrNull() ?: ""}${employee.firstName.firstOrNull() ?: ""}".uppercase()
-
-        // Генерируем насыщенный цвет для текста
-        val textColor = generateRandomColor(saturation = 0.8f, brightness = 0.9f)
-        // Генерируем бледный цвет для фона
-        val backgroundColor = adjustAlpha(textColor, 0.15f)
-
-        holder.iconInitials.text = initials
-        holder.iconInitials.setBackgroundColor(backgroundColor)
-        holder.iconInitials.setTextColor(textColor)
-        holder.iconInitials.textAlignment = View.TEXT_ALIGNMENT_CENTER
     }
 
     override fun getItemCount(): Int = employees.size

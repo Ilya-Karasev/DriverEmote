@@ -89,6 +89,10 @@ class RequestsFragment : Fragment() {
         binding.viewSearch.setOnClickListener {
             findNavController().navigate(R.id.action_requestsFragment_to_searchFragment)
         }
+
+        binding.settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_settingsFragment)
+        }
     }
 
     private fun refreshRequests() {

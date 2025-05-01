@@ -21,7 +21,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -61,6 +60,10 @@ class ProfileFragment : Fragment() {
         binding.viewRequests.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_requestsFragment)
         }
+
+        binding.settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_settingsFragment)
+        }
     }
 
     // Вызов setupChart() после загрузки данных
@@ -69,11 +72,16 @@ class ProfileFragment : Fragment() {
         val resultsDao = db.resultsDao()
 
         lifecycleScope.launch {
-            resultsList = resultsDao.getResultsByUser(userId)
+            val rawResults = resultsDao.getResultsByUser(userId)
+            resultsList = rawResults.sortedByDescending {
+                SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                    .parse(it.testDate.split(" ")[0])
+            }
             resultsAdapter = TestResultAdapter(resultsList)
+
             binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerViewResults.adapter = resultsAdapter
-            resultsAdapter.notifyDataSetChanged() // Уведомляем адаптер об изменениях
+            resultsAdapter.notifyDataSetChanged()
 
             // Отображаем график
             setupChart()
@@ -111,40 +119,49 @@ class ProfileFragment : Fragment() {
         val entriesReduction = ArrayList<Entry>()
         val dateLabels = ArrayList<String>()
 
-        // Сортировка результатов по дате тестирования
-        val sortedResultsList = resultsList.sortedBy { it.testDate }
+        val reversedResults = resultsList.reversed()
 
-        sortedResultsList.forEachIndexed { index, result ->
-            // Форматирование даты в формат "dd.MM"
-            val date = result.testDate.split(" ")[0] // Отделяем дату от времени
-            val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault()).format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
+        reversedResults.forEachIndexed { index, result ->
+            val date = result.testDate.split(" ")[0]
+            val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault())
+                .format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
             dateLabels.add(formattedDate)
 
-            // Добавляем данные для графика
             entriesBurnout.add(Entry(index.toFloat(), result.emotionalExhaustionScore.toFloat()))
             entriesDepersonalization.add(Entry(index.toFloat(), result.depersonalizationScore.toFloat()))
             entriesReduction.add(Entry(index.toFloat(), result.personalAchievementScore.toFloat()))
         }
 
-        // Настройка меток на оси X
         xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
 
-        val datasetBurnout = LineDataSet(entriesBurnout, "Эмоц-ое истощение").apply {
+        val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.RED)  // Цвет точек
             valueTextColor = Color.BLACK
+            setDrawValues(true)
         }
 
-        val datasetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсон-ция").apply {
+        val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.BLUE)
             valueTextColor = Color.BLACK
+            setDrawValues(true)
         }
 
-        val datasetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
+        val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
+            circleRadius = 5f
+            setDrawCircles(true)
+            setCircleColor(Color.GREEN)
             valueTextColor = Color.BLACK
+            setDrawValues(true)
         }
 
-        chart.data = LineData(datasetBurnout, datasetDepersonalization, datasetReduction)
+        chart.data = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
         chart.invalidate()
     }
 

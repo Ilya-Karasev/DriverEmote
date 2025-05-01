@@ -8,6 +8,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Post
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,7 +28,23 @@ class TestReminderWorker(
             val lastNotificationTime = prefs.getLong("lastNotificationTime_${userId}_$timeString", 0L)
             val now = System.currentTimeMillis()
 
-            // Проверяем, включены ли уведомления для пользователя
+            val db = AppDatabase.getDatabase(context)
+            val userDao = db.userDao()
+            val driverDao = db.driverDao()
+
+            val user = userDao.getUserById(userId)
+            if (user == null || user.post != Post.ВОДИТЕЛЬ) {
+                Log.d("TestReminderWorker", "User is not a driver or doesn't exist")
+                return Result.success()
+            }
+
+            val driver = driverDao.getDriverById(userId)
+            if (driver == null) {
+                Log.d("TestReminderWorker", "Driver not found in driver table")
+                return Result.success()
+            }
+
+            // Проверка включенности уведомлений
             val notificationsEnabled = prefs.getBoolean("notificationsEnabled_$userId", true)
             if (!notificationsEnabled) {
                 Log.d("TestReminderWorker", "Notifications are disabled for user $userId")
@@ -40,27 +57,24 @@ class TestReminderWorker(
                 return Result.success()
             }
 
-            val db = AppDatabase.getDatabase(context)
-            val driverDao = db.driverDao()
-            val driver = driverDao.getDriverById(userId)
+            // Сбрасываем флаг прохождения теста и отправляем уведомление
+            driverDao.updateCompletionStatus(userId, false)
 
-            driver?.let {
-                driverDao.updateCompletionStatus(userId, false)
+            NotificationUtils.sendNotification(
+                context,
+                "Пришло время тестирования!",
+                "Пожалуйста, пройдите тестирование, чтобы отследить ваше эмоциональное состояние!"
+            )
 
-                NotificationUtils.sendNotification(
-                    context,
-                    "Пришло время тестирования!",
-                    "Пожалуйста, пройдите тестирование, чтобы отследить ваше эмоциональное состояние!"
-                )
+            // Сохраняем метку времени отправки
+            prefs.edit().putLong("lastNotificationTime_${userId}_$timeString", now).apply()
 
-                // Сохраняем метку времени отправки уведомления
-                prefs.edit().putLong("lastNotificationTime_${userId}_$timeString", now).apply()
+            // Устанавливаем следующее напоминание
+            scheduleNextReminder(context, userId, timeString)
 
-                // Устанавливаем следующее напоминание
-                scheduleNextReminder(context, userId, timeString)
-            }
             return Result.success()
         }
+
         return Result.failure()
     }
 
