@@ -48,7 +48,6 @@
             android:id="@+id/buttonAdd"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/add"
             android:contentDescription="Добавить"
             android:visibility="gone" />
     </LinearLayout>

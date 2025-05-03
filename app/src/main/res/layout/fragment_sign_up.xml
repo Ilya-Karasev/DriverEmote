@@ -108,8 +108,8 @@
                         android:layout_height="wrap_content"
                         android:text="ВОДИТЕЛЬ"
                         android:textStyle="bold"
-                        android:textColor="@color/white"
-                        app:backgroundTint="@color/dark_green" />
+                        android:textColor="@color/dark_green"
+                        app:backgroundTint="@color/white" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/buttonManager"
@@ -118,8 +118,8 @@
                         android:layout_height="wrap_content"
                         android:text="РУКОВОДИТЕЛЬ"
                         android:textStyle="bold"
-                        android:textColor="@color/dark_green"
-                        app:backgroundTint="@color/white" />
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/dark_green" />
                 </LinearLayout>
 
                 <EditText

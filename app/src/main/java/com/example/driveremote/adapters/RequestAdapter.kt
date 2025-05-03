@@ -10,8 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
+import com.example.driveremote.api.ApiService
 import com.example.driveremote.models.*
-import com.example.driveremote.models.TestUsers.users
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,13 +21,9 @@ class RequestAdapter(
     private var requestList: List<Pair<User, Request>>,
     private val context: Context,
     private val onDataChanged: () -> Unit,
-    private val currentUserId: Int // передаём ID текущего пользователя
+    private val currentUserId: Int, // передаём ID текущего пользователя
+    private val apiService: ApiService // передаем apiService для Retrofit
 ) : RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
-
-    private val db = AppDatabase.getDatabase(context)
-    private val userDao = db.userDao()
-    private val requestDao = db.requestDao()
-    private val managerDao = db.managerDao()
 
     inner class RequestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val iconInitials: TextView = view.findViewById(R.id.iconRole)
@@ -57,7 +53,7 @@ class RequestAdapter(
         holder.name.text = "${user.surName} ${user.firstName} ${user.fatherName}"
 
         // Скрываем кнопки, если пользователь — отправитель запроса
-        if (request.senderId == currentUserId) {
+        if (request.sender == currentUserId) {
             holder.yesButton.visibility = View.GONE
         } else {
             holder.yesButton.visibility = View.VISIBLE
@@ -65,40 +61,58 @@ class RequestAdapter(
 
         holder.noButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                requestDao.deleteRequest(request)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Вы удалили / отклонили запрос", Toast.LENGTH_SHORT).show()
-                    reloadRequests()
+                try {
+                    // Удаление запроса через Retrofit
+                    apiService.deleteRequest(request.id)
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Вы удалили / отклонили запрос", Toast.LENGTH_SHORT).show()
+                        reloadRequests()
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Ошибка при удалении запроса", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
 
         holder.yesButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val sender = userDao.getUserById(request.senderId)
-                val receiver = userDao.getUserById(request.receiverId)
+                try {
+                    // Получаем отправителя и получателя запроса через Retrofit
+                    val sender = apiService.getUserById(request.sender)
+                    val receiver = apiService.getUserById(request.receiver)
 
-                if (sender != null && receiver != null) {
-                    val (managerUser, subordinateId) = when {
-                        sender.post.name == "РУКОВОДИТЕЛЬ" -> sender to receiver.id
-                        receiver.post.name == "РУКОВОДИТЕЛЬ" -> receiver to sender.id
-                        else -> null to -1
+                    if (sender != null && receiver != null) {
+                        val (managerUser, subordinateId) = when {
+                            sender.post.name == "РУКОВОДИТЕЛЬ" -> sender to receiver.id
+                            receiver.post.name == "РУКОВОДИТЕЛЬ" -> receiver to sender.id
+                            else -> null to -1
+                        }
+
+                        managerUser?.let { manager ->
+                            val existingManager = apiService.getManagerById(manager.id)
+                            val updatedList = (existingManager?.employeesList ?: emptyList()).toMutableList()
+                            if (!updatedList.contains(subordinateId)) {
+                                updatedList.add(subordinateId)
+                            }
+
+                            // Обновляем список сотрудников у руководителя через Retrofit
+                            apiService.updateEmployeesList(manager.id, updatedList)
+
+                            // Удаляем запрос
+                            apiService.deleteRequest(request.id)
+
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "Вы приняли запрос", Toast.LENGTH_SHORT).show()
+                                reloadRequests()
+                            }
+                        }
                     }
-
-                    managerUser?.let { manager ->
-                        val existingManager = managerDao.getManagerById(manager.id)
-                        val updatedList = (existingManager?.employeesList ?: emptyList()).toMutableList()
-                        if (!updatedList.contains(subordinateId)) {
-                            updatedList.add(subordinateId)
-                        }
-
-                        managerDao.insertManager(Manager(manager.id, updatedList))
-                        requestDao.deleteRequest(request)
-
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, "Вы приняли запрос", Toast.LENGTH_SHORT).show()
-                            reloadRequests()
-                        }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Ошибка при обработке запроса", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

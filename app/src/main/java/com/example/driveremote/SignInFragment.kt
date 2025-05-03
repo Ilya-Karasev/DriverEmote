@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSignInBinding
-import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Post
-import com.example.driveremote.models.TestUsers
 import com.example.driveremote.models.User
 import kotlinx.coroutines.launch
 
@@ -35,10 +35,6 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val db = AppDatabase.getDatabase(requireContext())
-        val userDao = db.userDao()
-
-        // Проверка, авторизован ли уже пользователь
         if (isUserLoggedIn()) {
             findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
             return
@@ -77,22 +73,27 @@ class SignInFragment : Fragment() {
             }
 
             lifecycleScope.launch {
-                val user = userDao.getUserByEmailAndPassword(email, password)
+                try {
+                    val user = RetrofitClient.api.loginUser(email, password)
+                    if (user != null) {
+                        saveUserSession(user)
 
-                if (user != null) {
-                    saveUserSession(user)
+                        if (user.post == Post.ВОДИТЕЛЬ) {
+                            // Включаем уведомления
+                            val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+                            reminderPrefs.edit().putBoolean("notificationsEnabled_${user.id}", true).apply()
 
-                    if (user.post == Post.ВОДИТЕЛЬ) {
-                        // Включаем уведомления
-                        val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
-                        reminderPrefs.edit().putBoolean("notificationsEnabled_${user.id}", true).apply()
-
-                        findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
-                    } else if (user.post == Post.РУКОВОДИТЕЛЬ) {
-                        findNavController().navigate(R.id.action_signInFragment_to_managerMenuFragment)
+                            findNavController().navigate(R.id.action_signInFragment_to_mainMenuFragment)
+                        } else if (user.post == Post.РУКОВОДИТЕЛЬ) {
+                            findNavController().navigate(R.id.action_signInFragment_to_managerMenuFragment)
+                        }
+                        Log.d("SignInFragment", "Авторизация успешна: ${user.id}, ${user.surName} ${user.firstName} ${user.fatherName}")
+                    } else {
+                        Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Ошибка подключения к серверу", Toast.LENGTH_SHORT).show()
+                    Log.e("SignInFragment", "Login error", e)
                 }
             }
         }

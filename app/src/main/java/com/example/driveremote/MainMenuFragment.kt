@@ -1,8 +1,11 @@
 package com.example.driveremote
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.databinding.FragmentMainMenuBinding
-import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Results
 import kotlinx.coroutines.launch
 import com.github.mikephil.charting.components.XAxis
@@ -28,12 +30,16 @@ import com.example.driveremote.utils.TestReminderWorker
 import java.text.ParseException
 import java.util.concurrent.TimeUnit
 import androidx.core.content.ContextCompat
+import com.example.driveremote.api.Constants
+import com.example.driveremote.api.RetrofitClient
 import com.github.mikephil.charting.components.Legend
 
 class MainMenuFragment : Fragment() {
     private var _binding: FragmentMainMenuBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
     private var resultsList: List<Results> = emptyList()
+
+    private val apiService = RetrofitClient.api
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,27 +78,21 @@ class MainMenuFragment : Fragment() {
 
         binding.logoutButton.setOnClickListener {
             val workManager = WorkManager.getInstance(requireContext())
-            val db = AppDatabase.getDatabase(requireContext())
-            val driverDao = db.driverDao()
-
             lifecycleScope.launch {
-                val driver = driverDao.getDriverById(userId)
+                // Cancel reminders and clear session
+                val driver = apiService.getDriverById(userId)
                 val testingTimes = driver?.testingTime ?: emptyList()
 
-                // Отменяем все WorkManager задачи по тегам уведомлений
+                // Cancel all WorkManager tasks related to notifications
                 testingTimes.forEach { time ->
                     val tag = "test_reminder_${userId}_$time"
                     workManager.cancelAllWorkByTag(tag)
                 }
 
-                // Отключаем флаг уведомлений
-                val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
-                reminderPrefs.edit().putBoolean("notificationsEnabled_$userId", false).apply()
-
-                // Очищаем сессию пользователя
+                // Clear session preferences
                 sharedPreferences.edit().clear().apply()
 
-                // Переход на экран входа
+                // Navigate to sign-in screen
                 findNavController().navigate(R.id.action_mainMenuFragment_to_signInFragment)
             }
         }
@@ -111,55 +111,73 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun loadUserInfo(userId: Int) {
-        val db = AppDatabase.getDatabase(requireContext())
-        val userDao = db.userDao()
-        val driverDao = db.driverDao()
+        binding.userInfoProgressBar.visibility = View.VISIBLE
+        binding.driverName.visibility = View.GONE
+        binding.driverAge.visibility = View.GONE
+        binding.driverEmail.visibility = View.GONE
+        binding.driverStatus.visibility = View.GONE
 
         lifecycleScope.launch {
-            val user = userDao.getUserById(userId)
-            val driver = driverDao.getDriverById(userId)
-            user?.let {
-                binding.driverName.text = "${it.surName} ${it.firstName} ${it.fatherName}"
-                binding.driverAge.text = "${it.age} лет"
-                binding.driverEmail.text = it.email
-                if (driver != null) {
-                    binding.driverStatus.text = driver.status
+            try {
+                val user = apiService.getUserById(userId)
+                val driver = apiService.getDriverById(userId)
 
-                    // Окрашивание статуса в зависимости от значения
-                    val statusColor = when (driver.status) {
-                        "Норма" -> "#00B147"
-                        "Внимание" -> "#FF7700"
-                        "Критическое" -> "#FF0000"
-                        else -> "#000000"
+                user?.let {
+                    binding.driverName.text = "${it.surName} ${it.firstName} ${it.fatherName}"
+                    binding.driverAge.text = "${it.age} лет"
+                    binding.driverEmail.text = it.email
+                    driver?.let {
+                        binding.driverStatus.text = driver.status
+
+                        val statusColor = when (driver.status) {
+                            "Норма" -> Constants.STATUS_NORMAL
+                            "Внимание" -> Constants.STATUS_WARNING
+                            "Критическое" -> Constants.STATUS_CRITICAL
+                            else -> "#000000"
+                        }
+                        binding.driverStatus.setTextColor(Color.parseColor(statusColor))
                     }
-                    binding.driverStatus.setTextColor(Color.parseColor(statusColor))
                 }
+            } catch (e: Exception) {
+                Log.e("MainMenuFragment", "Error loading user info", e)
+            } finally {
+                binding.userInfoProgressBar.visibility = View.GONE
+                binding.driverName.visibility = View.VISIBLE
+                binding.driverAge.visibility = View.VISIBLE
+                binding.driverEmail.visibility = View.VISIBLE
+                binding.driverStatus.visibility = View.VISIBLE
             }
         }
     }
 
     private fun loadResults(userId: Int) {
-        val db = AppDatabase.getDatabase(requireContext())
-        val resultsDao = db.resultsDao()
+        binding.chartProgressBar.visibility = View.VISIBLE
+        binding.lineChart.visibility = View.GONE
 
         lifecycleScope.launch {
-            val allResults = resultsDao.getResultsByUser(userId)
+            try {
+                val allResults = apiService.getResultsByUser(userId)
 
-            // Фильтрация только последних 7 дней
-            val sevenDaysAgo = Calendar.getInstance().apply {
-                add(Calendar.DAY_OF_YEAR, -7)
-            }.time
+                val sevenDaysAgo = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_YEAR, -7)
+                }.time
 
-            resultsList = allResults.filter { result ->
-                val datePart = result.testDate.split(" ")[0]
-                val resultDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(datePart)
-                resultDate != null && resultDate.after(sevenDaysAgo)
-            }.sortedByDescending {
-                SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-                    .parse(it.testDate.split(" ")[0])
+                resultsList = allResults.filter { result ->
+                    val datePart = result.testDate.split(" ")[0]
+                    val resultDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(datePart)
+                    resultDate != null && resultDate.after(sevenDaysAgo)
+                }.sortedByDescending {
+                    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                        .parse(it.testDate.split(" ")[0])
+                }
+
+                setupChart()
+            } catch (e: Exception) {
+                Log.e("MainMenuFragment", "Error loading results", e)
+            } finally {
+                binding.chartProgressBar.visibility = View.GONE
+                binding.lineChart.visibility = View.VISIBLE
             }
-
-            setupChart()
         }
     }
 
@@ -246,88 +264,90 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun updateTestButtonState(userId: Int) {
-        val db = AppDatabase.getDatabase(requireContext())
-        val driverDao = db.driverDao()
-
         lifecycleScope.launch {
-            val driver = driverDao.getDriverById(userId)
-            if (driver != null) {
-                if (driver.isCompleted) {
-                    binding.testButton.isEnabled = false
-                    binding.testButton.text = "Следующее тестирование в ${driver.testingTime?.firstOrNull() ?: "неизвестно"}"
-                    binding.testButton.setBackgroundColor(Color.GRAY)
-                } else {
-                    binding.testButton.isEnabled = true
-                    binding.testButton.text = "Пройти тестирование"
-                    binding.testButton.setBackgroundColor(
-                        ContextCompat.getColor(requireContext(), R.color.green)
-                    )
+            try {
+                val driver = apiService.getDriverById(userId)
+                driver?.let {
+                    if (driver.isCompleted) {
+                        binding.testButton.isEnabled = false
+                        binding.testButton.text = "Следующее тестирование в ${driver.testingTime?.firstOrNull() ?: "неизвестно"}"
+                        binding.testButton.setBackgroundColor(Color.GRAY)
+                    } else {
+                        binding.testButton.isEnabled = true
+                        binding.testButton.text = "Пройти тестирование"
+                        binding.testButton.setBackgroundColor(
+                            ContextCompat.getColor(requireContext(), R.color.green)
+                        )
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("MainMenuFragment", "Error updating test button state", e)
             }
         }
     }
 
     private fun scheduleTestReminders(userId: Int) {
-        val db = AppDatabase.getDatabase(requireContext())
-        val driverDao = db.driverDao()
-
         lifecycleScope.launch {
-            val driver = driverDao.getDriverById(userId)
-            val testingTimes = driver?.testingTime ?: return@launch
+            try {
+                val driver = apiService.getDriverById(userId)
+                val testingTimes = driver?.testingTime ?: return@launch
 
-            val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
-            val notificationsEnabled = reminderPrefs.getBoolean("notificationsEnabled_$userId", true)
-            if (!notificationsEnabled) return@launch
+                val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+                val notificationsEnabled = reminderPrefs.getBoolean("notificationsEnabled_$userId", true)
+                if (!notificationsEnabled) return@launch
 
-            val workManager = WorkManager.getInstance(requireContext())
-            val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val now = Calendar.getInstance()
+                val workManager = WorkManager.getInstance(requireContext())
+                val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val now = Calendar.getInstance()
 
-            testingTimes.forEach { timeString ->
-                if (timeString.isEmpty()) {
-                    Log.e("TestReminderSetup", "Skipping empty testing time for userId: $userId")
-                    return@forEach // Пропускаем пустое время
-                }
-
-                val tag = "test_reminder_${userId}_$timeString"
-
-                // Отменяем предыдущие задачи с этим тегом
-                workManager.cancelAllWorkByTag(tag)
-
-                try {
-                    // Планируем следующее уведомление только для тех случаев, когда оно действительно должно быть
-                    val calendar = Calendar.getInstance().apply {
-                        time = formatter.parse(timeString) ?: return@forEach
-                        set(Calendar.SECOND, 0)
-                        set(Calendar.MILLISECOND, 0)
-                        set(Calendar.YEAR, now.get(Calendar.YEAR))
-                        set(Calendar.MONTH, now.get(Calendar.MONTH))
-                        set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
-
-                        if (before(now)) {
-                            add(Calendar.DAY_OF_MONTH, 1)
-                        }
+                testingTimes.forEach { timeString ->
+                    if (timeString.isEmpty()) {
+                        Log.e("TestReminderSetup", "Skipping empty testing time for userId: $userId")
+                        return@forEach // Skip empty time
                     }
 
-                    val delay = calendar.timeInMillis - System.currentTimeMillis()
+                    val tag = "test_reminder_${userId}_$timeString"
 
-                    val inputData = Data.Builder()
-                        .putInt("userId", userId)
-                        .putString("time", timeString)
-                        .build()
+                    // Cancel previous tasks with this tag
+                    workManager.cancelAllWorkByTag(tag)
 
-                    val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
-                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                        .setInputData(inputData)
-                        .addTag(tag) // теперь тег точно используется и управляется
-                        .build()
+                    try {
+                        // Schedule new reminder task
+                        val calendar = Calendar.getInstance().apply {
+                            time = formatter.parse(timeString) ?: return@forEach
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                            set(Calendar.YEAR, now.get(Calendar.YEAR))
+                            set(Calendar.MONTH, now.get(Calendar.MONTH))
+                            set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
 
-                    workManager.enqueue(workRequest)
+                            if (before(now)) {
+                                add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
 
-                    Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
-                } catch (e: ParseException) {
-                    Log.e("TestReminderSetup", "Error parsing time: $timeString", e)
+                        val delay = calendar.timeInMillis - System.currentTimeMillis()
+
+                        val inputData = Data.Builder()
+                            .putInt("userId", userId)
+                            .putString("time", timeString)
+                            .build()
+
+                        val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
+                            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                            .setInputData(inputData)
+                            .addTag(tag) // Tag used for task management
+                            .build()
+
+                        workManager.enqueue(workRequest)
+
+                        Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
+                    } catch (e: ParseException) {
+                        Log.e("TestReminderSetup", "Error parsing time: $timeString", e)
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("MainMenuFragment", "Error scheduling test reminders", e)
             }
         }
     }

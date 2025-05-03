@@ -1,31 +1,33 @@
 package com.example.driveremote.models
 
 import androidx.room.*
+import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 @Entity(
     foreignKeys = [
         ForeignKey(
             entity = User::class,
             parentColumns = ["id"],
-            childColumns = ["senderId"],
+            childColumns = ["sender"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = User::class,
             parentColumns = ["id"],
-            childColumns = ["receiverId"],
+            childColumns = ["receiver"],
             onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
-        Index("senderId"),
-        Index("receiverId")
+        Index("sender"),
+        Index("receiver")
     ]
 )
 data class Request(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val senderId: Int,
-    val receiverId: Int
+    @PrimaryKey(autoGenerate = true) @SerializedName("id") val id: Int = 0,
+    @SerializedName("sender") val sender: Int,
+    @SerializedName("receiver") val receiver: Int
 )
 
 @Dao
@@ -39,9 +41,9 @@ interface RequestDao {
     @Query("SELECT * FROM Request")
     suspend fun getAllRequests(): List<Request>
 
-    @Query("SELECT * FROM Request WHERE receiverId = :receiverId")
-    suspend fun getRequestsForReceiver(receiverId: Int): List<Request>
+    @Query("SELECT * FROM Request WHERE receiver = :receiver")
+    suspend fun getRequestsForReceiver(receiver: Int): List<Request>
 
-    @Query("SELECT * FROM Request WHERE senderId = :senderId")
-    suspend fun getRequestsForSender(senderId: Int): List<Request>
+    @Query("SELECT * FROM Request WHERE sender = :sender")
+    suspend fun getRequestsForSender(sender: Int): List<Request>
 }

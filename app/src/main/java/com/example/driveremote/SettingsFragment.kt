@@ -9,8 +9,8 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSettingsBinding
-import com.example.driveremote.models.AppDatabase
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
@@ -59,44 +59,50 @@ class SettingsFragment : Fragment() {
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
 
-        if (userId != -1) {
-            val db = AppDatabase.getDatabase(requireContext())
-            val driverDao = db.driverDao()
-            lifecycleScope.launch {
-                val driver = driverDao.getDriverById(userId)
-                if (driver != null) {
-                    val updatedTimes = mutableListOf<String>()
-
-                    if (quantity == 1) {
-                        if (time1.isNotEmpty()) {
-                            updatedTimes.add(time1)
-                        } else {
-                            driver.testingTime?.let { updatedTimes.addAll(it) }
-                        }
-                    } else {
-                        if (time1.isNotEmpty()) {
-                            updatedTimes.add(time1)
-                        } else if (driver.testingTime?.isNotEmpty() == true) {
-                            updatedTimes.add(driver.testingTime[0])
-                        }
-
-                        if (time2.isNotEmpty()) {
-                            updatedTimes.add(time2)
-                        } else if (driver.testingTime?.size ?: 0 > 1) {
-                            updatedTimes.add(driver.testingTime?.get(1) ?: "08:00")
-                        }
-                    }
-                    driverDao.insertDriver(driver.copy(quantity = quantity, testingTime = updatedTimes))
-                }
-            }
+        if (userId == -1) {
+            Toast.makeText(requireContext(), "Ошибка: пользователь не найден", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        // Сохраняем состояние переключателя уведомлений
-        val notifyEnabled = binding.switchNotify.isChecked
-        val prefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
-        prefs.edit().putBoolean("notificationsEnabled_$userId", notifyEnabled).apply()
+        lifecycleScope.launch {
+            try {
+                val driver = RetrofitClient.api.getDriverById(userId)
+                val updatedTimes = mutableListOf<String>()
 
-        Toast.makeText(requireContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show()
+                if (quantity == 1) {
+                    if (time1.isNotEmpty()) {
+                        updatedTimes.add(time1)
+                    } else {
+                        driver.testingTime?.let { updatedTimes.addAll(it.take(1)) }
+                    }
+                } else {
+                    if (time1.isNotEmpty()) {
+                        updatedTimes.add(time1)
+                    } else {
+                        driver.testingTime?.getOrNull(0)?.let { updatedTimes.add(it) }
+                    }
+
+                    if (time2.isNotEmpty()) {
+                        updatedTimes.add(time2)
+                    } else {
+                        driver.testingTime?.getOrNull(1)?.let { updatedTimes.add(it) }
+                    }
+                }
+
+                val updatedDriver = driver.copy(quantity = quantity, testingTime = updatedTimes)
+                RetrofitClient.api.updateDriver(driver.id, updatedDriver)
+
+                // Сохраняем состояние переключателя уведомлений
+                val notifyEnabled = binding.switchNotify.isChecked
+                val prefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("notificationsEnabled_$userId", notifyEnabled).apply()
+
+                Toast.makeText(requireContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Ошибка при сохранении настроек", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

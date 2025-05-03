@@ -1,6 +1,7 @@
 package com.example.driveremote.models
 
 import androidx.room.*
+import kotlinx.serialization.Serializable
 
 @Entity
 data class Manager(

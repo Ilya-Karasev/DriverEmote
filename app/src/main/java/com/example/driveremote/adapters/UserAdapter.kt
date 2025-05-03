@@ -1,10 +1,6 @@
 package com.example.driveremote.adapters
 
 import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,18 +9,23 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
+import com.example.driveremote.api.ApiService
 import com.example.driveremote.models.Post
-import com.example.driveremote.models.Request
 import com.example.driveremote.models.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserAdapter(
-    private var users: List<User>,
+    private val apiService: ApiService, // Параметр для Retrofit
     private val currentUserId: Int,
     private val currentUserPost: Post,
-    private val requests: List<Request>,
     private val employeesList: List<Int>,
     private val onAddClicked: (User) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+
+    private var users: List<User> = emptyList()
 
     inner class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val iconInitials: TextView = view.findViewById(R.id.iconRole)
@@ -59,7 +60,6 @@ class UserAdapter(
         holder.iconInitials.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
         val fullName = "${user.surName} ${user.firstName} ${user.fatherName}"
-
         holder.textName.text = fullName
 
         val shouldShowAddButton =
@@ -70,29 +70,48 @@ class UserAdapter(
         if (shouldShowAddButton) {
             holder.buttonAdd.visibility = View.VISIBLE
 
-            val requestExists = requests.any {
-                (it.senderId == currentUserId && it.receiverId == user.id) ||
-                        (it.senderId == user.id && it.receiverId == currentUserId)
-            }
-
-            if (requestExists) {
-                holder.buttonAdd.setImageResource(R.drawable.waiting)
-                holder.buttonAdd.background = null
-                holder.buttonAdd.setOnClickListener {
-                    Toast.makeText(
-                        context,
-                        "Запрос уже отправлен, ожидается ответ от получателя",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                holder.buttonAdd.setImageResource(R.drawable.add)
-                holder.buttonAdd.setOnClickListener {
-                    onAddClicked(user)
-                }
-            }
+            // Проверяем, отправлен ли запрос с использованием Retrofit
+            checkRequestStatus(user, holder)
         } else {
             holder.buttonAdd.visibility = View.GONE
+        }
+    }
+
+    private fun checkRequestStatus(user: User, holder: UserViewHolder) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Получаем список запросов с сервера
+                val requests = apiService.getRequestsBySender(currentUserId)
+
+                val requestExists = requests.any {
+                    (it.sender == currentUserId && it.receiver == user.id) ||
+                            (it.sender == user.id && it.receiver == currentUserId)
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (requestExists) {
+                        holder.buttonAdd.setImageResource(R.drawable.waiting)
+                        holder.buttonAdd.background = null
+                        holder.buttonAdd.setOnClickListener {
+                            Toast.makeText(
+                                holder.itemView.context,
+                                "Запрос уже отправлен, ожидается ответ от получателя",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        holder.buttonAdd.setImageResource(R.drawable.add)
+                        holder.buttonAdd.setOnClickListener {
+                            onAddClicked(user)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    // Обработка ошибок сети или сервера
+                    Toast.makeText(holder.itemView.context, "Ошибка при проверке запросов", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -113,5 +132,22 @@ class UserAdapter(
     fun filterList(filteredUsers: List<User>) {
         users = filteredUsers
         notifyDataSetChanged()
+    }
+
+    // Метод для загрузки пользователей через Retrofit
+    fun loadUsers(holder: UserViewHolder) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                users = apiService.getAllUsers() // Получаем всех пользователей с сервера
+                withContext(Dispatchers.Main) {
+                    notifyDataSetChanged() // Обновляем адаптер на главном потоке
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    // Обработка ошибок сети или сервера
+                    Toast.makeText(holder.itemView.context, "Ошибка при загрузке пользователей", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }

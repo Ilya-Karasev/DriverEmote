@@ -2,6 +2,7 @@ package com.example.driveremote.models
 
 import android.content.Context
 import androidx.room.*
+import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

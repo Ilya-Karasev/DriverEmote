@@ -2,6 +2,7 @@ package com.example.driveremote
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import android.util.Patterns
 import android.widget.AdapterView
 import androidx.core.content.ContextCompat
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Manager
@@ -26,7 +28,7 @@ class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
 
-    private var selectedPost: Post? = null // Выбранная роль
+    private var selectedPost: Post? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +41,6 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val db = AppDatabase.getDatabase(requireContext())
-        val userDao = db.userDao()
-        val driverDao = db.driverDao()
-        val managerDao = db.managerDao()
-
         val textFields = listOf(
             binding.editTextSurName,
             binding.editTextFirstName,
@@ -54,9 +51,7 @@ class SignUpFragment : Fragment() {
         )
 
         textFields.forEach { editText ->
-            editText.addTextChangedListener {
-                updateRegisterButtonState()
-            }
+            editText.addTextChangedListener { updateRegisterButtonState() }
         }
 
         binding.buttonDriver.setOnClickListener {
@@ -102,29 +97,33 @@ class SignUpFragment : Fragment() {
             )
 
             lifecycleScope.launch {
-                userDao.insertUser(user)
-                val createdUser = userDao.getUserByEmailAndPassword(email, password)
+                try {
+                    val createdUser = RetrofitClient.api.createUser(user)
 
-                if (createdUser != null && createdUser.post == Post.ВОДИТЕЛЬ) {
-                    val driver = Driver(
-                        id = createdUser.id,
-                        isCompleted = false,
-                        testingTime = listOf("08:00"),
-                        quantity = 1
-                    )
-                    driverDao.insertDriver(driver)
+                    if (post == Post.ВОДИТЕЛЬ) {
+                        val driver = Driver(
+                            id = createdUser.id,
+                            isCompleted = false,
+                            testingTime = listOf("08:00"),
+                            quantity = 1
+                        )
+                        RetrofitClient.api.createDriver(driver)
+                    }
+
+                    if (post == Post.РУКОВОДИТЕЛЬ) {
+                        val manager = Manager(
+                            user = createdUser,
+                            employeesList = emptyList()
+                        )
+                        RetrofitClient.api.saveManager(manager)
+                    }
+
+                    Toast.makeText(requireContext(), "Пользователь зарегистрирован", Toast.LENGTH_SHORT).show()
+                    Log.d("SignInFragment", "Регистрация успешна: ${createdUser.id}, ${createdUser.surName} ${createdUser.firstName} ${createdUser.fatherName}")
+                    findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Ошибка регистрации: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                 }
-
-                if (createdUser != null && createdUser.post == Post.РУКОВОДИТЕЛЬ) {
-                    val manager = Manager(
-                        user = createdUser,
-                        employeesList = emptyList()
-                    )
-                    managerDao.insertManager(manager)
-                }
-
-                Toast.makeText(requireContext(), "Пользователь зарегистрирован", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
             }
         }
 

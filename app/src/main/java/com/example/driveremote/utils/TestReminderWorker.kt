@@ -7,6 +7,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Post
 import java.text.SimpleDateFormat
@@ -18,7 +19,6 @@ class TestReminderWorker(
     private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
-
     override suspend fun doWork(): Result {
         val userId = inputData.getInt("userId", -1)
         val timeString = inputData.getString("time") ?: return Result.failure()
@@ -28,51 +28,55 @@ class TestReminderWorker(
             val lastNotificationTime = prefs.getLong("lastNotificationTime_${userId}_$timeString", 0L)
             val now = System.currentTimeMillis()
 
-            val db = AppDatabase.getDatabase(context)
-            val userDao = db.userDao()
-            val driverDao = db.driverDao()
+            try {
+                // Получаем данные пользователя через Retrofit
+                val user = RetrofitClient.api.getUserById(userId)
+                if (user.post != Post.ВОДИТЕЛЬ) {
+                    Log.d("TestReminderWorker", "User is not a driver or doesn't exist")
+                    return Result.success()
+                }
 
-            val user = userDao.getUserById(userId)
-            if (user == null || user.post != Post.ВОДИТЕЛЬ) {
-                Log.d("TestReminderWorker", "User is not a driver or doesn't exist")
+                // Получаем данные водителя через Retrofit
+                val driver = RetrofitClient.api.getDriverById(userId)
+                if (driver == null) {
+                    Log.d("TestReminderWorker", "Driver not found")
+                    return Result.success()
+                }
+
+                // Проверка включенности уведомлений
+                val notificationsEnabled = prefs.getBoolean("notificationsEnabled_$userId", true)
+                if (!notificationsEnabled) {
+                    Log.d("TestReminderWorker", "Notifications are disabled for user $userId")
+                    return Result.success()
+                }
+
+                // Проверка — если меньше 1 часа с последнего уведомления, не показываем снова
+                if (now - lastNotificationTime < 60 * 60 * 1000) {
+                    Log.d("TestReminderWorker", "Notification suppressed (already sent recently)")
+                    return Result.success()
+                }
+
+                // Сбрасываем флаг прохождения теста и отправляем уведомление
+                val updatedDriver = driver.copy()
+                RetrofitClient.api.updateDriver(userId, updatedDriver)
+
+                NotificationUtils.sendNotification(
+                    context,
+                    "Пришло время тестирования!",
+                    "Пожалуйста, пройдите тестирование, чтобы отследить ваше эмоциональное состояние!"
+                )
+
+                // Сохраняем метку времени отправки
+                prefs.edit().putLong("lastNotificationTime_${userId}_$timeString", now).apply()
+
+                // Устанавливаем следующее напоминание
+                scheduleNextReminder(context, userId, timeString)
+
                 return Result.success()
+            } catch (e: Exception) {
+                Log.e("TestReminderWorker", "Error in TestReminderWorker: ${e.localizedMessage}")
+                return Result.failure()
             }
-
-            val driver = driverDao.getDriverById(userId)
-            if (driver == null) {
-                Log.d("TestReminderWorker", "Driver not found in driver table")
-                return Result.success()
-            }
-
-            // Проверка включенности уведомлений
-            val notificationsEnabled = prefs.getBoolean("notificationsEnabled_$userId", true)
-            if (!notificationsEnabled) {
-                Log.d("TestReminderWorker", "Notifications are disabled for user $userId")
-                return Result.success()
-            }
-
-            // Проверка — если меньше 1 часа с последнего уведомления, не показываем снова
-            if (now - lastNotificationTime < 60 * 60 * 1000) {
-                Log.d("TestReminderWorker", "Notification suppressed (already sent recently)")
-                return Result.success()
-            }
-
-            // Сбрасываем флаг прохождения теста и отправляем уведомление
-            driverDao.updateCompletionStatus(userId, false)
-
-            NotificationUtils.sendNotification(
-                context,
-                "Пришло время тестирования!",
-                "Пожалуйста, пройдите тестирование, чтобы отследить ваше эмоциональное состояние!"
-            )
-
-            // Сохраняем метку времени отправки
-            prefs.edit().putLong("lastNotificationTime_${userId}_$timeString", now).apply()
-
-            // Устанавливаем следующее напоминание
-            scheduleNextReminder(context, userId, timeString)
-
-            return Result.success()
         }
 
         return Result.failure()

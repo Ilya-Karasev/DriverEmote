@@ -3,6 +3,7 @@ package com.example.driveremote
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.adapters.UserAdapter
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSearchBinding
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Post
@@ -29,7 +31,7 @@ class SearchFragment : Fragment() {
     private var allUsers: List<User> = emptyList()
     private var currentUserId: Int = -1
     private lateinit var currentUserPost: Post
-    private var allRequests: List<Request> = emptyList()
+    private var employeesList: List<Int> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,26 +42,15 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Зафиксировать ориентацию экрана
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        val db = AppDatabase.getDatabase(requireContext())
-        val userDao = db.userDao()
-        val requestDao = db.requestDao()
-        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        currentUserId = sharedPreferences.getInt("userId", -1)
 
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(requireContext())
 
-        lifecycleScope.launch {
-            val currentUser = userDao.getUserById(currentUserId)
-            if (currentUser != null) {
-                currentUserPost = currentUser.post
-                allUsers = userDao.getAllUsers().filter { it.id != currentUserId }
-                allRequests = requestDao.getAllRequests()
-                setupAdapter()
-            }
-        }
+        // Получаем текущего пользователя из SharedPreferences
+        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        currentUserId = sharedPreferences.getInt("userId", -1)
+
+        loadInitialData()
 
         binding.editTextSearch.addTextChangedListener { text ->
             val query = text.toString().lowercase(Locale.getDefault())
@@ -87,37 +78,58 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun setupAdapter() {
-        lifecycleScope.launch {
-            val employeesList = getEmployeesList()
+    private fun loadInitialData() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerViewUsers.visibility = View.GONE
 
-            adapter = UserAdapter(
-                users = allUsers,
-                currentUserId = currentUserId,
-                currentUserPost = currentUserPost,
-                requests = allRequests,
-                employeesList = employeesList
-            ) { selectedUser ->
-                val newRequest = Request(senderId = currentUserId, receiverId = selectedUser.id)
-                lifecycleScope.launch {
-                    AppDatabase.getDatabase(requireContext()).requestDao().insertRequest(newRequest)
-                    allRequests = AppDatabase.getDatabase(requireContext()).requestDao().getAllRequests()
-                    setupAdapter()
-                    Toast.makeText(requireContext(), "Запрос отправлен", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                val api = RetrofitClient.api
+
+                val currentUser = api.getUserById(currentUserId)
+                currentUserPost = currentUser.post
+
+                allUsers = api.getAllUsers().filter { it.id != currentUserId }
+
+                employeesList = if (currentUserPost == Post.РУКОВОДИТЕЛЬ) {
+                    api.getManagerById(currentUserId)?.employeesList ?: emptyList()
+                } else {
+                    emptyList()
                 }
+
+                setupAdapter()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Ошибка загрузки данных: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("SearchFragment", "Ошибка загрузки данных", e)
+            } finally {
+                binding.progressBar.visibility = View.GONE
+                binding.recyclerViewUsers.visibility = View.VISIBLE
             }
-            binding.recyclerViewUsers.adapter = adapter
         }
     }
 
-    private suspend fun getEmployeesList(): List<Int> {
-        return if (currentUserPost == Post.РУКОВОДИТЕЛЬ) {
-            val managerDao = AppDatabase.getDatabase(requireContext()).managerDao()
-            val manager = managerDao.getManagerById(currentUserId)
-            manager?.employeesList ?: emptyList()
-        } else {
-            emptyList()
+    private fun setupAdapter() {
+        adapter = UserAdapter(
+            apiService = RetrofitClient.api,
+            currentUserId = currentUserId,
+            currentUserPost = currentUserPost,
+            employeesList = employeesList
+        ) { selectedUser ->
+            // Обработка добавления запроса
+            lifecycleScope.launch {
+                try {
+                    val request = Request(sender = currentUserId, receiver = selectedUser.id)
+                    RetrofitClient.api.createRequest(request)
+                    Toast.makeText(requireContext(), "Запрос отправлен", Toast.LENGTH_SHORT).show()
+                    loadInitialData() // Перезагрузить данные после добавления запроса
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Ошибка при отправке запроса", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
+
+        adapter.filterList(allUsers)
+        binding.recyclerViewUsers.adapter = adapter
     }
 
     override fun onDestroyView() {
