@@ -54,6 +54,15 @@ class RequestsFragment : Fragment() {
                     apiService.getUserById(userId)
                 }
                 currentUserPost = currentUser.post
+
+                if (currentUserPost == Post.ВОДИТЕЛЬ) {
+                    binding.settingsIcon.visibility = View.VISIBLE
+                    binding.settingsIcon.isClickable = true
+                } else {
+                    binding.settingsIcon.visibility = View.GONE
+                    binding.settingsIcon.isClickable = false
+                }
+
                 refreshRequests()
             } catch (e: Exception) {
                 showToast("Ошибка при загрузке пользователя")

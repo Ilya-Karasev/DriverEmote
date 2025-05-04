@@ -44,14 +44,9 @@ class UserAdapter(
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = users[position]
         val context = holder.itemView.context
-        val isAlreadyEmployee = employeesList.contains(user.id)
 
-        // Формируем инициалы
         val initials = "${user.surName.firstOrNull() ?: ""}${user.firstName.firstOrNull() ?: ""}".uppercase()
-
-        // Генерируем насыщенный цвет для текста
         val textColor = generateRandomColor(saturation = 0.8f, brightness = 0.9f)
-        // Генерируем бледный цвет для фона
         val backgroundColor = adjustAlpha(textColor, 0.15f)
 
         holder.iconInitials.text = initials
@@ -62,16 +57,33 @@ class UserAdapter(
         val fullName = "${user.surName} ${user.firstName} ${user.fatherName}"
         holder.textName.text = fullName
 
-        val shouldShowAddButton =
-            ((currentUserPost == Post.ВОДИТЕЛЬ && user.post == Post.РУКОВОДИТЕЛЬ) ||
-                    (currentUserPost == Post.РУКОВОДИТЕЛЬ && user.post == Post.ВОДИТЕЛЬ)) &&
-                    !isAlreadyEmployee
-
-        if (shouldShowAddButton) {
-            holder.buttonAdd.visibility = View.VISIBLE
-
-            // Проверяем, отправлен ли запрос с использованием Retrofit
-            checkRequestStatus(user, holder)
+        if (currentUserPost == Post.РУКОВОДИТЕЛЬ && user.post == Post.ВОДИТЕЛЬ) {
+            val isAlreadyEmployee = employeesList.contains(user.id)
+            if (isAlreadyEmployee) {
+                holder.buttonAdd.visibility = View.GONE
+            } else {
+                holder.buttonAdd.visibility = View.VISIBLE
+                checkRequestStatus(user, holder)
+            }
+        } else if (currentUserPost == Post.ВОДИТЕЛЬ && user.post == Post.РУКОВОДИТЕЛЬ) {
+            holder.buttonAdd.visibility = View.GONE // по умолчанию
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val manager = apiService.getManagerById(user.id) // менеджер отображаемого user
+                    val employees = manager?.employeesList ?: emptyList()
+                    val isCurrentUserInList = employees.contains(currentUserId)
+                    withContext(Dispatchers.Main) {
+                        if (!isCurrentUserInList) {
+                            holder.buttonAdd.visibility = View.VISIBLE
+                            checkRequestStatus(user, holder)
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Ошибка при проверке подчинённости", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         } else {
             holder.buttonAdd.visibility = View.GONE
         }

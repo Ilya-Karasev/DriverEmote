@@ -89,6 +89,14 @@ class SearchFragment : Fragment() {
                 val currentUser = api.getUserById(currentUserId)
                 currentUserPost = currentUser.post
 
+                if (currentUserPost == Post.ВОДИТЕЛЬ) {
+                    binding.settingsIcon.visibility = View.VISIBLE
+                    binding.settingsIcon.isClickable = true
+                } else {
+                    binding.settingsIcon.visibility = View.GONE
+                    binding.settingsIcon.isClickable = false
+                }
+
                 allUsers = api.getAllUsers().filter { it.id != currentUserId }
 
                 employeesList = if (currentUserPost == Post.РУКОВОДИТЕЛЬ) {

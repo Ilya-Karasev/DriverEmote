@@ -33,6 +33,9 @@ interface ApiService {
     ): User?
 
     // ---------- RESULTS ----------
+    @GET("/api/results")
+    suspend fun getResults(): List<Results>
+
     @GET("/api/results/user/{userId}")
     suspend fun getResultsByUser(@Path("userId") userId: Int): List<Results>
 
@@ -41,9 +44,6 @@ interface ApiService {
 
     @POST("/api/results")
     suspend fun addResult(@Body result: Results): Results
-
-    @GET("drivers/user/{userId}")
-    suspend fun getDriverByUserId(@Path("userId") userId: Long): Response<Driver>
 
     // ---------- REQUESTS ----------
     @GET("/api/requests")
@@ -64,6 +64,9 @@ interface ApiService {
     // ---------- DRIVERS ----------
     @GET("/api/drivers/{id}")
     suspend fun getDriverById(@Path("id") id: Int): Driver
+
+    @GET("/api/drivers/user/{userId}")
+    suspend fun getDriverByUserId(@Path("userId") userId: Int): Driver
 
     @POST("/api/drivers")
     suspend fun createDriver(@Body driver: Driver): Driver

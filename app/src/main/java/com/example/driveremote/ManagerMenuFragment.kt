@@ -2,6 +2,7 @@ package com.example.driveremote
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +11,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.adapters.EmployeeAdapter
+import com.example.driveremote.api.ApiService
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentManagerMenuBinding
-import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Post
+import com.example.driveremote.models.User
 import kotlinx.coroutines.launch
 
 class ManagerMenuFragment : Fragment() {
     private var _binding: FragmentManagerMenuBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
 
-    private lateinit var db: AppDatabase
     private lateinit var employeeAdapter: EmployeeAdapter
+    private lateinit var apiService: ApiService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,12 +35,9 @@ class ManagerMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        db = AppDatabase.getDatabase(requireContext())
-        val userDao = db.userDao()
-        val managerDao = db.managerDao()
 
-        // Initializing the adapter with an empty list
+        apiService = RetrofitClient.api
+
         employeeAdapter = EmployeeAdapter(emptyList(), requireContext()) { employee ->
             val bundle = Bundle().apply {
                 putString("fullName", "${employee.surName} ${employee.firstName} ${employee.fatherName}")
@@ -52,28 +52,39 @@ class ManagerMenuFragment : Fragment() {
         binding.recyclerViewSubordinates.adapter = employeeAdapter
         binding.recyclerViewSubordinates.layoutManager = LinearLayoutManager(requireContext())
 
-        // Retrieve the current user's id and post from SharedPreferences
         val sharedPrefs = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPrefs.getInt("userId", -1)
 
+        // Скрываем элементы и показываем спиннеры
+        setLoadingState(true)
+
         if (userId != -1) {
             lifecycleScope.launch {
-                val currentUser = userDao.getUserById(userId)
-                val currentManager = managerDao.getManagerById(userId)
-
-                if (currentUser != null) {
+                try {
+                    val currentUser = apiService.getUserById(userId)
                     binding.driverName.text = "${currentUser.surName} ${currentUser.firstName} ${currentUser.fatherName}"
                     binding.driverAge.text = "${currentUser.age} год(а)/лет"
                     binding.driverEmail.text = currentUser.email
-                }
 
-                if (currentUser?.post == Post.РУКОВОДИТЕЛЬ) {
-                    val subordinates = currentManager?.let { managerDao.getUsersByIds(it.employeesList) }
-                    if (subordinates != null) {
-                        employeeAdapter.updateList(subordinates)
+                    if (currentUser.post == Post.РУКОВОДИТЕЛЬ) {
+                        val currentManager = apiService.getManagerById(userId)
+                        if (currentManager != null) {
+                            val subordinates = getSubordinatesFromIds(currentManager.employeesList)
+                            employeeAdapter.updateList(subordinates)
+                        }
                     }
+
+                    // Скрываем спиннеры и показываем контент
+                    setLoadingState(false)
+
+                } catch (e: Exception) {
+                    Log.e("ManagerMenuFragment", "Ошибка получения данных: ${e.message}")
+                    // Можно добавить отображение ошибки
+                    setLoadingState(false)
                 }
             }
+        } else {
+            setLoadingState(false)
         }
 
         binding.viewSearch.setOnClickListener {
@@ -85,9 +96,35 @@ class ManagerMenuFragment : Fragment() {
         }
 
         binding.logoutButton.setOnClickListener {
-            sharedPreferences.edit().clear().apply()
+            sharedPrefs.edit().clear().apply()
             findNavController().navigate(R.id.action_managerMenuFragment_to_signInFragment)
         }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        // Прогресс бар для информации о пользователе
+        binding.userInfoProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.driverName.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.driverAge.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.driverEmail.visibility = if (isLoading) View.GONE else View.VISIBLE
+
+        // Прогресс бар для списка подчинённых
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.recyclerViewSubordinates.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.textSubordinates.visibility = if (isLoading) View.GONE else View.VISIBLE
+    }
+
+    private suspend fun getSubordinatesFromIds(employeeIds: List<Int>): List<User> {
+        val subordinates = mutableListOf<User>()
+        for (employeeId in employeeIds) {
+            try {
+                val user = apiService.getUserById(employeeId)
+                subordinates.add(user)
+            } catch (e: Exception) {
+                Log.e("ManagerMenuFragment", "Ошибка получения подчинённого с id $employeeId: ${e.message}")
+            }
+        }
+        return subordinates
     }
 
     override fun onDestroyView() {

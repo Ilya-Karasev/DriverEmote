@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
 import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
-import com.example.driveremote.models.AppDatabase
-import com.example.driveremote.models.Driver
 import com.example.driveremote.models.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

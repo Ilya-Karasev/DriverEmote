@@ -116,6 +116,7 @@ class MainMenuFragment : Fragment() {
         binding.driverAge.visibility = View.GONE
         binding.driverEmail.visibility = View.GONE
         binding.driverStatus.visibility = View.GONE
+        binding.testButton.visibility = View.GONE
 
         lifecycleScope.launch {
             try {
@@ -146,6 +147,7 @@ class MainMenuFragment : Fragment() {
                 binding.driverAge.visibility = View.VISIBLE
                 binding.driverEmail.visibility = View.VISIBLE
                 binding.driverStatus.visibility = View.VISIBLE
+                binding.testButton.visibility = View.VISIBLE
             }
         }
     }
@@ -291,10 +293,6 @@ class MainMenuFragment : Fragment() {
             try {
                 val driver = apiService.getDriverById(userId)
                 val testingTimes = driver?.testingTime ?: return@launch
-
-                val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
-                val notificationsEnabled = reminderPrefs.getBoolean("notificationsEnabled_$userId", true)
-                if (!notificationsEnabled) return@launch
 
                 val workManager = WorkManager.getInstance(requireContext())
                 val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())

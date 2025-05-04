@@ -58,29 +58,46 @@
                 android:contentDescription="Иконка водителя"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- Информация о пользователе -->
-            <TextView
-                android:id="@+id/driver_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/driver_age"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
+                <!-- Информация о пользователе -->
+                <TextView
+                    android:id="@+id/driver_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/driver_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                <TextView
+                    android:id="@+id/driver_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/driver_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
+
+                <ProgressBar
+                    android:id="@+id/user_info_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/dark_green"/>
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -106,18 +123,31 @@
                         android:textSize="24sp"
                         android:textStyle="bold"/>
 
-                    <HorizontalScrollView
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="horizontal">
+                        android:layout_height="match_parent">
 
-                        <com.github.mikephil.charting.charts.LineChart
-                            android:id="@+id/lineChart"
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="horizontal">
+
+                            <com.github.mikephil.charting.charts.LineChart
+                                android:id="@+id/lineChart"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="295dp"
+                                android:minHeight="295dp"
+                                android:visibility="gone" />
+                        </HorizontalScrollView>
+
+                        <ProgressBar
+                            android:id="@+id/chart_progress_bar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minWidth="295dp"
-                            android:minHeight="295dp" />
-                    </HorizontalScrollView>
+                            android:layout_gravity="center"
+                            android:indeterminateTint="@color/dark_green"/>
+                    </FrameLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -142,8 +172,19 @@
                         android:text="Последние результаты"
                         android:textColor="@color/black"
                         android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="16dp"/>
+                        android:textStyle="bold"/>
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:layout_marginTop="16dp"
+                        android:indeterminate="true"
+                        android:theme="@style/Widget.AppCompat.ProgressBar"
+                        android:layout_marginBottom="16dp"
+                        android:indeterminateTint="@color/dark_green" />
 
                     <!-- Список пользователей -->
                     <androidx.recyclerview.widget.RecyclerView

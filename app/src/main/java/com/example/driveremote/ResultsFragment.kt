@@ -11,11 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentResultsBinding
 import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Results
@@ -49,69 +51,67 @@ class ResultsFragment : Fragment() {
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
 
-        // Устанавливаем текстовые значения
         binding.textTime.text = "Дата и время завершения:\n$currentTime"
         binding.textScore.text = "Вы набрали $totalScore баллов"
         binding.textEmotionalExhaustionScore.text = emotionalExhaustionScore.toString()
         binding.textDepersonalizationScore.text = depersonalizationScore.toString()
         binding.textPersonalAchievementScore.text = personalAchievementScore.toString()
 
-        // Подсказки
         binding.iconEmotionalExhaustion.setOnClickListener {
             showTooltip("Эмоциональное истощение проявляется в снижении эмоционального тонуса, повышенной психической истощаемости и аффективной лабильности, равнодушием, неспособностью испытывать сильные эмоции, как положительные, так и отрицательные, утраты интереса и позитивных чувств к окружающим, ощущении «пресыщенности» работой, неудовлетворенностью жизнью в целом.")
         }
-
         binding.iconDepersonalization.setOnClickListener {
             showTooltip("Деперсонализация проявляется в эмоциональном отстранении и безразличии, формальном выполнении профессиональных обязанностей без личностной включенности и сопереживания, а в отдельных случаях – в раздражительности, негативизме и циничном отношении к коллегам и пациентам. На поведенческом уровне «деперсонализация» проявляется в высокомерном поведении, использовании профессионального сленга, юмора, ярлыков.")
         }
-
         binding.iconPersonalAchievement.setOnClickListener {
             showTooltip("Редукция профессиональных достижений проявляется в негативном оценивании себя, результатов своего труда и возможностей для профессионального развития. Высокое значение этого показателя отражает тенденцию к негативной оценке своей компетентности и продуктивности и, как следствие, снижение профессиональной мотивации, нарастание негативизма в отношении служебных обязанностей, в лимитировании своей вовлеченности в профессию за счет перекладывания обязанностей и ответственности на других людей, к изоляции от окружающих, отстраненность и неучастие, избегание работы сначала психологически, а затем физически.")
         }
 
-        // Кнопка возврата в меню
         binding.buttonBackToMenu.setOnClickListener {
             if (userId != -1) {
-                val db = AppDatabase.getDatabase(requireContext())
-                val driverDao = db.driverDao()
-                val resultsDao = db.resultsDao()
-
                 lifecycleScope.launch {
-                    val driver = driverDao.getDriverById(userId)
-                    if (driver != null) {
-                        driverDao.updateCompletionStatus(driver.id, true)
+                    try {
+                        val driver = RetrofitClient.api.getDriverByUserId(userId)
 
-                        // Сохраняем результат теста
-                        saveTestResult(
-                            userId,
-                            currentTime,
-                            emotionalExhaustionScore,
-                            depersonalizationScore,
-                            personalAchievementScore,
-                            totalScore
-                        )
+                        if (driver != null) {
+                            // Обновить статус прохождения теста
+                            val updatedDriver = driver.copy(isCompleted = true)
+                            RetrofitClient.api.updateDriver(driver.id, updatedDriver)
 
-                        // Задержка для надёжности
-                        delay(100)
+                            // Сохранить результат
+                            val result = Results(
+                                userId = userId,
+                                testDate = currentTime,
+                                emotionalExhaustionScore = emotionalExhaustionScore,
+                                depersonalizationScore = depersonalizationScore,
+                                personalAchievementScore = personalAchievementScore,
+                                totalScore = totalScore
+                            )
+                            RetrofitClient.api.addResult(result)
 
-                        // Пересчёт статуса водителя
-                        val results = resultsDao.getResultsByUser(userId)
-                        val maxScore = 132
-                        val averageScore = results.map { it.totalScore }.average()
-                        val testsCount = results.size
+                            delay(100)
 
-                        val newStatus = when {
-                            testsCount >= 7 && averageScore > maxScore * 0.75 -> "Критическое"
-                            testsCount >= 1 && averageScore > maxScore * 0.5 -> "Внимание"
-                            else -> "Норма"
+                            val allResults = RetrofitClient.api.getResultsByUser(userId)
+                            val maxScore = 132
+                            val averageScore = allResults.map { it.totalScore }.average()
+                            val testsCount = allResults.size
+
+                            val newStatus = when {
+                                testsCount >= 7 && averageScore > maxScore * 0.75 -> "Критическое"
+                                testsCount >= 1 && averageScore > maxScore * 0.5 -> "Внимание"
+                                else -> "Норма"
+                            }
+
+                            val updatedDriverWithStatus = updatedDriver.copy(status = newStatus)
+                            RetrofitClient.api.updateDriver(driver.id, updatedDriverWithStatus)
+
+                            setFragmentResult("requestKey", bundleOf("refresh" to true))
                         }
-
-                        driverDao.updateStatus(driver.id, newStatus)
-
-                        // Переход в меню
-                        setFragmentResult("requestKey", bundleOf("refresh" to true))
-                        findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(requireContext(), "Ошибка при сохранении результата", Toast.LENGTH_SHORT).show()
                     }
+                    findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
                 }
             } else {
                 findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
@@ -124,7 +124,6 @@ class ResultsFragment : Fragment() {
         dialog.setContentView(R.layout.tooltip_layout)
 
         val tooltipText = dialog.findViewById<TextView>(R.id.tooltip_text)
-
         val spannableMessage = SpannableString(message)
 
         val termsToHighlight = listOf(
@@ -147,29 +146,6 @@ class ResultsFragment : Fragment() {
 
         tooltipText.text = spannableMessage
         dialog.show()
-    }
-
-    private fun saveTestResult(
-        userId: Int,
-        dateTime: String,
-        emotionalExhaustionScore: Int,
-        depersonalizationScore: Int,
-        personalAchievementScore: Int,
-        totalScore: Int
-    ) {
-        val db = AppDatabase.getDatabase(requireContext())
-        val result = Results(
-            userId = userId,
-            testDate = dateTime,
-            emotionalExhaustionScore = emotionalExhaustionScore,
-            depersonalizationScore = depersonalizationScore,
-            personalAchievementScore = personalAchievementScore,
-            totalScore = totalScore
-        )
-
-        lifecycleScope.launch {
-            db.resultsDao().insertResult(result)
-        }
     }
 
     override fun onDestroyView() {

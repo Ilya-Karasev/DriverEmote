@@ -39,6 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
             android:layout_marginEnd="16dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -107,7 +108,8 @@
                     android:layout_marginTop="16dp"
                     android:indeterminate="true"
                     android:theme="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="16dp"
+                    android:indeterminateTint="@color/dark_green" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewUsers"
@@ -116,7 +118,6 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
     </LinearLayout>
 
     <View

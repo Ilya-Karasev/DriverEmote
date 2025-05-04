@@ -108,9 +108,9 @@
                     android:id="@+id/user_info_progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/dark_green"/>
             </LinearLayout>
-
 
             <!-- Кнопка тестирования -->
             <com.google.android.material.button.MaterialButton
@@ -121,7 +121,8 @@
                 android:text="Пройти тестирование"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"/>
 
             <!-- Карточка состояния -->
             <androidx.cardview.widget.CardView
@@ -209,7 +210,8 @@
                             android:id="@+id/chart_progress_bar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            android:indeterminateTint="@color/dark_green"/>
                     </FrameLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

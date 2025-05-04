@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.api.Constants
 import com.example.driveremote.databinding.FragmentTestBinding
 
 class TestFragment : Fragment() {
@@ -108,14 +109,13 @@ class TestFragment : Fragment() {
                 }
             }
         }
-
         setResultsButtonState(answeredQuestions == totalQuestions)
     }
 
     private fun setResultsButtonState(isEnabled: Boolean) {
         binding.buttonGetResults.isEnabled = isEnabled
         binding.buttonGetResults.setBackgroundColor(
-            if (isEnabled) Color.rgb(0x00, 0xB1, 0x47) else Color.GRAY
+            if (isEnabled) Color.parseColor(Constants.DARK_GREEN) else Color.GRAY
         )
         binding.buttonGetResults.text = if (isEnabled) {
             "Получить результаты"
@@ -123,7 +123,6 @@ class TestFragment : Fragment() {
             "Отвечено вопросов: $answeredQuestions/$totalQuestions"
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
