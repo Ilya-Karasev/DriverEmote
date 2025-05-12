@@ -19,12 +19,12 @@
 
         <TextView
             android:id="@+id/title"
+            android:fontFamily="sans-serif-black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DriverMonitor"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -81,15 +81,16 @@
 
                 <TextView
                     android:id="@+id/driver_name"
+                    android:fontFamily="sans-serif-medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
                     android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/driver_age"
+                    android:fontFamily="sans-serif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -98,6 +99,7 @@
 
                 <TextView
                     android:id="@+id/driver_email"
+                    android:fontFamily="sans-serif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -115,6 +117,7 @@
             <!-- Кнопка тестирования -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/test_button"
+                android:fontFamily="sans-serif-medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/green"
@@ -148,13 +151,13 @@
 
                         <TextView
                             android:id="@+id/state_title"
+                            android:fontFamily="sans-serif-medium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Состояние"
                             android:textColor="@color/black"
-                            android:textSize="24sp"
-                            android:textStyle="bold"/>
+                            android:textSize="24sp"/>
 
                         <TextView
                             android:id="@+id/details_link"
@@ -162,7 +165,8 @@
                             android:layout_height="wrap_content"
                             android:text="Подробнее"
                             android:textColor="@color/green"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -174,6 +178,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
                             android:text="Последние 7 дней"
                             android:layout_weight="1"
                             android:textColor="@color/black"
@@ -181,6 +186,7 @@
 
                         <TextView
                             android:id="@+id/driver_status"
+                            android:fontFamily="sans-serif-black"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
@@ -219,11 +225,11 @@
             <!-- Кнопка выхода -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/logout_button"
+                android:fontFamily="sans-serif-medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/red"
                 android:text="Выйти из аккаунта"
-                android:textStyle="bold"
                 android:textColor="@android:color/white"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -261,10 +267,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:text="Меню"
                 android:textColor="@color/green"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -286,7 +292,7 @@
                 android:text="Поиск"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -308,7 +314,7 @@
                 android:text="Запросы"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

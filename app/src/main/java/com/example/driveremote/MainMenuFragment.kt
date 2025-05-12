@@ -1,14 +1,14 @@
 package com.example.driveremote
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +33,8 @@ import androidx.core.content.ContextCompat
 import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
 import com.github.mikephil.charting.components.Legend
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class MainMenuFragment : Fragment() {
     private var _binding: FragmentMainMenuBinding? = null
@@ -185,6 +187,7 @@ class MainMenuFragment : Fragment() {
 
     private fun setupChart() {
         val chart = binding.lineChart
+        val orientation = resources.configuration.orientation
 
         val xAxis = chart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -203,6 +206,22 @@ class MainMenuFragment : Fragment() {
         legend.setDrawInside(false)
         legend.setWordWrapEnabled(true)
         legend.textSize = 16f
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Горизонтальная ориентация
+            binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_landscape_min_width)
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            binding.topBar.visibility = GONE
+            binding.bottomBar.visibility = GONE
+        } else {
+            // Вертикальная ориентация
+            binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_portrait_min_width)
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+            binding.topBar.visibility = VISIBLE
+            binding.bottomBar.visibility = VISIBLE
+        }
 
         if (resultsList.isEmpty()) {
             chart.clear()
@@ -272,8 +291,24 @@ class MainMenuFragment : Fragment() {
                 driver?.let {
                     if (driver.isCompleted) {
                         binding.testButton.isEnabled = false
-                        binding.testButton.text = "Следующее тестирование в ${driver.testingTime?.firstOrNull() ?: "неизвестно"}"
+
+                        val now = LocalTime.now()
+                        val times = driver.testingTime?.mapNotNull {
+                            try {
+                                LocalTime.parse(it)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        } ?: emptyList()
+
+                        val nextTime = times
+                            .filter { it.isAfter(now) }
+                            .minOrNull() ?: times.minOrNull() // если нет будущего времени — берём первое (следующий день)
+
+                        val displayTime = nextTime?.format(DateTimeFormatter.ofPattern("HH:mm")) ?: "неизвестно"
+                        binding.testButton.text = "Следующее тестирование в $displayTime"
                         binding.testButton.setBackgroundColor(Color.GRAY)
+
                     } else {
                         binding.testButton.isEnabled = true
                         binding.testButton.text = "Пройти тестирование"

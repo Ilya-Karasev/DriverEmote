@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="chart_landscape_min_width">650dp</dimen>
+    <dimen name="chart_portrait_min_width">295dp</dimen>
+</resources>

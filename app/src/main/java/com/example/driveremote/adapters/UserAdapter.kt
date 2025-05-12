@@ -93,9 +93,14 @@ class UserAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // Получаем список запросов с сервера
-                val requests = apiService.getRequestsBySender(currentUserId)
+                val requestsSender = apiService.getRequestsBySender(user.id)
+                val requestsReceiver = apiService.getRequestsByReceiver(user.id)
 
-                val requestExists = requests.any {
+                val requestExists = requestsSender.any {
+                    (it.sender == currentUserId && it.receiver == user.id) ||
+                            (it.sender == user.id && it.receiver == currentUserId)
+
+                } or requestsReceiver.any {
                     (it.sender == currentUserId && it.receiver == user.id) ||
                             (it.sender == user.id && it.receiver == currentUserId)
                 }

@@ -15,18 +15,19 @@
 
         <TextView
             android:id="@+id/textRegister"
+            android:fontFamily="sans-serif-black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Регистрация"
             android:textColor="@color/dark_green"
             android:textSize="36sp"
-            android:textStyle="bold"
             android:layout_marginBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/enter_text"
+            android:fontFamily="sans-serif-light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Введите данные для авторизации"
@@ -48,6 +49,7 @@
 
                 <EditText
                     android:id="@+id/editTextSurName"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
@@ -59,6 +61,7 @@
 
                 <EditText
                     android:id="@+id/editTextFirstName"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
@@ -70,6 +73,7 @@
 
                 <EditText
                     android:id="@+id/editTextFatherName"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
@@ -81,6 +85,7 @@
 
                 <EditText
                     android:id="@+id/editTextAge"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -103,6 +108,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/buttonDriver"
+                        android:fontFamily="sans-serif-medium"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -113,6 +119,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/buttonManager"
+                        android:fontFamily="sans-serif-medium"
                         android:layout_width="0dp"
                         android:layout_weight="1.25"
                         android:layout_height="wrap_content"
@@ -124,6 +131,7 @@
 
                 <EditText
                     android:id="@+id/editTextEmail"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
@@ -136,6 +144,7 @@
 
                 <EditText
                     android:id="@+id/editTextPassword"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
@@ -167,11 +176,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="center"
                     android:text="Вернуться"
                     android:textColor="@color/dark_green"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
             </FrameLayout>
 
             <!-- Правая часть: Зарегистрироваться (цвет меняется при активации) -->
@@ -183,6 +192,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/textRegisterButton"
+                    android:fontFamily="sans-serif-medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

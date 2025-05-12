@@ -24,7 +24,7 @@
             android:text="DriverMonitor"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -82,7 +82,7 @@
                         android:text="Динамика состояния"
                         android:textColor="@color/black"
                         android:textSize="24sp"
-                        android:textStyle="bold"/>
+                        android:fontFamily="sans-serif-medium"/>
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -133,7 +133,7 @@
                         android:text="Последние результаты"
                         android:textColor="@color/black"
                         android:textSize="24sp"
-                        android:textStyle="bold"/>
+                        android:fontFamily="sans-serif-medium"/>
 
                     <ProgressBar
                         android:id="@+id/progressBar"
@@ -198,7 +198,7 @@
                 android:text="Меню"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -220,7 +220,7 @@
                 android:text="Поиск"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -242,7 +242,7 @@
                 android:text="Запросы"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

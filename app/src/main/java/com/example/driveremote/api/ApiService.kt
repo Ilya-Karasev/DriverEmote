@@ -69,7 +69,7 @@ interface ApiService {
     suspend fun getDriverByUserId(@Path("userId") userId: Int): Driver
 
     @POST("/api/drivers")
-    suspend fun createDriver(@Body driver: Driver): Driver
+    suspend fun saveDriver(@Body driver: Driver): Driver
 
     @PUT("/api/drivers/{id}")
     suspend fun updateDriver(@Path("id") id: Int, @Body driver: Driver): Driver

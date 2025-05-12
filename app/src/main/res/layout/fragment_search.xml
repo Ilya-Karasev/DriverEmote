@@ -24,7 +24,7 @@
             android:text="DriverMonitor"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -78,12 +78,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Поиск"
-                android:textColorHint="@color/gray"
                 android:background="@color/white"
-                android:paddingStart="8dp"
+                android:fontFamily="sans-serif-light"
+                android:hint="Поиск"
                 android:inputType="text"
-                android:textColor="@color/black"/>
+                android:paddingStart="8dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
         </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -153,10 +154,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:text="Меню"
                 android:textColor="@color/gray"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -178,7 +179,7 @@
                 android:text="Поиск"
                 android:textColor="@color/green"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -200,7 +201,7 @@
                 android:text="Запросы"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

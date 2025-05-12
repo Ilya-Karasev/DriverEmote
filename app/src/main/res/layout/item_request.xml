@@ -39,6 +39,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="Иванов Иван Иванович"
+            android:fontFamily="sans-serif-smallcaps"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:layout_marginEnd="16dp" />

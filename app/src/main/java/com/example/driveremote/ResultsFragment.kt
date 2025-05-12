@@ -106,6 +106,7 @@ class ResultsFragment : Fragment() {
                             RetrofitClient.api.updateDriver(driver.id, updatedDriverWithStatus)
 
                             setFragmentResult("requestKey", bundleOf("refresh" to true))
+                            Toast.makeText(requireContext(), "Результаты успешно сохранены", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

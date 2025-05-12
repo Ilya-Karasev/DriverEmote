@@ -47,7 +47,7 @@ class TestReminderWorker(
                 return Result.success()
             }
 
-            if (now - lastNotificationTime < 60 * 60 * 1000) {
+            if (now - lastNotificationTime < 24 * 60 * 60 * 1000) {
                 Log.d("TestReminderWorker", "Notification suppressed (already sent recently)")
                 return Result.success()
             }

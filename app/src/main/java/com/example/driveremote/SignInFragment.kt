@@ -19,6 +19,7 @@ import com.example.driveremote.databinding.FragmentSignInBinding
 import com.example.driveremote.models.Post
 import com.example.driveremote.models.User
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
@@ -91,6 +92,14 @@ class SignInFragment : Fragment() {
                     } else {
                         Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
                     }
+                } catch (e: HttpException) {
+                    // Обрабатываем ошибки HTTP (например, 401 - Unauthorized)
+                    if (e.code() == 401) {
+                        Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Ошибка подключения к серверу", Toast.LENGTH_SHORT).show()
+                    }
+                    Log.e("SignInFragment", "Login error", e)
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Ошибка подключения к серверу", Toast.LENGTH_SHORT).show()
                     Log.e("SignInFragment", "Login error", e)

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.adapters.UserAdapter
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSearchBinding
-import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Post
 import com.example.driveremote.models.Request
 import com.example.driveremote.models.User
@@ -46,7 +45,6 @@ class SearchFragment : Fragment() {
 
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(requireContext())
 
-        // Получаем текущего пользователя из SharedPreferences
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         currentUserId = sharedPreferences.getInt("userId", -1)
 

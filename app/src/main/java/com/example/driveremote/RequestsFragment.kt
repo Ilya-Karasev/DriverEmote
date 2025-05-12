@@ -93,7 +93,7 @@ class RequestsFragment : Fragment() {
         }
 
         binding.settingsIcon.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_settingsFragment)
+            findNavController().navigate(R.id.action_requestsFragment_to_settingsFragment)
         }
 
         updateButtonStates()

@@ -101,12 +101,6 @@
             android:id="@+id/action_profileFragment_to_mainMenuFragment"
             app:destination="@id/mainMenuFragment"/>
         <action
-            android:id="@+id/action_profileFragment_to_managerMenuFragment"
-            app:destination="@id/managerMenuFragment"/>
-        <action
-            android:id="@+id/action_profileFragment_to_signInFragment"
-            app:destination="@id/signInFragment"/>
-        <action
             android:id="@+id/action_profileFragment_to_searchFragment"
             app:destination="@id/searchFragment"/>
         <action
@@ -128,9 +122,6 @@
         <action
             android:id="@+id/action_searchFragment_to_managerMenuFragment"
             app:destination="@id/managerMenuFragment"/>
-        <action
-            android:id="@+id/action_searchFragment_to_profileFragment"
-            app:destination="@id/profileFragment"/>
         <action
             android:id="@+id/action_searchFragment_to_requestsFragment"
             app:destination="@id/requestsFragment"/>
@@ -176,9 +167,6 @@
             android:id="@+id/action_requestsFragment_to_searchFragment"
             app:destination="@id/searchFragment"/>
         <action
-            android:id="@+id/action_requestsFragment_to_signInFragment"
-            app:destination="@id/signInFragment"/>
-        <action
             android:id="@+id/action_requestsFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"/>
     </fragment>
@@ -197,9 +185,6 @@
         <action
             android:id="@+id/action_employeeFragment_to_requestsFragment"
             app:destination="@id/requestsFragment"/>
-        <action
-            android:id="@+id/action_employeeFragment_to_signInFragment"
-            app:destination="@id/signInFragment"/>
         <action
             android:id="@+id/action_employeeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"/>

@@ -1,18 +1,20 @@
 package com.example.driveremote
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentEmployeeBinding
-import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Results
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -117,6 +119,7 @@ class EmployeeFragment : Fragment() {
 
     private fun setupChart() {
         val chart = binding.lineChart
+        val orientation = resources.configuration.orientation
 
         if (resultsList.isEmpty()) {
             chart.clear()
@@ -131,6 +134,22 @@ class EmployeeFragment : Fragment() {
         legend.setDrawInside(false)
         legend.setWordWrapEnabled(true)
         legend.textSize = 16f
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Горизонтальная ориентация
+            binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_landscape_min_width)
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            binding.topBar.visibility = GONE
+            binding.bottomBar.visibility = GONE
+        } else {
+            // Вертикальная ориентация
+            binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_portrait_min_width)
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+            binding.topBar.visibility = VISIBLE
+            binding.bottomBar.visibility = VISIBLE
+        }
 
         val entriesBurnout = ArrayList<Entry>()
         val entriesDepersonalization = ArrayList<Entry>()

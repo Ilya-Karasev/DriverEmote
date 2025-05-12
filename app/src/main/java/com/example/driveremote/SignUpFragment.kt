@@ -72,12 +72,12 @@ class SignUpFragment : Fragment() {
             val password = binding.editTextPassword.text.toString().trim()
 
             if (post == null) {
-                Toast.makeText(requireContext(), "Выберите роль", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Выберите роль, нажав на белую кнопку", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (!isValidEmail(email)) {
-                Toast.makeText(requireContext(), "Некорректный email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Email не введён или имеет некорректный формат", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -107,7 +107,7 @@ class SignUpFragment : Fragment() {
                             testingTime = listOf("08:00"),
                             quantity = 1
                         )
-                        RetrofitClient.api.createDriver(driver)
+                        RetrofitClient.api.saveDriver(driver)
                     }
 
                     if (post == Post.РУКОВОДИТЕЛЬ) {

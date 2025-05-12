@@ -24,7 +24,7 @@
             android:text="DriverMonitor"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:text="ВХОДЯЩИЕ"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/dark_green" />
 
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:text="ИСХОДЯЩИЕ"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/dark_green"
                 app:backgroundTint="@color/white" />
         </LinearLayout>
@@ -156,7 +156,7 @@
                 android:text="Меню"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -178,7 +178,7 @@
                 android:text="Поиск"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -200,7 +200,7 @@
                 android:text="Запросы"
                 android:textColor="@color/green"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

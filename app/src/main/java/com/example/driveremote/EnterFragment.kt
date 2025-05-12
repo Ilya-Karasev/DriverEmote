@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class EnterFragment : Fragment() {
     private var _binding: FragmentEnterBinding? = null
-    private val binding get() = _binding ?: error("Binding is null")
+    private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
 
     private val sharedPreferences by lazy {
         requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)

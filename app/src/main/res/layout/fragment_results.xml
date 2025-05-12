@@ -23,7 +23,7 @@
             android:text="DriverMonitor"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:fontFamily="sans-serif-black" />
     </LinearLayout>
 
     <TextView
@@ -35,7 +35,7 @@
         android:text="Тестирование завершено!"
         android:textColor="@color/dark_green"
         android:textSize="24sp"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -59,7 +59,7 @@
             android:text="Дата и время завершения:\n--.--.----, --:--"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             app:layout_constraintTop_toBottomOf="@id/top_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -77,6 +77,7 @@
             <!-- Эмоциональное истощение -->
             <TextView
                 android:id="@+id/text_emotional_exhaustion_label"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Эмоциональное истощение"
@@ -91,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textColor="@color/black"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:textSize="18sp"
                 app:layout_constraintTop_toTopOf="@id/text_emotional_exhaustion_label"
                 app:layout_constraintEnd_toStartOf="@id/icon_emotional_exhaustion"
@@ -111,6 +112,7 @@
             <!-- Деперсонализация -->
             <TextView
                 android:id="@+id/text_depersonalization_label"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Деперсонализация"
@@ -125,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintTop_toTopOf="@id/text_depersonalization_label"
@@ -146,6 +148,7 @@
             <!-- Редукция личных достижений -->
             <TextView
                 android:id="@+id/text_personal_achievement_label"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Редукция личных достижений"
@@ -160,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintTop_toTopOf="@id/text_personal_achievement_label"
@@ -188,7 +191,7 @@
             android:textColor="@color/black"
             android:gravity="center"
             android:textSize="16sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@id/results_container"
             app:layout_constraintStart_toStartOf="parent"
@@ -204,7 +207,7 @@
         android:layout_margin="16dp"
         android:text="Вернуться в меню"
         android:textColor="@color/white"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
         android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_percent="0.9"/>

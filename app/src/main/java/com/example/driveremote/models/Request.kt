@@ -2,7 +2,6 @@ package com.example.driveremote.models
 
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Serializable
 
 @Entity(
     foreignKeys = [

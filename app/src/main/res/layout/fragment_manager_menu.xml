@@ -23,7 +23,7 @@
             android:text="DriverMonitor"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -72,11 +72,12 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
                     android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/driver_age"
+                    android:fontFamily="sans-serif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -85,6 +86,7 @@
 
                 <TextView
                     android:id="@+id/driver_email"
+                    android:fontFamily="sans-serif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -106,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/red"
                 android:text="Выйти из аккаунта"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="16dp"/>
 
@@ -115,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ваши подчинённые"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
@@ -183,7 +185,7 @@
                 android:text="Меню"
                 android:textColor="@color/green"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -205,7 +207,7 @@
                 android:text="Поиск"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -227,7 +229,7 @@
                 android:text="Запросы"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

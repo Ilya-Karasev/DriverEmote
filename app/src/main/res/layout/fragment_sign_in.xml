@@ -20,13 +20,14 @@
             android:text="Вход в систему"
             android:textColor="@color/dark_green"
             android:textSize="36sp"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
             android:layout_marginBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/enter_text"
+            android:fontFamily="sans-serif-light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Введите данные для авторизации"
@@ -39,6 +40,7 @@
 
         <EditText
             android:id="@+id/editTextEmail"
+            android:fontFamily="sans-serif-condensed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_border"
@@ -52,6 +54,7 @@
 
         <EditText
             android:id="@+id/editTextPassword"
+            android:fontFamily="sans-serif-condensed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -68,6 +71,7 @@
 
         <TextView
             android:id="@+id/textRegister"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -80,6 +84,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSignIn"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -93,6 +98,7 @@
 
         <TextView
             android:id="@+id/textExit"
+            android:fontFamily="sans-serif-medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -101,7 +107,6 @@
             android:textColor="@color/dark_green"
             android:textSize="24sp"
             android:layout_marginTop="24dp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttonSignIn" />

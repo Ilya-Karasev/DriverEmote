@@ -10,11 +10,11 @@
 
     <TextView
         android:id="@+id/welcomeText"
+        android:fontFamily="sans-serif-black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Добро пожаловать в DriverMonitor!"
         android:textSize="24sp"
-        android:textStyle="bold"
         android:textColor="@color/dark_green"
         android:gravity="center"
         android:layout_marginBottom="32dp" />
@@ -35,6 +35,7 @@
 
     <TextView
         android:id="@+id/tapHint"
+        android:fontFamily="sans-serif-light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Кликните на иконку,\nчтобы войти в систему..."

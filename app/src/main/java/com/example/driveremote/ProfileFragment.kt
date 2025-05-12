@@ -1,10 +1,13 @@
 package com.example.driveremote
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -73,7 +76,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.settingsIcon.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_settingsFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
         }
     }
 
@@ -93,6 +96,7 @@ class ProfileFragment : Fragment() {
 
     private fun setupChart() {
         val chart = binding.lineChart
+        val orientation = resources.configuration.orientation
 
         val xAxis = chart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -105,12 +109,26 @@ class ProfileFragment : Fragment() {
 
         val legend = chart.legend
         legend.isEnabled = true
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
         legend.orientation = Legend.LegendOrientation.HORIZONTAL
         legend.setDrawInside(false)
         legend.setWordWrapEnabled(true)
         legend.textSize = 16f
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Горизонтальная ориентация
+            binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_landscape_min_width)
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            binding.topBar.visibility = GONE
+            binding.bottomBar.visibility = GONE
+        } else {
+            // Вертикальная ориентация
+            binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_portrait_min_width)
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+            binding.topBar.visibility = VISIBLE
+            binding.bottomBar.visibility = VISIBLE
+        }
 
         if (resultsList.isEmpty()) {
             chart.clear()
