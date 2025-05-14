@@ -24,8 +24,8 @@ data class Results(
 ) {
     val status: String
         get() = when {
-            totalScore >= 106 -> "Критическое" // 80% от 132
-            totalScore >= 66 -> "Внимание"     // 50% от 132
+            totalScore >= 106 -> "Критическое"
+            totalScore >= 66 -> "Внимание"
             else -> "Норма"
         }
 }

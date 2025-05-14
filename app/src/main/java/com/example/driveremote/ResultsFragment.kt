@@ -20,7 +20,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentResultsBinding
 import com.example.driveremote.models.AppDatabase
+import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Results
+import com.example.driveremote.sessionManagers.DriverSession
+import com.example.driveremote.sessionManagers.ResultsSession
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -28,7 +31,7 @@ import java.util.*
 
 class ResultsFragment : Fragment() {
     private var _binding: FragmentResultsBinding? = null
-    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
+    private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +51,8 @@ class ResultsFragment : Fragment() {
 
         val currentTime = SimpleDateFormat("dd.MM.yyyy — HH:mm", Locale.getDefault()).format(Date())
 
-        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
 
         binding.textTime.text = "Дата и время завершения:\n$currentTime"
@@ -74,11 +78,9 @@ class ResultsFragment : Fragment() {
                         val driver = RetrofitClient.api.getDriverByUserId(userId)
 
                         if (driver != null) {
-                            // Обновить статус прохождения теста
                             val updatedDriver = driver.copy(isCompleted = true)
                             RetrofitClient.api.updateDriver(driver.id, updatedDriver)
 
-                            // Сохранить результат
                             val result = Results(
                                 userId = userId,
                                 testDate = currentTime,
@@ -105,13 +107,50 @@ class ResultsFragment : Fragment() {
                             val updatedDriverWithStatus = updatedDriver.copy(status = newStatus)
                             RetrofitClient.api.updateDriver(driver.id, updatedDriverWithStatus)
 
+                            DriverSession.saveDriver(requireContext(), updatedDriverWithStatus)
+                            ResultsSession.saveResults(requireContext(), allResults)
+
                             setFragmentResult("requestKey", bundleOf("refresh" to true))
-                            Toast.makeText(requireContext(), "Результаты успешно сохранены", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Результаты успешно сохранены",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Toast.makeText(requireContext(), "Ошибка при сохранении результата", Toast.LENGTH_SHORT).show()
+
+                        val localResults =
+                            ResultsSession.loadResults(requireContext()).toMutableList()
+                        val localResult = Results(
+                            id = 0,
+                            userId = userId,
+                            testDate = currentTime,
+                            emotionalExhaustionScore = emotionalExhaustionScore,
+                            depersonalizationScore = depersonalizationScore,
+                            personalAchievementScore = personalAchievementScore,
+                            totalScore = totalScore
+                        )
+                        localResults.add(localResult)
+                        ResultsSession.saveResults(requireContext(), localResults)
+
+                        val savedDriver = DriverSession.loadDriver(requireContext())
+                        val updatedDriver = savedDriver?.copy(isCompleted = true) ?: Driver(
+                            id = -1,
+                            isCompleted = true,
+                            quantity = 1,
+                            testingTime = null,
+                            status = "Неизвестно"
+                        )
+                        DriverSession.saveDriver(requireContext(), updatedDriver)
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Нет подключения. Результаты сохранены локально",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
+
                     findNavController().navigate(R.id.action_resultsFragment_to_mainMenuFragment)
                 }
             } else {

@@ -80,7 +80,6 @@ class SignInFragment : Fragment() {
                         saveUserSession(user)
 
                         if (user.post == Post.ВОДИТЕЛЬ) {
-                            // Включаем уведомления
                             val reminderPrefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
                             reminderPrefs.edit().putBoolean("notificationsEnabled_${user.id}", true).apply()
 
@@ -93,15 +92,14 @@ class SignInFragment : Fragment() {
                         Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: HttpException) {
-                    // Обрабатываем ошибки HTTP (например, 401 - Unauthorized)
                     if (e.code() == 401) {
                         Toast.makeText(requireContext(), "Неверные логин или пароль", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(requireContext(), "Ошибка подключения к серверу", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Требуется подключение к интернету и серверу", Toast.LENGTH_SHORT).show()
                     }
                     Log.e("SignInFragment", "Login error", e)
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Ошибка подключения к серверу", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Требуется подключение к интернету и серверу", Toast.LENGTH_SHORT).show()
                     Log.e("SignInFragment", "Login error", e)
                 }
             }

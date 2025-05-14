@@ -87,6 +87,9 @@ class SearchFragment : Fragment() {
                 val currentUser = api.getUserById(currentUserId)
                 currentUserPost = currentUser.post
 
+                val prefs = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                prefs.edit().putString("post", currentUserPost.name).apply()
+
                 if (currentUserPost == Post.ВОДИТЕЛЬ) {
                     binding.settingsIcon.visibility = View.VISIBLE
                     binding.settingsIcon.isClickable = true
@@ -105,8 +108,12 @@ class SearchFragment : Fragment() {
 
                 setupAdapter()
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Ошибка загрузки данных: ${e.message}", Toast.LENGTH_SHORT).show()
                 Log.e("SearchFragment", "Ошибка загрузки данных", e)
+                Toast.makeText(requireContext(), "Ошибка загрузки данных: ${e.message}", Toast.LENGTH_SHORT).show()
+
+                val prefs = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                val savedPost = prefs.getString("post", null)
+                currentUserPost = savedPost?.let { Post.valueOf(it) } ?: Post.ВОДИТЕЛЬ
             } finally {
                 binding.progressBar.visibility = View.GONE
                 binding.recyclerViewUsers.visibility = View.VISIBLE
@@ -121,13 +128,12 @@ class SearchFragment : Fragment() {
             currentUserPost = currentUserPost,
             employeesList = employeesList
         ) { selectedUser ->
-            // Обработка добавления запроса
             lifecycleScope.launch {
                 try {
                     val request = Request(sender = currentUserId, receiver = selectedUser.id)
                     RetrofitClient.api.createRequest(request)
                     Toast.makeText(requireContext(), "Запрос отправлен", Toast.LENGTH_SHORT).show()
-                    loadInitialData() // Перезагрузить данные после добавления запроса
+                    loadInitialData()
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Ошибка при отправке запроса", Toast.LENGTH_SHORT).show()
                 }

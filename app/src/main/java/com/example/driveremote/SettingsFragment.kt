@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSettingsBinding
+import com.example.driveremote.sessionManagers.DriverSession
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
@@ -40,7 +41,6 @@ class SettingsFragment : Fragment() {
                 try {
                     val driver = RetrofitClient.api.getDriverById(userId)
 
-                    // Установка radio-кнопки
                     if (driver.quantity == 2) {
                         binding.radioTwo.isChecked = true
                         binding.layoutTime2.visibility = View.VISIBLE
@@ -51,7 +51,6 @@ class SettingsFragment : Fragment() {
                         binding.labelTime2.visibility = View.GONE
                     }
 
-                    // Установка времени
                     driver.testingTime?.let {
                         if (it.isNotEmpty()) {
                             binding.editTime1.setText(it.getOrNull(0) ?: "")
@@ -60,7 +59,29 @@ class SettingsFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(requireContext(), "Не удалось загрузить настройки", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Загрузка из кэша настроек", Toast.LENGTH_SHORT).show()
+
+                    val cachedDriver = DriverSession.loadDriver(requireContext())
+                    if (cachedDriver != null) {
+                        if (cachedDriver.quantity == 2) {
+                            binding.radioTwo.isChecked = true
+                            binding.layoutTime2.visibility = View.VISIBLE
+                            binding.labelTime2.visibility = View.VISIBLE
+                        } else {
+                            binding.radioOne.isChecked = true
+                            binding.layoutTime2.visibility = View.GONE
+                            binding.labelTime2.visibility = View.GONE
+                        }
+
+                        cachedDriver.testingTime?.let {
+                            if (it.isNotEmpty()) {
+                                binding.editTime1.setText(it.getOrNull(0) ?: "")
+                                binding.editTime2.setText(it.getOrNull(1) ?: "")
+                            }
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Нет доступа к настройкам", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -128,8 +149,8 @@ class SettingsFragment : Fragment() {
 
                 val updatedDriver = driver.copy(quantity = quantity, testingTime = updatedTimes)
                 RetrofitClient.api.updateDriver(driver.id, updatedDriver)
+                DriverSession.saveDriver(requireContext(), updatedDriver)
 
-                // Сохраняем состояние переключателя уведомлений
                 val notifyEnabled = binding.switchNotify.isChecked
                 val prefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
                 prefs.edit().putBoolean("notificationsEnabled_$userId", notifyEnabled).apply()
@@ -137,7 +158,29 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Ошибка при сохранении настроек", Toast.LENGTH_SHORT).show()
+
+                val cachedDriver = DriverSession.loadDriver(requireContext())
+                if (cachedDriver != null) {
+                    val updatedDriver = cachedDriver.copy(
+                        quantity = quantity,
+                        testingTime = buildList {
+                            if (quantity == 1) add(time1)
+                            else {
+                                add(time1)
+                                add(time2)
+                            }
+                        }
+                    )
+                    DriverSession.saveDriver(requireContext(), updatedDriver)
+
+                    val notifyEnabled = binding.switchNotify.isChecked
+                    val prefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+                    prefs.edit().putBoolean("notificationsEnabled_$userId", notifyEnabled).apply()
+
+                    Toast.makeText(requireContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Ошибка при сохранении настроек", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

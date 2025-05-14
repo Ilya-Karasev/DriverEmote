@@ -32,6 +32,9 @@ import java.util.concurrent.TimeUnit
 import androidx.core.content.ContextCompat
 import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
+import com.example.driveremote.models.Driver
+import com.example.driveremote.sessionManagers.DriverSession
+import com.example.driveremote.sessionManagers.ResultsSession
 import com.github.mikephil.charting.components.Legend
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -39,8 +42,8 @@ import java.time.format.DateTimeFormatter
 class MainMenuFragment : Fragment() {
     private var _binding: FragmentMainMenuBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
-    private var resultsList: List<Results> = emptyList()
 
+    private var resultsList: List<Results> = emptyList()
     private val apiService = RetrofitClient.api
 
     override fun onCreateView(
@@ -58,6 +61,7 @@ class MainMenuFragment : Fragment() {
         val userId = sharedPreferences.getInt("userId", -1)
 
         if (userId != -1) {
+            syncOfflineData(userId)
             loadUserInfo(userId)
             loadResults(userId)
             updateTestButtonState(userId)
@@ -81,20 +85,17 @@ class MainMenuFragment : Fragment() {
         binding.logoutButton.setOnClickListener {
             val workManager = WorkManager.getInstance(requireContext())
             lifecycleScope.launch {
-                // Cancel reminders and clear session
                 val driver = apiService.getDriverById(userId)
                 val testingTimes = driver?.testingTime ?: emptyList()
 
-                // Cancel all WorkManager tasks related to notifications
                 testingTimes.forEach { time ->
                     val tag = "test_reminder_${userId}_$time"
                     workManager.cancelAllWorkByTag(tag)
                 }
 
-                // Clear session preferences
                 sharedPreferences.edit().clear().apply()
-
-                // Navigate to sign-in screen
+                DriverSession.clearDriver(requireContext())
+                ResultsSession.clearResults(requireContext())
                 findNavController().navigate(R.id.action_mainMenuFragment_to_signInFragment)
             }
         }
@@ -113,74 +114,86 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun loadUserInfo(userId: Int) {
-        binding.userInfoProgressBar.visibility = View.VISIBLE
-        binding.driverName.visibility = View.GONE
-        binding.driverAge.visibility = View.GONE
-        binding.driverEmail.visibility = View.GONE
-        binding.driverStatus.visibility = View.GONE
-        binding.testButton.visibility = View.GONE
+        binding.userInfoProgressBar.visibility = VISIBLE
+        binding.driverName.visibility = GONE
+        binding.driverAge.visibility = GONE
+        binding.driverEmail.visibility = GONE
+        binding.driverStatus.visibility = GONE
+        binding.testButton.visibility = GONE
 
         lifecycleScope.launch {
             try {
                 val user = apiService.getUserById(userId)
                 val driver = apiService.getDriverById(userId)
 
-                user?.let {
-                    binding.driverName.text = "${it.surName} ${it.firstName} ${it.fatherName}"
-                    binding.driverAge.text = "${it.age} лет"
-                    binding.driverEmail.text = it.email
-                    driver?.let {
-                        binding.driverStatus.text = driver.status
+                if (user != null && driver != null) {
+                    DriverSession.saveDriver(requireContext(), driver)
 
-                        val statusColor = when (driver.status) {
-                            "Норма" -> Constants.STATUS_NORMAL
-                            "Внимание" -> Constants.STATUS_WARNING
-                            "Критическое" -> Constants.STATUS_CRITICAL
-                            else -> "#000000"
-                        }
-                        binding.driverStatus.setTextColor(Color.parseColor(statusColor))
+                    binding.driverName.text = "${user.surName} ${user.firstName} ${user.fatherName}"
+                    binding.driverAge.text = "${user.age} лет"
+                    binding.driverEmail.text = user.email
+
+                    binding.driverStatus.text = driver.status
+                    val statusColor = when (driver.status) {
+                        "Норма" -> Constants.STATUS_NORMAL
+                        "Внимание" -> Constants.STATUS_WARNING
+                        "Критическое" -> Constants.STATUS_CRITICAL
+                        else -> Constants.BLACK
                     }
+                    binding.driverStatus.setTextColor(Color.parseColor(statusColor))
+                } else {
+                    throw Exception("Empty user or driver")
                 }
             } catch (e: Exception) {
-                Log.e("MainMenuFragment", "Error loading user info", e)
+                Log.e("MainMenuFragment", "Error loading user info from server, fallback to session", e)
+
+                DriverSession.loadDriver(requireContext())?.let { driver ->
+                    val prefs = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                    val name = "${prefs.getString("surName", "")} ${prefs.getString("firstName", "")} ${prefs.getString("fatherName", "")}"
+                    val age = "${prefs.getInt("age", 0)} лет"
+                    val email = prefs.getString("email", "") ?: ""
+
+                    binding.driverName.text = name
+                    binding.driverAge.text = age
+                    binding.driverEmail.text = email
+                    binding.driverStatus.text = driver.status
+
+                    val statusColor = when (driver.status) {
+                        "Норма" -> Constants.STATUS_NORMAL
+                        "Внимание" -> Constants.STATUS_WARNING
+                        "Критическое" -> Constants.STATUS_CRITICAL
+                        else -> Constants.BLACK
+                    }
+                    binding.driverStatus.setTextColor(Color.parseColor(statusColor))
+                }
             } finally {
-                binding.userInfoProgressBar.visibility = View.GONE
-                binding.driverName.visibility = View.VISIBLE
-                binding.driverAge.visibility = View.VISIBLE
-                binding.driverEmail.visibility = View.VISIBLE
-                binding.driverStatus.visibility = View.VISIBLE
-                binding.testButton.visibility = View.VISIBLE
+                binding.userInfoProgressBar.visibility = GONE
+                binding.driverName.visibility = VISIBLE
+                binding.driverAge.visibility = VISIBLE
+                binding.driverEmail.visibility = VISIBLE
+                binding.driverStatus.visibility = VISIBLE
+                binding.testButton.visibility = VISIBLE
             }
         }
     }
 
     private fun loadResults(userId: Int) {
-        binding.chartProgressBar.visibility = View.VISIBLE
-        binding.lineChart.visibility = View.GONE
+        binding.chartProgressBar.visibility = VISIBLE
+        binding.lineChart.visibility = GONE
 
         lifecycleScope.launch {
             try {
                 val allResults = apiService.getResultsByUser(userId)
+                ResultsSession.saveResults(requireContext(), allResults)
 
-                val sevenDaysAgo = Calendar.getInstance().apply {
-                    add(Calendar.DAY_OF_YEAR, -7)
-                }.time
-
-                resultsList = allResults.filter { result ->
-                    val datePart = result.testDate.split(" ")[0]
-                    val resultDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(datePart)
-                    resultDate != null && resultDate.after(sevenDaysAgo)
-                }.sortedByDescending {
-                    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-                        .parse(it.testDate.split(" ")[0])
-                }
-
-                setupChart()
+                resultsList = filterRecentResults(allResults)
             } catch (e: Exception) {
-                Log.e("MainMenuFragment", "Error loading results", e)
+                Log.e("MainMenuFragment", "Error loading results from server, fallback to session", e)
+                resultsList = filterRecentResults(ResultsSession.loadResults(requireContext()))
             } finally {
-                binding.chartProgressBar.visibility = View.GONE
-                binding.lineChart.visibility = View.VISIBLE
+                setupChart()
+                binding.chartProgressBar.visibility = GONE
+                binding.lineChart.visibility = VISIBLE
             }
         }
     }
@@ -208,14 +221,12 @@ class MainMenuFragment : Fragment() {
         legend.textSize = 16f
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Горизонтальная ориентация
             binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_landscape_min_width)
             legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
             binding.topBar.visibility = GONE
             binding.bottomBar.visibility = GONE
         } else {
-            // Вертикальная ориентация
             binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_portrait_min_width)
             legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
@@ -257,7 +268,7 @@ class MainMenuFragment : Fragment() {
             color = Color.RED
             circleRadius = 5f
             setDrawCircles(true)
-            setCircleColor(Color.RED)  // Цвет точек
+            setCircleColor(Color.RED)
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
@@ -288,99 +299,152 @@ class MainMenuFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val driver = apiService.getDriverById(userId)
-                driver?.let {
-                    if (driver.isCompleted) {
-                        binding.testButton.isEnabled = false
-
-                        val now = LocalTime.now()
-                        val times = driver.testingTime?.mapNotNull {
-                            try {
-                                LocalTime.parse(it)
-                            } catch (e: Exception) {
-                                null
-                            }
-                        } ?: emptyList()
-
-                        val nextTime = times
-                            .filter { it.isAfter(now) }
-                            .minOrNull() ?: times.minOrNull() // если нет будущего времени — берём первое (следующий день)
-
-                        val displayTime = nextTime?.format(DateTimeFormatter.ofPattern("HH:mm")) ?: "неизвестно"
-                        binding.testButton.text = "Следующее тестирование в $displayTime"
-                        binding.testButton.setBackgroundColor(Color.GRAY)
-
-                    } else {
-                        binding.testButton.isEnabled = true
-                        binding.testButton.text = "Пройти тестирование"
-                        binding.testButton.setBackgroundColor(
-                            ContextCompat.getColor(requireContext(), R.color.green)
-                        )
-                    }
-                }
+                DriverSession.saveDriver(requireContext(), driver!!) // сохраняем актуальные данные
+                updateTestButtonUI(driver)
             } catch (e: Exception) {
-                Log.e("MainMenuFragment", "Error updating test button state", e)
+                Log.e("MainMenuFragment", "Error updating test button state from server, using cache", e)
+                val cachedDriver = DriverSession.loadDriver(requireContext())
+                cachedDriver?.let {
+                    updateTestButtonUI(it)
+                } ?: run {
+                    binding.testButton.isEnabled = false
+                    binding.testButton.text = "Нет данных"
+                    binding.testButton.setBackgroundColor(Color.GRAY)
+                }
             }
+        }
+    }
+
+    private fun updateTestButtonUI(driver: Driver) {
+        if (driver.isCompleted) {
+            binding.testButton.isEnabled = false
+
+            val now = LocalTime.now()
+            val times = driver.testingTime?.mapNotNull {
+                try {
+                    LocalTime.parse(it)
+                } catch (e: Exception) {
+                    null
+                }
+            } ?: emptyList()
+
+            val nextTime = times
+                .filter { it.isAfter(now) }
+                .minOrNull() ?: times.minOrNull()
+
+            val displayTime = nextTime?.format(DateTimeFormatter.ofPattern("HH:mm")) ?: "неизвестно"
+            binding.testButton.text = "Следующее тестирование в $displayTime"
+            binding.testButton.setBackgroundColor(Color.GRAY)
+
+        } else {
+            binding.testButton.isEnabled = true
+            binding.testButton.text = "Пройти тестирование"
+            binding.testButton.setBackgroundColor(
+                ContextCompat.getColor(requireContext(), R.color.green)
+            )
         }
     }
 
     private fun scheduleTestReminders(userId: Int) {
         lifecycleScope.launch {
-            try {
-                val driver = apiService.getDriverById(userId)
-                val testingTimes = driver?.testingTime ?: return@launch
-
-                val workManager = WorkManager.getInstance(requireContext())
-                val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val now = Calendar.getInstance()
-
-                testingTimes.forEach { timeString ->
-                    if (timeString.isEmpty()) {
-                        Log.e("TestReminderSetup", "Skipping empty testing time for userId: $userId")
-                        return@forEach // Skip empty time
-                    }
-
-                    val tag = "test_reminder_${userId}_$timeString"
-
-                    // Cancel previous tasks with this tag
-                    workManager.cancelAllWorkByTag(tag)
-
-                    try {
-                        // Schedule new reminder task
-                        val calendar = Calendar.getInstance().apply {
-                            time = formatter.parse(timeString) ?: return@forEach
-                            set(Calendar.SECOND, 0)
-                            set(Calendar.MILLISECOND, 0)
-                            set(Calendar.YEAR, now.get(Calendar.YEAR))
-                            set(Calendar.MONTH, now.get(Calendar.MONTH))
-                            set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
-
-                            if (before(now)) {
-                                add(Calendar.DAY_OF_MONTH, 1)
-                            }
-                        }
-
-                        val delay = calendar.timeInMillis - System.currentTimeMillis()
-
-                        val inputData = Data.Builder()
-                            .putInt("userId", userId)
-                            .putString("time", timeString)
-                            .build()
-
-                        val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
-                            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                            .setInputData(inputData)
-                            .addTag(tag) // Tag used for task management
-                            .build()
-
-                        workManager.enqueue(workRequest)
-
-                        Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
-                    } catch (e: ParseException) {
-                        Log.e("TestReminderSetup", "Error parsing time: $timeString", e)
-                    }
-                }
+            val driver = try {
+                val remoteDriver = apiService.getDriverById(userId)
+                DriverSession.saveDriver(requireContext(), remoteDriver!!)
+                remoteDriver
             } catch (e: Exception) {
-                Log.e("MainMenuFragment", "Error scheduling test reminders", e)
+                Log.e("MainMenuFragment", "Error scheduling test reminders from server, using cache", e)
+                DriverSession.loadDriver(requireContext())
+            }
+
+            val testingTimes = driver?.testingTime ?: return@launch
+
+            val workManager = WorkManager.getInstance(requireContext())
+            val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val now = Calendar.getInstance()
+
+            testingTimes.forEach { timeString ->
+                if (timeString.isEmpty()) {
+                    Log.e("TestReminderSetup", "Skipping empty testing time for userId: $userId")
+                    return@forEach
+                }
+
+                val tag = "test_reminder_${userId}_$timeString"
+                workManager.cancelAllWorkByTag(tag)
+
+                try {
+                    val calendar = Calendar.getInstance().apply {
+                        time = formatter.parse(timeString) ?: return@forEach
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                        set(Calendar.YEAR, now.get(Calendar.YEAR))
+                        set(Calendar.MONTH, now.get(Calendar.MONTH))
+                        set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH))
+                        if (before(now)) {
+                            add(Calendar.DAY_OF_MONTH, 1)
+                        }
+                    }
+
+                    val delay = calendar.timeInMillis - System.currentTimeMillis()
+
+                    val inputData = Data.Builder()
+                        .putInt("userId", userId)
+                        .putString("time", timeString)
+                        .build()
+
+                    val workRequest = OneTimeWorkRequestBuilder<TestReminderWorker>()
+                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                        .setInputData(inputData)
+                        .addTag(tag)
+                        .build()
+
+                    workManager.enqueue(workRequest)
+                    Log.d("TestReminderSetup", "Reminder scheduled for $timeString (delay: $delay ms)")
+                } catch (e: ParseException) {
+                    Log.e("TestReminderSetup", "Error parsing time: $timeString", e)
+                }
+            }
+        }
+    }
+
+    private fun filterRecentResults(allResults: List<Results>): List<Results> {
+        val sevenDaysAgo = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -7)
+        }.time
+
+        return allResults.filter { result ->
+            val datePart = result.testDate.split(" ")[0]
+            val resultDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(datePart)
+            resultDate != null && resultDate.after(sevenDaysAgo)
+        }.sortedByDescending {
+            SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                .parse(it.testDate.split(" ")[0])
+        }
+    }
+
+    private fun syncOfflineData(userId: Int) {
+        lifecycleScope.launch {
+            try {
+                val localDriver = DriverSession.loadDriver(requireContext())
+                if (localDriver != null) {
+                    apiService.updateDriver(userId, localDriver)
+                    Log.d("MainMenuFragment", "Driver synced with server")
+                }
+
+                val offlineResults = ResultsSession.loadResults(requireContext())
+                    .filter { it.id == 0 }
+
+                for (result in offlineResults) {
+                    apiService.addResult(result)
+                    Log.d("MainMenuFragment", "Offline result sent: ${result.testDate}")
+                }
+
+                if (offlineResults.isNotEmpty()) {
+                    val syncedResults = apiService.getResultsByUser(userId)
+                    ResultsSession.saveResults(requireContext(), syncedResults)
+                }
+
+            } catch (e: Exception) {
+                Log.e("MainMenuFragment", "Error syncing offline data", e)
             }
         }
     }

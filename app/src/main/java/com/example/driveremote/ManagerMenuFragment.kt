@@ -35,7 +35,6 @@ class ManagerMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         apiService = RetrofitClient.api
 
         employeeAdapter = EmployeeAdapter(emptyList(), requireContext()) { employee ->
@@ -55,7 +54,6 @@ class ManagerMenuFragment : Fragment() {
         val sharedPrefs = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPrefs.getInt("userId", -1)
 
-        // Скрываем элементы и показываем спиннеры
         setLoadingState(true)
 
         if (userId != -1) {
@@ -74,12 +72,10 @@ class ManagerMenuFragment : Fragment() {
                         }
                     }
 
-                    // Скрываем спиннеры и показываем контент
                     setLoadingState(false)
 
                 } catch (e: Exception) {
                     Log.e("ManagerMenuFragment", "Ошибка получения данных: ${e.message}")
-                    // Можно добавить отображение ошибки
                     setLoadingState(false)
                 }
             }
@@ -102,13 +98,11 @@ class ManagerMenuFragment : Fragment() {
     }
 
     private fun setLoadingState(isLoading: Boolean) {
-        // Прогресс бар для информации о пользователе
         binding.userInfoProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.driverName.visibility = if (isLoading) View.GONE else View.VISIBLE
         binding.driverAge.visibility = if (isLoading) View.GONE else View.VISIBLE
         binding.driverEmail.visibility = if (isLoading) View.GONE else View.VISIBLE
 
-        // Прогресс бар для списка подчинённых
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.recyclerViewSubordinates.visibility = if (isLoading) View.GONE else View.VISIBLE
         binding.textSubordinates.visibility = if (isLoading) View.GONE else View.VISIBLE

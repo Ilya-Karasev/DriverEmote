@@ -54,7 +54,7 @@ class EmployeeFragment : Fragment() {
             showLoadingState()
             loadUserInfo(userId)
 
-            resultsAdapter = TestResultAdapter(userId) { results ->
+            resultsAdapter = TestResultAdapter(requireContext(), userId) { results ->
                 resultsList = results.sortedByDescending {
                     SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                         .parse(it.testDate.split(" ")[0])

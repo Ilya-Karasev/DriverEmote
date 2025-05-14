@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.R
@@ -22,8 +21,6 @@ class EmployeeAdapter(
     private val context: Context,
     private val onEmployeeClick: (User) -> Unit
 ) : RecyclerView.Adapter<EmployeeAdapter.EmployeeViewHolder>() {
-
-    // Retrofit API клиента
     private val apiService = RetrofitClient.api
 
     inner class EmployeeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -38,7 +35,6 @@ class EmployeeAdapter(
             ageTextView.text = "${employee.age} год(а)/лет"
             emailTextView.text = employee.email
 
-            // Инициалы
             val initials = "${employee.surName.firstOrNull() ?: ""}${employee.firstName.firstOrNull() ?: ""}".uppercase()
             val textColor = generateRandomColor(saturation = 0.8f, brightness = 0.9f)
             val backgroundColor = adjustAlpha(textColor, 0.15f)
@@ -47,20 +43,17 @@ class EmployeeAdapter(
             iconInitials.setTextColor(textColor)
             iconInitials.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
-            // Статус водителя
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    // Получаем статус водителя через API
                     val driver = withContext(Dispatchers.IO) { apiService.getDriverById(employee.id) }
                     employeeStatus.text = driver.status
                     when (driver.status) {
-                        "Норма" -> employeeStatus.setTextColor(Color.parseColor(Constants.STATUS_NORMAL)) // Зелёный
-                        "Внимание" -> employeeStatus.setTextColor(Color.parseColor(Constants.STATUS_WARNING)) // Оранжевый
-                        "Критическое" -> employeeStatus.setTextColor(Color.parseColor(Constants.STATUS_CRITICAL)) // Красный
+                        "Норма" -> employeeStatus.setTextColor(Color.parseColor(Constants.STATUS_NORMAL))
+                        "Внимание" -> employeeStatus.setTextColor(Color.parseColor(Constants.STATUS_WARNING))
+                        "Критическое" -> employeeStatus.setTextColor(Color.parseColor(Constants.STATUS_CRITICAL))
                         else -> employeeStatus.setTextColor(Color.DKGRAY)
                     }
                 } catch (e: Exception) {
-                    // Обработка ошибок
                     employeeStatus.text = "Ошибка"
                     employeeStatus.setTextColor(Color.RED)
                 }

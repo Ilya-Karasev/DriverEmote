@@ -7,8 +7,8 @@ data class Driver(
     @PrimaryKey val id: Int,
     val isCompleted: Boolean,
     val testingTime: List<String>?,
-    val quantity: Int, // Может быть только 1 или 2
-    var status: String = "Норма" // Поле для статуса ("Норма", "Внимание", "Критическое")
+    val quantity: Int,
+    var status: String = "Норма"
 ) {
     init {
         require(quantity in listOf(1, 2)) { "Количество может быть 1 или 2" }

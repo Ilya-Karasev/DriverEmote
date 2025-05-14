@@ -49,7 +49,7 @@ class ProfileFragment : Fragment() {
         val userId = sharedPreferences.getInt("userId", -1)
 
         if (userId != -1) {
-            resultsAdapter = TestResultAdapter(userId) { loadedResults ->
+            resultsAdapter = TestResultAdapter(requireContext(), userId) { loadedResults ->
                 resultsList = loadedResults.sortedByDescending {
                     SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                         .parse(it.testDate.split(" ")[0])
@@ -81,17 +81,17 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showLoadingState() {
-        binding.chartProgressBar.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.VISIBLE
-        binding.recyclerViewResults.visibility = View.GONE
-        binding.lineChart.visibility = View.GONE
+        binding.chartProgressBar.visibility = VISIBLE
+        binding.progressBar.visibility = VISIBLE
+        binding.recyclerViewResults.visibility = GONE
+        binding.lineChart.visibility = GONE
     }
 
     private fun showContentState() {
-        binding.chartProgressBar.visibility = View.GONE
-        binding.progressBar.visibility = View.GONE
-        binding.recyclerViewResults.visibility = View.VISIBLE
-        binding.lineChart.visibility = View.VISIBLE
+        binding.chartProgressBar.visibility = GONE
+        binding.progressBar.visibility = GONE
+        binding.recyclerViewResults.visibility = VISIBLE
+        binding.lineChart.visibility = VISIBLE
     }
 
     private fun setupChart() {
@@ -115,14 +115,12 @@ class ProfileFragment : Fragment() {
         legend.textSize = 16f
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Горизонтальная ориентация
             binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_landscape_min_width)
             legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
             binding.topBar.visibility = GONE
             binding.bottomBar.visibility = GONE
         } else {
-            // Вертикальная ориентация
             binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_portrait_min_width)
             legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT

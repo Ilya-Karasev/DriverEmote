@@ -1,14 +1,18 @@
 package com.example.driveremote
 
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.ItemTestResultBinding
 import com.example.driveremote.models.Results
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TestResultAdapter(
+    private val context: Context,
     private val userId: Int,
     private val onResultsLoaded: (List<Results>) -> Unit
 ) : RecyclerView.Adapter<TestResultAdapter.ResultsViewHolder>() {
@@ -79,10 +84,36 @@ class TestResultAdapter(
                     results.clear()
                     results.addAll(response)
                     notifyDataSetChanged()
-                    onResultsLoaded(response) // передаём данные наружу
+                    onResultsLoaded(response)
+
+                    val prefs = context.getSharedPreferences("ResultsSession", Context.MODE_PRIVATE)
+                    val editor = prefs.edit()
+                    val json = Gson().toJson(response)
+                    editor.putString("results_user_$userId", json)
+                    editor.apply()
                 }
             } catch (e: Exception) {
                 Log.e("TestResultAdapter", "Ошибка при получении результатов: ${e.message}")
+
+                val prefs = context.getSharedPreferences("ResultsSession", Context.MODE_PRIVATE)
+                val json = prefs.getString("results_user_$userId", null)
+
+                if (json != null) {
+                    val type = object : TypeToken<List<Results>>() {}.type
+                    val cachedResults: List<Results> = Gson().fromJson(json, type)
+
+                    withContext(Dispatchers.Main) {
+                        results.clear()
+                        results.addAll(cachedResults)
+                        notifyDataSetChanged()
+                        onResultsLoaded(cachedResults)
+                        Toast.makeText(context, "Загружены сохранённые результаты", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Ошибка загрузки результатов", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }

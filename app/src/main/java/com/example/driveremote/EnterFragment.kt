@@ -34,6 +34,7 @@ class EnterFragment : Fragment() {
 
         binding.imageEnterIcon.setOnClickListener {
             val userId = sharedPreferences.getInt("userId", -1)
+
             if (userId == -1) {
                 findNavController().navigate(R.id.action_enterFragment_to_signInFragment)
                 return@setOnClickListener
@@ -48,13 +49,22 @@ class EnterFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    sharedPreferences.edit().clear().apply()
-                    findNavController().navigate(R.id.action_enterFragment_to_signInFragment)
+
+                    val postName = sharedPreferences.getString("post", null)
+                    val post = postName?.let { Post.valueOf(it) }
+
+                    if (post != null) {
+                        when (post) {
+                            Post.РУКОВОДИТЕЛЬ -> findNavController().navigate(R.id.action_enterFragment_to_managerMenuFragment)
+                            Post.ВОДИТЕЛЬ -> findNavController().navigate(R.id.action_enterFragment_to_mainMenuFragment)
+                        }
+                    } else {
+                        sharedPreferences.edit().clear().apply()
+                        findNavController().navigate(R.id.action_enterFragment_to_signInFragment)
+                    }
                 }
             }
         }
-
-        // ⚠️ Удалена вставка тестовых пользователей из локальной БД
     }
 
     override fun onDestroyView() {
