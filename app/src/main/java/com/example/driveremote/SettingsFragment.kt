@@ -1,22 +1,30 @@
 package com.example.driveremote
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSettingsBinding
 import com.example.driveremote.sessionManagers.DriverSession
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
+
+    private var countDownTimer: CountDownTimer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +39,15 @@ class SettingsFragment : Fragment() {
 
         val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", -1)
+
+        val savePrefs = requireContext().getSharedPreferences("SavePrefs", Context.MODE_PRIVATE)
+        val lastSavedTime = savePrefs.getLong("lastSavedTime_$userId", 0L)
+        val currentTime = System.currentTimeMillis()
+        val timePassed = currentTime - lastSavedTime
+
+        if (timePassed < Constants.TIME_LIMIT.toLong()) {
+            disableSaveButton(Constants.TIME_LIMIT.toLong() - timePassed)
+        }
 
         if (userId != -1) {
             val prefs = requireContext().getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
@@ -156,6 +173,9 @@ class SettingsFragment : Fragment() {
                 prefs.edit().putBoolean("notificationsEnabled_$userId", notifyEnabled).apply()
 
                 Toast.makeText(requireContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show()
+                val savePrefs = requireContext().getSharedPreferences("SavePrefs", Context.MODE_PRIVATE)
+                savePrefs.edit().putLong("lastSavedTime_$userId", System.currentTimeMillis()).apply()
+                disableSaveButton(Constants.TIME_LIMIT.toLong())
             } catch (e: Exception) {
                 e.printStackTrace()
 
@@ -178,6 +198,9 @@ class SettingsFragment : Fragment() {
                     prefs.edit().putBoolean("notificationsEnabled_$userId", notifyEnabled).apply()
 
                     Toast.makeText(requireContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show()
+                    val savePrefs = requireContext().getSharedPreferences("SavePrefs", Context.MODE_PRIVATE)
+                    savePrefs.edit().putLong("lastSavedTime_$userId", System.currentTimeMillis()).apply()
+                    disableSaveButton(Constants.TIME_LIMIT.toLong())
                 } else {
                     Toast.makeText(requireContext(), "Ошибка при сохранении настроек", Toast.LENGTH_SHORT).show()
                 }
@@ -185,8 +208,36 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun disableSaveButton(durationMillis: Long) {
+        binding.buttonSave.isEnabled = false
+        binding.buttonSave.setBackgroundColor(Color.GRAY)
+
+        countDownTimer?.cancel() // отмена предыдущего таймера, если он был
+
+        countDownTimer = object : CountDownTimer(durationMillis, 60_000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val hours = TimeUnit.MILLISECONDS.toHours(millisUntilFinished)
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60
+                val seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60
+                val formatted = String.format("Следующее изменение через %02d:%02d:%02d", hours, minutes, seconds)
+                binding.buttonSave.text = formatted
+                binding.buttonSave.setTextSize(14.0F)
+            }
+
+            override fun onFinish() {
+                _binding?.let {
+                    it.buttonSave.isEnabled = true
+                    it.buttonSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+                    binding.buttonSave.setTextSize(16.0F)
+                    it.buttonSave.text = "Сохранить настройки"
+                }
+            }
+        }.start()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        countDownTimer?.cancel()
         _binding = null
     }
 }

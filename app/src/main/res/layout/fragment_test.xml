@@ -47,11 +47,10 @@
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp">
 
-            <!-- Вопрос 1 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1. Я чувствую себя эмоционально опустошенным."
+                android:text="@string/question1"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black" />
@@ -68,14 +67,14 @@
                 <RadioButton android:id="@+id/radio_every_day_q1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:fontFamily="sans-serif" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
-            <!-- Вопрос 2 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2. После работы я чувствую себя как «выжатый лимон»."
+                android:text="@string/question2"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question2"
@@ -89,14 +88,14 @@
                 <RadioButton android:id="@+id/radio_every_day_q2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="каждый день" android:fontFamily="sans-serif" android:textColor="@color/black" android:textSize="16sp" app:buttonTint="@color/radio_button_color"/>
             </RadioGroup>
 
-            <!-- Вопрос 3 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3. Утром я чувствую усталость и нежелание идти на работу."
+                android:text="@string/question3"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"/>
 
             <RadioGroup
                 android:id="@+id/question3"
@@ -113,10 +112,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4. Я обращаю внимание на эмоции и настроение пассажиров и коллег во время работы."
+                android:text="@string/question4"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question4"
@@ -133,10 +133,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5. Порой я ловлю себя на том, что отношусь к пассажирам и коллегам безэмоционально, как к объектам."
+                android:text="@string/question5"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question5"
@@ -153,10 +154,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6. После работы на некоторое время хочется уединиться от всех и всего."
+                android:text="@string/question6"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question6"
@@ -173,10 +175,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="7. Я умею находить правильное решение в конфликтных ситуациях, возникающих при общении с коллегами."
+                android:text="@string/question7"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question7"
@@ -193,10 +196,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="8. Я чувствую угнетенность и апатию."
+                android:text="@string/question8"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question8"
@@ -213,10 +217,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="9. Я уверен, что моя работа нужна людям."
+                android:text="@string/question9"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question9"
@@ -233,10 +238,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10. В последнее время я стал более «чёрствым» по отношению к тем, с кем работаю."
+                android:text="@string/question10"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question10"
@@ -253,10 +259,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11. Мне кажется, что работа за рулём делает меня более «чёрствым»."
+                android:text="@string/question11"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question11"
@@ -273,10 +280,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12. У меня есть планы на будущее, и я верю, что смогу их реализовать."
+                android:text="@string/question12"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question12"
@@ -293,10 +301,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="13. Моя работа всё больше меня разочаровывает."
+                android:text="@string/question13"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question13"
@@ -313,10 +322,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="14. Мне кажется, что я слишком много работаю."
+                android:text="@string/question14"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question14"
@@ -333,10 +343,11 @@
             <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="15. Я чувствую безразличие к проблемам пассажиров или коллег."
+            android:text="@string/question15"
             android:textSize="16sp" app:buttonTint="@color/radio_button_color"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question15"
@@ -353,10 +364,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="16. Мне нужно время в одиночестве, чтобы восстановиться от работы."
+                android:text="@string/question16"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question16"
@@ -373,10 +385,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="17. Я могу создать атмосферу уважения и взаимопомощи среди коллег."
+                android:text="@string/question17"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question17"
@@ -393,10 +406,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="18. Во время смены я иногда чувствую внутренний подъём и бодрость."
+                android:text="@string/question18"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question18"
@@ -413,10 +427,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="19. Благодаря работе я ощущаю, что сделал что-то действительно значимое."
+                android:text="@string/question19"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question19"
@@ -433,10 +448,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20. Я теряю интерес к тому, что раньше радовало в работе."
+                android:text="@string/question20"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question20"
@@ -453,10 +469,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="21. Я спокойно справляюсь с эмоциональными трудностями во время работы."
+                android:text="@string/question21"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question21"
@@ -473,10 +490,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="22. Мне кажется, что на меня перекладывают чужие проблемы или обязанности."
+                android:text="@string/question22"
                 android:textSize="16sp" app:buttonTint="@color/radio_button_color"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:id="@+id/question22"

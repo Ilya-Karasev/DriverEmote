@@ -61,7 +61,6 @@ class MainMenuFragment : Fragment() {
         val userId = sharedPreferences.getInt("userId", -1)
 
         if (userId != -1) {
-            syncOfflineData(userId)
             loadUserInfo(userId)
             loadResults(userId)
             updateTestButtonState(userId)
@@ -266,18 +265,18 @@ class MainMenuFragment : Fragment() {
 
         val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
-            circleRadius = 5f
+            circleRadius = 7f
             setDrawCircles(true)
-            setCircleColor(Color.RED)
+            setCircleColor(Color.parseColor(Constants.RED_GRAPH))
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
 
         val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
-            circleRadius = 5f
+            circleRadius = 6f
             setDrawCircles(true)
-            setCircleColor(Color.BLUE)
+            setCircleColor(Color.parseColor(Constants.BLUE_GRAPH))
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
@@ -286,7 +285,7 @@ class MainMenuFragment : Fragment() {
             color = Color.GREEN
             circleRadius = 5f
             setDrawCircles(true)
-            setCircleColor(Color.GREEN)
+            setCircleColor(Color.parseColor(Constants.GREEN_GRAPH))
             valueTextColor = Color.BLACK
             setDrawValues(false)
         }
@@ -299,7 +298,7 @@ class MainMenuFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val driver = apiService.getDriverById(userId)
-                DriverSession.saveDriver(requireContext(), driver!!) // сохраняем актуальные данные
+                DriverSession.saveDriver(requireContext(), driver)
                 updateTestButtonUI(driver)
             } catch (e: Exception) {
                 Log.e("MainMenuFragment", "Error updating test button state from server, using cache", e)
@@ -335,7 +334,6 @@ class MainMenuFragment : Fragment() {
             val displayTime = nextTime?.format(DateTimeFormatter.ofPattern("HH:mm")) ?: "неизвестно"
             binding.testButton.text = "Следующее тестирование в $displayTime"
             binding.testButton.setBackgroundColor(Color.GRAY)
-
         } else {
             binding.testButton.isEnabled = true
             binding.testButton.text = "Пройти тестирование"
@@ -349,7 +347,7 @@ class MainMenuFragment : Fragment() {
         lifecycleScope.launch {
             val driver = try {
                 val remoteDriver = apiService.getDriverById(userId)
-                DriverSession.saveDriver(requireContext(), remoteDriver!!)
+                DriverSession.saveDriver(requireContext(), remoteDriver)
                 remoteDriver
             } catch (e: Exception) {
                 Log.e("MainMenuFragment", "Error scheduling test reminders from server, using cache", e)
@@ -418,34 +416,6 @@ class MainMenuFragment : Fragment() {
         }.sortedByDescending {
             SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                 .parse(it.testDate.split(" ")[0])
-        }
-    }
-
-    private fun syncOfflineData(userId: Int) {
-        lifecycleScope.launch {
-            try {
-                val localDriver = DriverSession.loadDriver(requireContext())
-                if (localDriver != null) {
-                    apiService.updateDriver(userId, localDriver)
-                    Log.d("MainMenuFragment", "Driver synced with server")
-                }
-
-                val offlineResults = ResultsSession.loadResults(requireContext())
-                    .filter { it.id == 0 }
-
-                for (result in offlineResults) {
-                    apiService.addResult(result)
-                    Log.d("MainMenuFragment", "Offline result sent: ${result.testDate}")
-                }
-
-                if (offlineResults.isNotEmpty()) {
-                    val syncedResults = apiService.getResultsByUser(userId)
-                    ResultsSession.saveResults(requireContext(), syncedResults)
-                }
-
-            } catch (e: Exception) {
-                Log.e("MainMenuFragment", "Error syncing offline data", e)
-            }
         }
     }
 

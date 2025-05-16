@@ -52,21 +52,17 @@ class TestReminderWorker(
                 return Result.success()
             }
 
-            // Сброс флага isCompleted на сервере
             val updatedDriver = driver.copy(isCompleted = false)
             RetrofitClient.api.updateDriver(driver.id, updatedDriver)
 
-            // Отправка уведомления
             NotificationUtils.sendNotification(
                 context,
                 "Пришло время тестирования!",
                 "Пожалуйста, пройдите тестирование, чтобы отследить ваше эмоциональное состояние!"
             )
 
-            // Сохраняем время последней отправки
             prefs.edit().putLong("lastNotificationTime_${userId}_$timeString", now).apply()
 
-            // Планируем следующее напоминание
             scheduleNextReminder(context, userId, timeString)
             Result.success()
 

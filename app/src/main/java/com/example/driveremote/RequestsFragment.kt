@@ -65,7 +65,9 @@ class RequestsFragment : Fragment() {
 
                 refreshRequests()
             } catch (e: Exception) {
-                showToast("Ошибка при загрузке пользователя")
+                val prefs = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                val savedPost = prefs.getString("post", null)
+                currentUserPost = savedPost?.let { Post.valueOf(it) } ?: Post.ВОДИТЕЛЬ
             }
         }
 

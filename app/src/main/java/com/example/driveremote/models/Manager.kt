@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Entity
 data class Manager(
-    @PrimaryKey val id: Int, // Совпадает с ID пользователя в User
-    val employeesList: List<Int> // Список ID подчинённых сотрудников
+    @PrimaryKey val id: Int,
+    val employeesList: List<Int>
 ) {
     constructor(user: User, employeesList: List<Int>) : this(
         id = user.id,
