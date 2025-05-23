@@ -1,9 +1,5 @@
 package com.example.driveremote.models
-
 import androidx.room.*
-import kotlinx.serialization.Serializable
-import java.util.*
-
 @Entity(
     tableName = "Results",
     foreignKeys = [ForeignKey(
@@ -29,15 +25,12 @@ data class Results(
             else -> "Норма"
         }
 }
-
 @Dao
 interface ResultsDao {
     @Insert
     suspend fun insertResult(result: Results)
-
     @Query("SELECT * FROM results WHERE userId = :userId ORDER BY testDate DESC")
     suspend fun getResultsByUser(userId: Int): List<Results>
-
     @Query("SELECT * FROM results WHERE userId = :userId ORDER BY testDate DESC LIMIT 1")
     suspend fun getLastResultByUser(userId: Int): Results?
 }

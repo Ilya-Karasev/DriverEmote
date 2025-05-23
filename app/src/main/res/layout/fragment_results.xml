@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/light_gray">
 
-    <!-- Верхняя зелёная панель -->
     <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -49,7 +48,6 @@
         app:layout_constraintTop_toBottomOf="@id/test_completed"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Время завершения теста -->
         <TextView
             android:id="@+id/text_time"
             android:layout_width="match_parent"
@@ -64,7 +62,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Блок с результатами -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/results_container"
             android:layout_width="match_parent"
@@ -74,7 +71,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Эмоциональное истощение -->
             <TextView
                 android:id="@+id/text_emotional_exhaustion_label"
                 android:fontFamily="sans-serif"
@@ -109,7 +105,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/text_emotional_exhaustion_label"/>
 
-            <!-- Деперсонализация -->
             <TextView
                 android:id="@+id/text_depersonalization_label"
                 android:fontFamily="sans-serif"
@@ -145,7 +140,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/text_depersonalization_label"/>
 
-            <!-- Редукция личных достижений -->
             <TextView
                 android:id="@+id/text_personal_achievement_label"
                 android:fontFamily="sans-serif"
@@ -182,7 +176,6 @@
                 app:layout_constraintBottom_toBottomOf="@id/text_personal_achievement_label"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Общее количество баллов -->
         <TextView
             android:id="@+id/text_score"
             android:layout_width="match_parent"
@@ -198,7 +191,6 @@
             app:layout_constraintEnd_toEndOf="parent" />
     </LinearLayout>
 
-    <!-- Нижняя зелёная панель -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonBackToMenu"
         android:layout_width="match_parent"

@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/light_gray">
 
-    <!-- Верхняя зелёная панель -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -42,7 +41,6 @@
             android:layout_marginEnd="16dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Основной контент с прокруткой -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -60,7 +58,6 @@
             android:gravity="center_horizontal"
             android:padding="16dp">
 
-            <!-- Иконка водителя -->
             <ImageView
                 android:id="@+id/driver_icon"
                 android:layout_width="128dp"
@@ -71,7 +68,6 @@
                 android:contentDescription="Иконка водителя"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- Информация о пользователе -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +110,6 @@
                     android:indeterminateTint="@color/dark_green"/>
             </LinearLayout>
 
-            <!-- Кнопка тестирования -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/test_button"
                 android:fontFamily="sans-serif-medium"
@@ -127,7 +122,6 @@
                 android:layout_marginBottom="16dp"
                 android:visibility="gone"/>
 
-            <!-- Карточка состояния -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -222,7 +216,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Кнопка выхода -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/logout_button"
                 android:fontFamily="sans-serif-medium"
@@ -241,7 +234,6 @@
         android:background="@color/border_gray"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
 
-    <!-- Нижняя белая панель -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"

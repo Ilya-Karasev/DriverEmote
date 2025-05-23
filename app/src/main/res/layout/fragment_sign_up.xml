@@ -156,7 +156,6 @@
             </LinearLayout>
         </ScrollView>
 
-        <!-- Нижняя панель с разделением -->
         <LinearLayout
             android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
@@ -165,7 +164,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginVertical="24dp">
 
-            <!-- Левая часть: Вернуться -->
             <FrameLayout
                 android:id="@+id/viewBack"
                 android:layout_width="0dp"
@@ -183,7 +181,6 @@
                     android:textSize="16sp" />
             </FrameLayout>
 
-            <!-- Правая часть: Зарегистрироваться (цвет меняется при активации) -->
             <FrameLayout
                 android:id="@+id/viewRegister"
                 android:layout_width="0dp"

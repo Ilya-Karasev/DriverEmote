@@ -1,8 +1,6 @@
 package com.example.driveremote.models
-
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
-
 @Entity(
     foreignKeys = [
         ForeignKey(
@@ -28,21 +26,16 @@ data class Request(
     @SerializedName("sender") val sender: Int,
     @SerializedName("receiver") val receiver: Int
 )
-
 @Dao
 interface RequestDao {
     @Insert
     suspend fun insertRequest(request: Request)
-
     @Delete
     suspend fun deleteRequest(request: Request)
-
     @Query("SELECT * FROM Request")
     suspend fun getAllRequests(): List<Request>
-
     @Query("SELECT * FROM Request WHERE receiver = :receiver")
     suspend fun getRequestsForReceiver(receiver: Int): List<Request>
-
     @Query("SELECT * FROM Request WHERE sender = :sender")
     suspend fun getRequestsForSender(sender: Int): List<Request>
 }

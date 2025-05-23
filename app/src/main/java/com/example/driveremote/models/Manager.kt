@@ -1,8 +1,5 @@
 package com.example.driveremote.models
-
 import androidx.room.*
-import kotlinx.serialization.Serializable
-
 @Entity
 data class Manager(
     @PrimaryKey val id: Int,
@@ -13,18 +10,14 @@ data class Manager(
         employeesList = employeesList
     )
 }
-
 @Dao
 interface ManagerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertManager(manager: Manager)
-
     @Query("SELECT * FROM Manager WHERE id = :id LIMIT 1")
     suspend fun getManagerById(id: Int): Manager?
-
     @Query("UPDATE Manager SET employeesList = :employeesList WHERE id = :id")
     suspend fun updateEmployees(id: Int, employeesList: List<Int>)
-
     @Query("SELECT * FROM User WHERE id IN (:ids)")
     suspend fun getUsersByIds(ids: List<Int>): List<User>
 }

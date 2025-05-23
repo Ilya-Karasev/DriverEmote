@@ -1,5 +1,4 @@
 package com.example.driveremote
-
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentEmployeeBinding
 import com.example.driveremote.models.Results
@@ -22,21 +22,17 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
 class EmployeeFragment : Fragment() {
     private var _binding: FragmentEmployeeBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
-
     private lateinit var resultsAdapter: TestResultAdapter
     private var resultsList: List<Results> = emptyList()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,16 +40,12 @@ class EmployeeFragment : Fragment() {
         _binding = FragmentEmployeeBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val userId = arguments?.getInt("userId") ?: -1
-
         if (userId != -1) {
             showLoadingState()
             loadUserInfo(userId)
-
             resultsAdapter = TestResultAdapter(requireContext(), userId) { results ->
                 resultsList = results.sortedByDescending {
                     SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
@@ -62,46 +54,37 @@ class EmployeeFragment : Fragment() {
                 setupChart()
                 showResultsState()
             }
-
             binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerViewResults.adapter = resultsAdapter
         }
-
         binding.viewMenu.setOnClickListener {
             findNavController().navigate(R.id.action_employeeFragment_to_managerMenuFragment)
         }
-
         binding.viewSearch.setOnClickListener {
             findNavController().navigate(R.id.action_employeeFragment_to_searchFragment)
         }
-
         binding.viewRequests.setOnClickListener {
             findNavController().navigate(R.id.action_employeeFragment_to_requestsFragment)
         }
     }
-
     private fun showLoadingState() {
-        // Прячем все основные элементы
-        binding.driverName.visibility = View.GONE
-        binding.driverAge.visibility = View.GONE
-        binding.driverEmail.visibility = View.GONE
-        binding.lineChart.visibility = View.GONE
-        binding.progressBar.visibility = View.VISIBLE
-        binding.userInfoProgressBar.visibility = View.VISIBLE
-        binding.chartProgressBar.visibility = View.VISIBLE
+        binding.driverName.visibility = GONE
+        binding.driverAge.visibility = GONE
+        binding.driverEmail.visibility = GONE
+        binding.lineChart.visibility = GONE
+        binding.progressBar.visibility = VISIBLE
+        binding.userInfoProgressBar.visibility = VISIBLE
+        binding.chartProgressBar.visibility = VISIBLE
     }
-
     private fun showResultsState() {
-        // Показываем все данные и скрываем спиннеры
-        binding.driverName.visibility = View.VISIBLE
-        binding.driverAge.visibility = View.VISIBLE
-        binding.driverEmail.visibility = View.VISIBLE
-        binding.lineChart.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.GONE
-        binding.userInfoProgressBar.visibility = View.GONE
-        binding.chartProgressBar.visibility = View.GONE
+        binding.driverName.visibility = VISIBLE
+        binding.driverAge.visibility = VISIBLE
+        binding.driverEmail.visibility = VISIBLE
+        binding.lineChart.visibility = VISIBLE
+        binding.progressBar.visibility = GONE
+        binding.userInfoProgressBar.visibility = GONE
+        binding.chartProgressBar.visibility = GONE
     }
-
     private fun loadUserInfo(userId: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -116,16 +99,13 @@ class EmployeeFragment : Fragment() {
             }
         }
     }
-
     private fun setupChart() {
         val chart = binding.lineChart
         val orientation = resources.configuration.orientation
-
         if (resultsList.isEmpty()) {
             chart.clear()
             return
         }
-
         val legend = chart.legend
         legend.isEnabled = true
         legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
@@ -134,36 +114,24 @@ class EmployeeFragment : Fragment() {
         legend.setDrawInside(false)
         legend.setWordWrapEnabled(true)
         legend.textSize = 16f
-
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Горизонтальная ориентация
             binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_landscape_min_width)
             legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
             binding.topBar.visibility = GONE
             binding.bottomBar.visibility = GONE
         } else {
-            // Вертикальная ориентация
             binding.lineChart.minimumWidth = resources.getDimensionPixelSize(R.dimen.chart_portrait_min_width)
             legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
             binding.topBar.visibility = VISIBLE
             binding.bottomBar.visibility = VISIBLE
         }
-
         val entriesBurnout = ArrayList<Entry>()
         val entriesDepersonalization = ArrayList<Entry>()
         val entriesReduction = ArrayList<Entry>()
         val dateLabels = ArrayList<String>()
-
-        val intValueFormatter = object : ValueFormatter() {
-            override fun getPointLabel(entry: Entry?): String {
-                return entry?.y?.toInt().toString()
-            }
-        }
-
         val reversedResults = resultsList.reversed()
-
         reversedResults.forEachIndexed { index, result ->
             val date = result.testDate.split(" ")[0]
             val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault())
@@ -174,51 +142,41 @@ class EmployeeFragment : Fragment() {
             entriesDepersonalization.add(Entry(index.toFloat(), result.depersonalizationScore.toFloat()))
             entriesReduction.add(Entry(index.toFloat(), result.personalAchievementScore.toFloat()))
         }
-
         val xAxis = chart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
         xAxis.granularity = 1f
         xAxis.setDrawGridLines(false)
-
         chart.axisRight.isEnabled = false
         chart.description.isEnabled = false
         chart.setPinchZoom(true)
-
         val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
-            circleRadius = 5f
+            circleRadius = 7f
             setDrawCircles(true)
-            setCircleColor(Color.RED)
+            setCircleColor(Color.parseColor(Constants.RED_GRAPH))
             valueTextColor = Color.BLACK
-            setDrawValues(true)
-            valueFormatter = intValueFormatter
+            setDrawValues(false)
         }
-
         val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
-            circleRadius = 5f
+            circleRadius = 6f
             setDrawCircles(true)
-            setCircleColor(Color.BLUE)
+            setCircleColor(Color.parseColor(Constants.BLUE_GRAPH))
             valueTextColor = Color.BLACK
-            setDrawValues(true)
-            valueFormatter = intValueFormatter
+            setDrawValues(false)
         }
-
         val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
             circleRadius = 5f
             setDrawCircles(true)
-            setCircleColor(Color.GREEN)
+            setCircleColor(Color.parseColor(Constants.GREEN_GRAPH))
             valueTextColor = Color.BLACK
-            setDrawValues(true)
-            valueFormatter = intValueFormatter
+            setDrawValues(false)
         }
-
         chart.data = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
         chart.invalidate()
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

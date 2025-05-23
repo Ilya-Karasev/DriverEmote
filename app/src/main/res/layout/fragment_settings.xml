@@ -8,7 +8,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Верхняя зелёная панель -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -215,7 +214,6 @@
         android:background="@color/border_gray"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
 
-    <!-- Нижняя белая панель -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"

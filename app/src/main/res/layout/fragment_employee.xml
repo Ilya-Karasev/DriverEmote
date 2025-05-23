@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/light_gray">
 
-    <!-- Верхняя зелёная панель -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -30,7 +29,6 @@
             android:layout_marginStart="16dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Контейнер с прокруткой -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -47,7 +45,6 @@
             android:gravity="center_horizontal"
             android:padding="16dp">
 
-            <!-- Иконка водителя -->
             <ImageView
                 android:id="@+id/driver_icon"
                 android:layout_width="128dp"
@@ -65,7 +62,6 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="8dp">
 
-                <!-- Информация о пользователе -->
                 <TextView
                     android:id="@+id/driver_name"
                     android:layout_width="wrap_content"
@@ -186,7 +182,6 @@
                         android:layout_marginBottom="16dp"
                         android:indeterminateTint="@color/dark_green" />
 
-                    <!-- Список пользователей -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewResults"
                         android:layout_width="match_parent"
@@ -208,7 +203,6 @@
         android:background="@color/border_gray"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
 
-    <!-- Нижняя белая панель -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"

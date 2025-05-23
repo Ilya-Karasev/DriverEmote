@@ -15,10 +15,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }  // Добавляем поддержку JitPack
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
-rootProject.name = "DriverEmote"
+rootProject.name = "DriverMonitor"
 include(":app")
- 

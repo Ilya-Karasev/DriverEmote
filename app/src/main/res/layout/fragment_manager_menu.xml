@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/light_gray">
 
-    <!-- Верхняя зелёная панель -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -30,7 +29,6 @@
             android:layout_marginStart="16dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Контент -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -48,7 +46,6 @@
             android:gravity="center_horizontal"
             android:padding="16dp">
 
-            <!-- Иконка водителя -->
             <ImageView
                 android:id="@+id/driver_icon"
                 android:layout_width="128dp"
@@ -101,7 +98,6 @@
                     android:indeterminateTint="@color/dark_green"/>
             </LinearLayout>
 
-            <!-- Кнопка выхода -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/logout_button"
                 android:layout_width="match_parent"
@@ -156,7 +152,6 @@
         android:background="@color/border_gray"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"/>
 
-    <!-- Нижняя белая панель -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"

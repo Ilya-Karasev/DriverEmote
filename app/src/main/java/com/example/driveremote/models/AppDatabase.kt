@@ -1,9 +1,7 @@
 package com.example.driveremote.models
-
 import android.content.Context
 import androidx.room.*
 import com.example.driveremote.adapters.Converters
-
 @Database(entities = [User::class, Results::class, Driver::class, Manager::class, Request::class], version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -12,20 +10,18 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun driverDao(): DriverDao
     abstract fun managerDao(): ManagerDao
     abstract fun requestDao(): RequestDao
-
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                context.deleteDatabase("app_database") // Очистка старой базы перед созданием
+                context.deleteDatabase("app_database")
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
                 )
-                    .fallbackToDestructiveMigration() // Позволяет пересоздавать базу при изменении схемы
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
