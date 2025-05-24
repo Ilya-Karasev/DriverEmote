@@ -85,7 +85,6 @@ class UserAdapter(
                 val requestExists = requestsSender.any {
                     (it.sender == currentUserId && it.receiver == user.id) ||
                             (it.sender == user.id && it.receiver == currentUserId)
-
                 } or requestsReceiver.any {
                     (it.sender == currentUserId && it.receiver == user.id) ||
                             (it.sender == user.id && it.receiver == currentUserId)

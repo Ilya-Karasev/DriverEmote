@@ -138,6 +138,7 @@ class ProfileFragment : Fragment() {
             setCircleColor(Color.parseColor(Constants.RED_GRAPH))
             valueTextColor = Color.BLACK
             setDrawValues(true)
+            valueFormatter = intValueFormatter
         }
         val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
@@ -146,6 +147,7 @@ class ProfileFragment : Fragment() {
             setCircleColor(Color.parseColor(Constants.BLUE_GRAPH))
             valueTextColor = Color.BLACK
             setDrawValues(true)
+            valueFormatter = intValueFormatter
         }
         val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
@@ -154,6 +156,7 @@ class ProfileFragment : Fragment() {
             setCircleColor(Color.parseColor(Constants.GREEN_GRAPH))
             valueTextColor = Color.BLACK
             setDrawValues(true)
+            valueFormatter = intValueFormatter
         }
         val lineData = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
         chart.data = lineData

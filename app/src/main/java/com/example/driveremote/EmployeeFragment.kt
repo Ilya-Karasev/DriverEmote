@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -131,6 +132,11 @@ class EmployeeFragment : Fragment() {
         val entriesDepersonalization = ArrayList<Entry>()
         val entriesReduction = ArrayList<Entry>()
         val dateLabels = ArrayList<String>()
+        val intValueFormatter = object : ValueFormatter() {
+            override fun getPointLabel(entry: Entry?): String {
+                return entry?.y?.toInt().toString()
+            }
+        }
         val reversedResults = resultsList.reversed()
         reversedResults.forEachIndexed { index, result ->
             val date = result.testDate.split(" ")[0]
@@ -156,7 +162,8 @@ class EmployeeFragment : Fragment() {
             setDrawCircles(true)
             setCircleColor(Color.parseColor(Constants.RED_GRAPH))
             valueTextColor = Color.BLACK
-            setDrawValues(false)
+            setDrawValues(true)
+            valueFormatter = intValueFormatter
         }
         val dataSetDepersonalization = LineDataSet(entriesDepersonalization, "Деперсонализация").apply {
             color = Color.BLUE
@@ -164,7 +171,8 @@ class EmployeeFragment : Fragment() {
             setDrawCircles(true)
             setCircleColor(Color.parseColor(Constants.BLUE_GRAPH))
             valueTextColor = Color.BLACK
-            setDrawValues(false)
+            setDrawValues(true)
+            valueFormatter = intValueFormatter
         }
         val dataSetReduction = LineDataSet(entriesReduction, "Редукция достижений").apply {
             color = Color.GREEN
@@ -172,7 +180,8 @@ class EmployeeFragment : Fragment() {
             setDrawCircles(true)
             setCircleColor(Color.parseColor(Constants.GREEN_GRAPH))
             valueTextColor = Color.BLACK
-            setDrawValues(false)
+            setDrawValues(true)
+            valueFormatter = intValueFormatter
         }
         chart.data = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
         chart.invalidate()

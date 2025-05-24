@@ -85,7 +85,6 @@ class TestFragment : Fragment() {
             if (selectedId != -1) {
                 totalScore += score
                 answeredQuestions++
-
                 when (questionNumber) {
                     in emotionalExhaustionQuestions -> emotionalExhaustionScore += score
                     in depersonalizationQuestions -> depersonalizationScore += score
