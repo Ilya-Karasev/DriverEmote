@@ -1,5 +1,4 @@
 package com.example.driveremote.adapters
-
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater

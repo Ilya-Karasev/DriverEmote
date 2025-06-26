@@ -1,4 +1,4 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.R
 import com.example.driveremote.api.Constants
 import com.example.driveremote.databinding.FragmentTestBinding
 class TestFragment : Fragment() {

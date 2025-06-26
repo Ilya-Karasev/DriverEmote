@@ -1,4 +1,4 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.R
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSignInBinding
 import com.example.driveremote.models.Post

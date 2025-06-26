@@ -1,4 +1,4 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -29,6 +29,7 @@ import com.example.driveremote.utils.TestReminderWorker
 import java.text.ParseException
 import java.util.concurrent.TimeUnit
 import androidx.core.content.ContextCompat
+import com.example.driveremote.R
 import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.models.Driver

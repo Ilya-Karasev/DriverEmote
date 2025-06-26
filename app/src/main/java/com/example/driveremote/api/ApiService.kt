@@ -24,7 +24,6 @@ interface ApiService {
         @Query("email") email: String,
         @Query("password") password: String
     ): User?
-
     @GET("/api/results")
     suspend fun getResults(): List<Results>
     @GET("/api/results/user/{userId}")

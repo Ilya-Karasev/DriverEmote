@@ -1,4 +1,4 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
@@ -16,10 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.driveremote.R
 import com.example.driveremote.api.Constants
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentResultsBinding
-import com.example.driveremote.models.AppDatabase
 import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Results
 import com.example.driveremote.sessionManagers.DriverSession

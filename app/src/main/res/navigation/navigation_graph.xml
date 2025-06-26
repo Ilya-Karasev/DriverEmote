@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.example.driveremote.SignInFragment"
+        android:name="com.example.driveremote.fragments.SignInFragment"
         android:label="Sign In"
         tools:layout="@layout/fragment_sign_in">
         <action
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/mainMenuFragment"
-        android:name="com.example.driveremote.MainMenuFragment"
+        android:name="com.example.driveremote.fragments.MainMenuFragment"
         android:label="Main Menu"
         tools:layout="@layout/fragment_main_menu">
         <action
@@ -48,7 +48,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.example.driveremote.SignUpFragment"
+        android:name="com.example.driveremote.fragments.SignUpFragment"
         android:label="Sign Up"
         tools:layout="@layout/fragment_sign_up">
         <action
@@ -58,7 +58,7 @@
 
     <fragment
         android:id="@+id/enterFragment"
-        android:name="com.example.driveremote.EnterFragment"
+        android:name="com.example.driveremote.fragments.EnterFragment"
         android:label="Enter"
         tools:layout="@layout/fragment_enter">
         <action
@@ -74,7 +74,7 @@
 
     <fragment
         android:id="@+id/testFragment"
-        android:name="com.example.driveremote.TestFragment"
+        android:name="com.example.driveremote.fragments.TestFragment"
         android:label="Test"
         tools:layout="@layout/fragment_test">
         <action
@@ -84,7 +84,7 @@
 
     <fragment
         android:id="@+id/resultsFragment"
-        android:name="com.example.driveremote.ResultsFragment"
+        android:name="com.example.driveremote.fragments.ResultsFragment"
         android:label="Results"
         tools:layout="@layout/fragment_results">
         <action
@@ -94,7 +94,7 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.driveremote.ProfileFragment"
+        android:name="com.example.driveremote.fragments.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile">
         <action
@@ -113,7 +113,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.driveremote.SearchFragment"
+        android:name="com.example.driveremote.fragments.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search">
         <action
@@ -132,7 +132,7 @@
 
     <fragment
         android:id="@+id/managerMenuFragment"
-        android:name="com.example.driveremote.ManagerMenuFragment"
+        android:name="com.example.driveremote.fragments.ManagerMenuFragment"
         android:label="Manager Main Menu"
         tools:layout="@layout/fragment_manager_menu">
         <action
@@ -154,7 +154,7 @@
 
     <fragment
         android:id="@+id/requestsFragment"
-        android:name="com.example.driveremote.RequestsFragment"
+        android:name="com.example.driveremote.fragments.RequestsFragment"
         android:label="Requests"
         tools:layout="@layout/fragment_requests">
         <action
@@ -173,7 +173,7 @@
 
     <fragment
         android:id="@+id/employeeFragment"
-        android:name="com.example.driveremote.EmployeeFragment"
+        android:name="com.example.driveremote.fragments.EmployeeFragment"
         android:label="Employee"
         tools:layout="@layout/fragment_employee">
         <action
@@ -192,7 +192,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.driveremote.SettingsFragment"
+        android:name="com.example.driveremote.fragments.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings">
         <action

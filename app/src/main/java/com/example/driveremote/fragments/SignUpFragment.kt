@@ -1,4 +1,4 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +14,7 @@ import com.example.driveremote.databinding.FragmentSignUpBinding
 import kotlinx.coroutines.launch
 import android.util.Patterns
 import androidx.core.content.ContextCompat
+import com.example.driveremote.R
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.models.Driver
 import com.example.driveremote.models.Manager

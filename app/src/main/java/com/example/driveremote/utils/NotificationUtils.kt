@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.example.driveremote.MainActivity
+import com.example.driveremote.fragments.MainActivity
 import com.example.driveremote.R
 object NotificationUtils {
     fun sendNotification(context: Context, title: String, message: String) {

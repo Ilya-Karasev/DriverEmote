@@ -1,4 +1,4 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.driveremote.R
 import com.example.driveremote.adapters.UserAdapter
 import com.example.driveremote.api.RetrofitClient
 import com.example.driveremote.databinding.FragmentSearchBinding

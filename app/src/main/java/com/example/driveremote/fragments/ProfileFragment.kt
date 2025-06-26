@@ -1,116 +1,97 @@
-package com.example.driveremote
+package com.example.driveremote.fragments
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.driveremote.R
+import com.example.driveremote.TestResultAdapter
 import com.example.driveremote.api.Constants
-import com.example.driveremote.api.RetrofitClient
-import com.example.driveremote.databinding.FragmentEmployeeBinding
+import com.example.driveremote.databinding.FragmentProfileBinding
 import com.example.driveremote.models.Results
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-class EmployeeFragment : Fragment() {
-    private var _binding: FragmentEmployeeBinding? = null
+class ProfileFragment : Fragment() {
+    private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed after destroying view")
     private lateinit var resultsAdapter: TestResultAdapter
-    private var resultsList: List<Results> = emptyList()
+    private var resultsList = mutableListOf<Results>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEmployeeBinding.inflate(inflater, container, false)
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = arguments?.getInt("userId") ?: -1
+        showLoadingState()
+        val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", -1)
         if (userId != -1) {
-            showLoadingState()
-            loadUserInfo(userId)
-            resultsAdapter = TestResultAdapter(requireContext(), userId) { results ->
-                resultsList = results.sortedByDescending {
+            resultsAdapter = TestResultAdapter(requireContext(), userId) { loadedResults ->
+                resultsList = loadedResults.sortedByDescending {
                     SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                         .parse(it.testDate.split(" ")[0])
-                }
+                }.toMutableList()
+                binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerViewResults.adapter = resultsAdapter
                 setupChart()
-                showResultsState()
+                showContentState()
             }
-            binding.recyclerViewResults.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerViewResults.adapter = resultsAdapter
         }
         binding.viewMenu.setOnClickListener {
-            findNavController().navigate(R.id.action_employeeFragment_to_managerMenuFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_mainMenuFragment)
         }
         binding.viewSearch.setOnClickListener {
-            findNavController().navigate(R.id.action_employeeFragment_to_searchFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_searchFragment)
         }
         binding.viewRequests.setOnClickListener {
-            findNavController().navigate(R.id.action_employeeFragment_to_requestsFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_requestsFragment)
+        }
+        binding.settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
         }
     }
     private fun showLoadingState() {
-        binding.driverName.visibility = GONE
-        binding.driverAge.visibility = GONE
-        binding.driverEmail.visibility = GONE
-        binding.lineChart.visibility = GONE
-        binding.progressBar.visibility = VISIBLE
-        binding.userInfoProgressBar.visibility = VISIBLE
         binding.chartProgressBar.visibility = VISIBLE
+        binding.progressBar.visibility = VISIBLE
+        binding.recyclerViewResults.visibility = GONE
+        binding.lineChart.visibility = GONE
     }
-    private fun showResultsState() {
-        binding.driverName.visibility = VISIBLE
-        binding.driverAge.visibility = VISIBLE
-        binding.driverEmail.visibility = VISIBLE
-        binding.lineChart.visibility = VISIBLE
-        binding.progressBar.visibility = GONE
-        binding.userInfoProgressBar.visibility = GONE
+    private fun showContentState() {
         binding.chartProgressBar.visibility = GONE
-    }
-    private fun loadUserInfo(userId: Int) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val user = RetrofitClient.api.getUserById(userId)
-                withContext(Dispatchers.Main) {
-                    binding.driverName.text = "${user.surName} ${user.firstName} ${user.fatherName}"
-                    binding.driverAge.text = "${user.age} лет"
-                    binding.driverEmail.text = user.email
-                }
-            } catch (e: Exception) {
-                Log.e("EmployeeFragment", "Ошибка загрузки пользователя: ${e.message}")
-            }
-        }
+        binding.progressBar.visibility = GONE
+        binding.recyclerViewResults.visibility = VISIBLE
+        binding.lineChart.visibility = VISIBLE
     }
     private fun setupChart() {
         val chart = binding.lineChart
         val orientation = resources.configuration.orientation
-        if (resultsList.isEmpty()) {
-            chart.clear()
-            return
-        }
+        val xAxis = chart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.setDrawGridLines(false)
+        chart.axisRight.isEnabled = false
+        chart.description.isEnabled = false
+        chart.setPinchZoom(true)
         val legend = chart.legend
         legend.isEnabled = true
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
         legend.orientation = Legend.LegendOrientation.HORIZONTAL
         legend.setDrawInside(false)
         legend.setWordWrapEnabled(true)
@@ -128,6 +109,10 @@ class EmployeeFragment : Fragment() {
             binding.topBar.visibility = VISIBLE
             binding.bottomBar.visibility = VISIBLE
         }
+        if (resultsList.isEmpty()) {
+            chart.clear()
+            return
+        }
         val entriesBurnout = ArrayList<Entry>()
         val entriesDepersonalization = ArrayList<Entry>()
         val entriesReduction = ArrayList<Entry>()
@@ -143,19 +128,11 @@ class EmployeeFragment : Fragment() {
             val formattedDate = SimpleDateFormat("dd.MM", Locale.getDefault())
                 .format(SimpleDateFormat("dd.MM.yyyy").parse(date) ?: Date())
             dateLabels.add(formattedDate)
-
             entriesBurnout.add(Entry(index.toFloat(), result.emotionalExhaustionScore.toFloat()))
             entriesDepersonalization.add(Entry(index.toFloat(), result.depersonalizationScore.toFloat()))
             entriesReduction.add(Entry(index.toFloat(), result.personalAchievementScore.toFloat()))
         }
-        val xAxis = chart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
-        xAxis.granularity = 1f
-        xAxis.setDrawGridLines(false)
-        chart.axisRight.isEnabled = false
-        chart.description.isEnabled = false
-        chart.setPinchZoom(true)
         val dataSetBurnout = LineDataSet(entriesBurnout, "Эмоциональное истощение").apply {
             color = Color.RED
             circleRadius = 7f
@@ -183,7 +160,8 @@ class EmployeeFragment : Fragment() {
             setDrawValues(true)
             valueFormatter = intValueFormatter
         }
-        chart.data = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
+        val lineData = LineData(dataSetBurnout, dataSetDepersonalization, dataSetReduction)
+        chart.data = lineData
         chart.invalidate()
     }
     override fun onDestroyView() {
